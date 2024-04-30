@@ -4,6 +4,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
@@ -31,7 +32,7 @@ public class ShardLibraryPersistentState extends PersistentState {
 	public ShardLibraryPersistentState() {
 	}
 	
-	public static ShardLibraryPersistentState createFromNbt(NbtCompound tag) {
+	public static ShardLibraryPersistentState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup lookup) {
 		ScatteredShards.LOGGER.info("Loading shard library...");
 		ShardLibraryPersistentState state = new ShardLibraryPersistentState();
 		// This is just a placeholder - all the data lives in the serverLibrary below
@@ -73,28 +74,26 @@ public class ShardLibraryPersistentState extends PersistentState {
 		
 		return state;
 	}
-	
-	
+
 	@Override
-	public NbtCompound writeNbt(NbtCompound tag) {
+	public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		ShardLibrary library = ScatteredShardsAPI.getServerLibrary();
 		ScatteredShards.LOGGER.info("Saving the ShardLibrary with " + library.shards().size() + " shards and " + library.shardSets().size() + " shardSets...");
-		
+
 		tag.put(SHARDS_KEY, library.shards().toNbt());
-		
+
 		NbtCompound shardSets = new NbtCompound();
 		library.shardSets().asMap().forEach((id, set) -> {
 			NbtList list = new NbtList();
 			for(Identifier i : set) {
 				list.add(NbtString.of(i.toString()));
 			}
-			
+
 		});
 		tag.put(SHARD_SETS_KEY, shardSets);
-		
+
 		ScatteredShards.LOGGER.info("ShardLibrary saved.");
-		
+
 		return tag;
 	}
-	
 }

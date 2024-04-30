@@ -23,8 +23,8 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 	public static final Codec<ShardType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ColorCodec.CODEC.fieldOf("text_color").forGetter(ShardType::textColor),
 			ColorCodec.CODEC.fieldOf("glow_color").forGetter(ShardType::glowColor),
-			Codec.optionalField("collect_particle", Registries.PARTICLE_TYPE.getCodec()).forGetter(ShardType::collectParticle),
-			Codec.optionalField("collect_sound", SoundEvent.CODEC).forGetter(ShardType::collectSound),
+			Codec.optionalField("collect_particle", Registries.PARTICLE_TYPE.getCodec(), false).forGetter(ShardType::collectParticle),
+			Codec.optionalField("collect_sound", SoundEvent.CODEC, false).forGetter(ShardType::collectSound),
 			Codec.INT.fieldOf("list_order").forGetter(ShardType::listOrder)
 		).apply(instance, ShardType::new));
 	

@@ -60,10 +60,10 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 					}
 				}
 			} catch (Exception ex) {
-				ScatteredShards.LOGGER.error("Failed to load shard type '" + entry.getKey() + "':", ex);
+                ScatteredShards.LOGGER.error("Failed to load shard type '{}':", entry.getKey(), ex);
 			}
 		}
-		ScatteredShards.LOGGER.info("Loaded " + successes + " shard type" + (successes == 1 ? "" : "s"));
+        ScatteredShards.LOGGER.info("Loaded {} shard type{}", successes, successes == 1 ? "" : "s");
 	}
 
 	public static void register() {

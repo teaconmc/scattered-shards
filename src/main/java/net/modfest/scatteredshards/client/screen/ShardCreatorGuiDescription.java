@@ -1,7 +1,9 @@
 package net.modfest.scatteredshards.client.screen;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.JsonOps;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -14,9 +16,8 @@ import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.ComponentMap;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -43,7 +44,9 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public static final Text NBT_TEXT = Text.translatable(BASE_KEY + "field.item.nbt");
 	public static final Text USE_MOD_ICON_TEXT = Text.translatable(BASE_KEY + "toggle.mod_icon");
 	public static final Text SAVE_TEXT = Text.translatable(BASE_KEY + "button.save");
-	
+
+	private static final Gson GSON = new Gson();
+
 	private Identifier shardId;
 	private Shard shard;
 	private Identifier modIcon;
@@ -112,9 +115,10 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public WProtectableField nbtField = new WProtectableField(NBT_TEXT)
 			.setChangedListener((it) -> {
 				try {
-					this.itemNbt = null;
-					this.itemNbt = StringNbtReader.parse(it);
-				} catch (CommandSyntaxException ignored) {
+					this.itemComponents = ComponentMap.EMPTY;
+					var json = GSON.fromJson(it, JsonElement.class);
+					this.itemComponents = ComponentMap.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
+				} catch (Exception ignored) {
 				}
 				updateItemIcon();
 			});
@@ -126,7 +130,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		});
 	
 	private Item item = null;
-	private NbtCompound itemNbt = null;
+	private ComponentMap itemComponents = null;
 	private Identifier iconPath = null;
 	
 	
@@ -136,8 +140,8 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 			return;
 		}
 		var stack = item.getDefaultStack();
-		if (itemNbt != null) {
-			stack.setNbt(itemNbt);
+		if (!itemComponents.isEmpty()) {
+			stack.applyComponentsFrom(itemComponents);
 		}
 		shard.setIcon(Either.left(stack));
 	}

@@ -129,7 +129,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 			.texture(1, 1)
 			.overlay(overlay)
 			.light(actualLight)
-			.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+			.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 			.next();
 
 		buf
@@ -138,7 +138,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 			.texture(1, 0)
 			.overlay(overlay)
 			.light(actualLight)
-			.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+			.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 			.next();
 
 		buf
@@ -147,7 +147,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 			.texture(0, 0)
 			.overlay(overlay)
 			.light(actualLight)
-			.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+			.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 			.next();
 
 		buf
@@ -156,7 +156,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 			.texture(0, 1)
 			.overlay(overlay)
 			.light(actualLight)
-			.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+			.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 			.next();
 		
 		/*
@@ -192,7 +192,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 				.texture(1, 1)
 				.overlay(overlay)
 				.light(actualLight)
-				.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 				.next();
 
 			v.vertex(matrices.peek().getPositionMatrix(), ul.x + (4*xpx), ul.y - (4*ypx), ul.z - 0.002f)
@@ -200,7 +200,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 				.texture(1, 0)
 				.overlay(overlay)
 				.light(actualLight)
-				.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 				.next();
 
 			v.vertex(matrices.peek().getPositionMatrix(), ur.x - (4*xpx), ur.y - (4*ypx), ur.z - 0.002f)
@@ -208,7 +208,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 				.texture(0, 0)
 				.overlay(overlay)
 				.light(actualLight)
-				.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 				.next();
 
 			v.vertex(matrices.peek().getPositionMatrix(), dr.x - (4*xpx), dr.y + (12*ypx), dr.z - 0.002f)
@@ -216,7 +216,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 				.texture(0, 1)
 				.overlay(overlay)
 				.light(actualLight)
-				.normal(matrices.peek().getNormalMatrix(), revNormal.x(), revNormal.y(), revNormal.z())
+				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z())
 				.next();
 		});
 

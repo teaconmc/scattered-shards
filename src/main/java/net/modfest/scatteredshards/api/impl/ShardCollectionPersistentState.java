@@ -7,6 +7,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
@@ -55,12 +56,12 @@ public class ShardCollectionPersistentState extends PersistentState {
 		
 		return state;
 	}
-	
+
 	@Override
-	public NbtCompound writeNbt(NbtCompound tag) {
+	public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		Map<UUID, ShardCollection> collections = ScatteredShardsAPI.exportServerCollections();
 		ScatteredShards.LOGGER.info("Saving ShardCollections for " + collections.size() + " players...");
-		
+
 		collections.forEach((id, collection) -> {
 			NbtList list = new NbtList();
 			for(Identifier i : collection) {
@@ -68,9 +69,8 @@ public class ShardCollectionPersistentState extends PersistentState {
 			}
 			tag.put(id.toString(), list);
 		});
-		
+
 		ScatteredShards.LOGGER.info("ShardCollections saved.");
 		return tag;
 	}
-
 }

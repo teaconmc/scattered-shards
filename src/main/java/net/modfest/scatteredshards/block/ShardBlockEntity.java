@@ -2,6 +2,8 @@ package net.modfest.scatteredshards.block;
 
 import java.util.Objects;
 
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.registry.RegistryWrapper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -13,7 +15,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -82,8 +83,8 @@ public class ShardBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound nbt) {
-		super.writeNbt(nbt);
+	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+		super.writeNbt(nbt, registryLookup);
 		if (shardId!=null) nbt.putString(SHARD_NBT_KEY, shardId.toString());
 
 		nbt.putBoolean("CanInteract", this.canInteract);
@@ -95,8 +96,8 @@ public class ShardBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void readNbt(NbtCompound nbt) {
-		super.readNbt(nbt);
+	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+		super.readNbt(nbt, registryLookup);
 		if (nbt.contains(SHARD_NBT_KEY, NbtElement.STRING_TYPE)) {
 			setShardId(new Identifier(nbt.getString(SHARD_NBT_KEY)));
 		}
@@ -109,8 +110,8 @@ public class ShardBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		return createNbt();
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+		return createNbt(registryLookup);
 	}
 	
 	@Override
@@ -178,7 +179,7 @@ public class ShardBlockEntity extends BlockEntity {
 					.get(ShardBlockEntity.this.getShard(library).shardTypeId())
 					.orElse(ShardType.MISSING);
 			shardType.collectParticle().ifPresent(p -> {
-				if (!(p instanceof DefaultParticleType particle)) {
+				if (!(p instanceof ParticleEffect particle)) {
 					return;
 				}
 

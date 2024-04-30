@@ -1,7 +1,11 @@
 package net.modfest.scatteredshards.block;
 
+import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.NbtComponent;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -99,8 +103,8 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (hand != Hand.MAIN_HAND || !(world.getBlockEntity(pos) instanceof ShardBlockEntity be) || !be.canInteract) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+		if (!(world.getBlockEntity(pos) instanceof ShardBlockEntity be) || !be.canInteract) {
 			return ActionResult.PASS;
 		}
 		if (world.isClient) {
@@ -129,21 +133,17 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 	 */
 	public static ItemStack createShardBlock(ShardLibrary library, Identifier shardId, boolean canInteract, float glowSize, float glowStrength) {
 		ItemStack stack = new ItemStack(ScatteredShardsContent.SHARD_BLOCK);
-		
-		NbtCompound blockEntityTag = stack.getOrCreateSubNbt("BlockEntityTag");
+
+		NbtCompound blockEntityTag = new NbtCompound();
 		blockEntityTag.putString("Shard", shardId.toString());
-		NbtCompound displayTag = stack.getOrCreateSubNbt("display");
 		
 		//Fill in name / lore
 		Shard shard = library.shards().get(shardId).orElse(Shard.MISSING_SHARD);
-		displayTag.putString("Name", Text.Serialization.toJsonString(shard.name()));
-		NbtList loreTag = new NbtList();
-		displayTag.put("Lore", loreTag);
+		stack.set(DataComponentTypes.ITEM_NAME, shard.name());
 		ShardType shardType = library.shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING);
 		Text shardTypeDesc = ShardType.getDescription(shard.shardTypeId()).copy().fillStyle(Style.EMPTY.withColor(shardType.textColor()));
-		loreTag.add(NbtString.of(
-				Text.Serialization.toJsonString(shardTypeDesc)
-				));
+		LoreComponent lore = new LoreComponent(List.of(shardTypeDesc));
+		stack.set(DataComponentTypes.LORE, lore);
 
 		blockEntityTag.putBoolean("CanInteract", canInteract);
 
@@ -151,6 +151,8 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 		glowTag.putFloat("size", glowSize);
 		glowTag.putFloat("strength", glowStrength);
 		blockEntityTag.put("Glow", glowTag);
+
+		stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityTag));
 		
 		return stack;
 	}

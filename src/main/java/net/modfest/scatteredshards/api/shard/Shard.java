@@ -65,10 +65,6 @@ public class Shard {
 	public Identifier shardTypeId() {
 		return shardTypeId;
 	}
-	/*
-	public ShardType getShardType() {
-		return ScatteredShardsAPI.getShardTypes().get(shardTypeId);
-	}*/
 
 	public Text name() {
 		return name;
@@ -138,123 +134,22 @@ public class Shard {
 		this.sourceId = id;
 		return this;
 	}
-	
-	/*
-	private static Either<ItemStack, Identifier> iconFromNbt(NbtElement nbt) {
-		if (nbt instanceof NbtString str) {
-			return Either.right(new Identifier(str.asString()));
-		} else if (nbt instanceof NbtCompound compound) {
-			return Either.left(ItemStack.fromNbt(compound));
-		} else {
-			return MISSING_ICON;
-		}
-	}*/
 
 	public static Shard fromNbt(NbtCompound nbt) {
 		return CODEC.parse(NbtOps.INSTANCE, nbt).result().orElseThrow();
-		/*
-		Identifier shardTypeId = new Identifier(nbt.getString("ShardType"));
-		Text name = Text.Serialization.fromLenientJson(nbt.getString("Name"));
-		Text lore = Text.Serialization.fromLenientJson(nbt.getString("Lore"));
-		Text hint = Text.Serialization.fromLenientJson(nbt.getString("Hint"));
-		Text source = Text.Serialization.fromLenientJson(nbt.getString("Source"));
-		Identifier sourceId = new Identifier(
-				nbt.contains("SourceId", NbtElement.STRING_TYPE) ?
-						nbt.getString("SourceId") :
-						LOST_AND_FOUND_SHARD_SOURCE.toString()
-				);
-		var icon = iconFromNbt(nbt.get("Icon"));
-		return new Shard(shardTypeId, name, lore, hint, source, sourceId, icon);*/
 	}
 
 	public NbtCompound toNbt() {
 		return (NbtCompound) CODEC.encodeStart(NbtOps.INSTANCE, this).result().orElseThrow();
-		/*
-		nbt.putString("ShardType", shardTypeId.toString());
-		nbt.putString("Name", Text.Serialization.toJsonString(name));
-		nbt.putString("Lore", Text.Serialization.toJsonString(lore));
-		nbt.putString("Hint", Text.Serialization.toJsonString(hint));
-		nbt.putString("Source", Text.Serialization.toJsonString(source));
-		nbt.putString("SourceId", sourceId.toString());
-
-		icon.ifLeft((stack) -> {
-			nbt.put("Icon", stack.writeNbt(new NbtCompound()));
-		});
-		icon.ifRight((texture) -> {
-			nbt.putString("Icon", texture.toString());
-		});
-
-		return nbt;*/
 	}
 
 	public JsonObject toJson() {
-		JsonObject result = new JsonObject();
-
-		result.add("shard_type", new JsonPrimitive(shardTypeId.toString()));
-		result.add("name", new JsonPrimitive(Text.Serialization.toJsonString(name)));
-		result.add("lore", new JsonPrimitive(Text.Serialization.toJsonString(lore)));
-		result.add("hint", new JsonPrimitive(Text.Serialization.toJsonString(hint)));
-		result.add("source", new JsonPrimitive(Text.Serialization.toJsonString(source)));
-		result.add("source_id", new JsonPrimitive(sourceId.toString()));
-
-		icon.ifLeft((stack) -> {
-			JsonElement stackTree = ItemStack.CODEC.encode(stack, JsonOps.INSTANCE, new JsonObject())
-				.getOrThrow(false, (err) -> ScatteredShards.LOGGER.warn("Couldn't write the icon for a shard: " + err));
-
-			result.add("icon", stackTree);
-		});
-
-		icon.ifRight((texture) -> {
-			result.add("icon", new JsonPrimitive(texture.toString()));
-		});
-
-		return result;
+		return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, this).result().orElseThrow();
 	}
-	/*
-	public void write(PacketByteBuf buf) {
-		buf.writeIdentifier(shardTypeId);
-		buf.writeString(Text.Serialization.toJsonString(name));
-		buf.writeString(Text.Serialization.toJsonString(lore));
-		buf.writeString(Text.Serialization.toJsonString(hint));
-		buf.writeString(Text.Serialization.toJsonString(source));
-		buf.writeIdentifier(sourceId);
-		buf.writeEither(icon, PacketByteBuf::writeItemStack, PacketByteBuf::writeIdentifier);
-	}
-
-	public static Shard read(PacketByteBuf buf) {
-		Identifier shardTypeId = buf.readIdentifier();
-		Text name = Text.Serialization.fromLenientJson(buf.readString());
-		Text lore = Text.Serialization.fromLenientJson(buf.readString());
-		Text hint = Text.Serialization.fromLenientJson(buf.readString());
-		Text source = Text.Serialization.fromLenientJson(buf.readString());
-		Identifier sourceId = buf.readIdentifier();
-		var icon = buf.readEither(PacketByteBuf::readItemStack, PacketByteBuf::readIdentifier);
-		return new Shard(shardTypeId, name, lore, hint, source, sourceId, icon);
-	}*/
 	
 	public Shard copy() {
 		Either<ItemStack, Identifier> icon = icon().mapBoth(stack -> stack, id -> id);
 		return new Shard(shardTypeId, name.copy(), lore.copy(), hint.copy(), source.copy(), sourceId, icon);
-	}
-
-	public static Either<ItemStack, Identifier> iconFromJson(JsonElement element) {
-		if (element instanceof JsonPrimitive primitive) {
-			return Either.right(new Identifier(primitive.getAsString()));
-		} else if (element instanceof JsonObject itemObj) {
-			return Either.left(loadItemStack(itemObj));
-		} else {
-			return MISSING_ICON;
-		}
-	}
-
-	public static Shard fromJson(JsonObject obj, Text source) {
-		Identifier shardTypeId = new Identifier(JsonHelper.getString(obj, "shard_type"));
-		Text name = Text.Serialization.fromLenientJson(JsonHelper.getString(obj, "name"));
-		Text lore = Text.Serialization.fromLenientJson(JsonHelper.getString(obj, "lore"));
-		Text hint = Text.Serialization.fromLenientJson(JsonHelper.getString(obj, "hint"));
-		Identifier sourceId = new Identifier(JsonHelper.getString(obj, "source_id", LOST_AND_FOUND_SHARD_SOURCE.toString()));
-		var icon = iconFromJson(obj.get("icon"));
-		return new Shard(shardTypeId, name, lore, hint, source, sourceId, icon);
 	}
 
 	@Override
@@ -264,33 +159,6 @@ public class Shard {
 	
 	public static Shard emptyOfType(Identifier id) {
 		return MISSING_SHARD.copy().setShardType(id);
-	}
-	
-	/*
-	public static Shard emptyOfType(ShardType shardType) {
-		return MISSING_SHARD.copy().setShardType(shardType);
-	}*/
-
-	private static ItemStack loadItemStack(JsonElement elem) {
-		if (elem instanceof JsonObject obj) {
-			Identifier itemId = new Identifier(obj.get("id").getAsString());
-			int count = 1;
-			if (obj.has("Count")) {
-				count = obj.get("Count").getAsInt();
-			}
-			ItemStack stack = new ItemStack(Registries.ITEM.get(itemId), count);
-
-			if (obj.has("tag")) {
-				NbtCompound tag = NbtCompound.CODEC.decode(JsonOps.INSTANCE, obj.get("tag"))
-					.getOrThrow(false, (err) -> ScatteredShards.LOGGER.warn("Couldn't deserialize an ItemStack tag."))
-					.getFirst();
-				stack.setNbt(tag);
-			}
-
-			return stack;
-		} else {
-			return new ItemStack(Items.AIR);
-		}
 	}
 
 	public static Text getSourceForNamespace(String namespace) {
