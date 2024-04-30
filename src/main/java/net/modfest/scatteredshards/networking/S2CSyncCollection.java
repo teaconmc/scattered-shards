@@ -1,42 +1,29 @@
 package net.modfest.scatteredshards.networking;
 
-import java.util.HashSet;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
+import net.modfest.scatteredshards.api.ShardCollection;
 
-public class S2CSyncCollection {
-	public static final Identifier ID = ScatteredShards.id("sync_collection");
-	
-	public static void send(ServerPlayerEntity player) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		var collection = ScatteredShardsAPI.getServerCollection(player);
-		var imm = collection.toImmutableSet();
-		buf.writeCollection(imm, PacketByteBuf::writeIdentifier);
-		
-		ServerPlayNetworking.send(player, ID, buf);
-	}
+public record S2CSyncCollection(ShardCollection collection) implements CustomPayload {
+	public static final Id<S2CSyncCollection> PACKET_ID = new Id<>(ScatteredShards.id("sync_collection"));
+	public static final PacketCodec<RegistryByteBuf, S2CSyncCollection> PACKET_CODEC = ShardCollection.PACKET_CODEC.xmap(S2CSyncCollection::new, S2CSyncCollection::collection);
 	
 	@Environment(EnvType.CLIENT)
-	public static void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		HashSet<Identifier> data = buf.readCollection(HashSet::new, PacketByteBuf::readIdentifier);
-		
-		client.execute(() -> {
-			ScatteredShards.LOGGER.info("Syncing ShardCollection with " + data.size() + " shards collected.");
-			
-			var collection = ScatteredShardsAPI.getClientCollection();
-			collection.clear();
-			collection.addAll(data);
+	public static void receive(S2CSyncCollection payload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
+            ScatteredShards.LOGGER.info("Syncing ShardCollection with {} shards collected.", payload.collection().size());
+			ScatteredShardsAPI.clientShardCollection = payload.collection(); // TODO: bad, fix
 		});
+	}
+
+	@Override
+	public Id<? extends CustomPayload> getId() {
+		return PACKET_ID;
 	}
 }

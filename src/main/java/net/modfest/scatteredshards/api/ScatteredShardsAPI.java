@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.api.EnvType;
@@ -16,7 +17,7 @@ import net.modfest.scatteredshards.api.impl.ShardCollectionImpl;
 import net.modfest.scatteredshards.api.impl.ShardCollectionPersistentState;
 import net.modfest.scatteredshards.api.impl.ShardLibraryImpl;
 import net.modfest.scatteredshards.api.impl.ShardLibraryPersistentState;
-import net.modfest.scatteredshards.networking.S2CCollectShard;
+import net.modfest.scatteredshards.networking.S2CUpdateShard;
 
 public class ScatteredShardsAPI {
 	
@@ -26,8 +27,8 @@ public class ScatteredShardsAPI {
 	private static ShardCollectionPersistentState collectionPersistentState;
 	private static final ShardLibrary serverShardLibrary = new ShardLibraryImpl();
 	private static Map<UUID, ShardCollection> serverCollections = new HashMap<>();
-	private static ShardLibrary clientShardLibrary = null;
-	private static ShardCollection clientShardCollection = null;
+	public static ShardLibrary clientShardLibrary = null;
+	public static ShardCollection clientShardCollection = null;
 	private static Thread serverThread = null;
 	private static Thread clientThread = null;
 	
@@ -82,7 +83,7 @@ public class ScatteredShardsAPI {
 		var collection = getServerCollection(player);
 		if (collection.add(shardId)) {
 			if (player.getServer() != null) ShardCollectionPersistentState.get(player.getServer()).markDirty();
-			S2CCollectShard.send(player, shardId);
+			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.COLLECT));
 			return true;
 		} else {
 			return false;

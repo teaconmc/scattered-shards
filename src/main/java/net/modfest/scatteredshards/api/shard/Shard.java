@@ -18,6 +18,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -37,6 +40,8 @@ public class Shard {
 			Identifier.CODEC.fieldOf("source_id").forGetter(Shard::sourceId),
 			ICON_CODEC.fieldOf("icon").forGetter(Shard::icon)
 		).apply(instance, Shard::new));
+
+	public static final PacketCodec<RegistryByteBuf, Shard> PACKET_CODEC = PacketCodecs.codec(CODEC).cast();
 	
 	public static final Either<ItemStack, Identifier> MISSING_ICON = Either.right(new Identifier("scattered_shards:textures/gui/shards/missing_icon.png"));
 	public static final Identifier MISSING_SHARD_SOURCE = ScatteredShards.id("missing");

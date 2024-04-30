@@ -1,6 +1,7 @@
 package net.modfest.scatteredshards.api;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -16,6 +17,9 @@ import com.mojang.serialization.codecs.UnboundedMapCodec;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 
@@ -77,7 +81,7 @@ public class MiniRegistry<T> {
 	public JsonObject toJson() {
 		return (JsonObject) mapCodec.encodeStart(JsonOps.INSTANCE, data).result().orElseThrow();
 	}
-	
+
 	public <U> void syncFrom(DynamicOps<U> sourceDataFlavor, U sourceData) {
 		mapCodec.parse(sourceDataFlavor, sourceData).result().ifPresent(it -> {
 			data.clear();
@@ -91,5 +95,17 @@ public class MiniRegistry<T> {
 	
 	public void syncFromJson(JsonObject obj) {
 		syncFrom(JsonOps.INSTANCE, obj);
+	}
+
+	// this is not great
+	public static <T> PacketCodec<RegistryByteBuf, MiniRegistry<T>> createPacketCodec(Codec<T> valueCodec) {
+		return PacketCodecs.map(HashMap::new, Identifier.PACKET_CODEC, PacketCodecs.codec(valueCodec)).xmap(
+				map -> {
+					var registry = new MiniRegistry<>(valueCodec);
+					registry.putAll(map);
+					return registry;
+				},
+				registry -> new HashMap<>(registry.data)
+		).cast();
 	}
 }

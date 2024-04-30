@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.JsonDataLoader;
@@ -42,8 +43,6 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 		library.shardTypes().clear();
 		library.shardTypes().put(ShardType.MISSING_ID, ShardType.MISSING);
 		
-		
-		
 		int successes = 0;
 		for (var entry : cache.entrySet()) {
 			try {
@@ -70,7 +69,10 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new ShardTypeLoader());
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
 			if (server != null) {
-				S2CSyncLibrary.sendToAll(server);
+				var syncLibrary = new S2CSyncLibrary(ScatteredShardsAPI.getServerLibrary());
+				for (var player : server.getPlayerManager().getPlayerList()) {
+					ServerPlayNetworking.send(player, syncLibrary);
+				}
 			}
 		});
 	}

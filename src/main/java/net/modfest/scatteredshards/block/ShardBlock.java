@@ -3,6 +3,7 @@ package net.modfest.scatteredshards.block;
 import java.util.List;
 import java.util.Optional;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -21,13 +22,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +39,7 @@ import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
-import net.modfest.scatteredshards.networking.S2CCollectShard;
+import net.modfest.scatteredshards.networking.S2CUpdateShard;
 
 public class ShardBlock extends Block implements BlockEntityProvider {
 	public static final VoxelShape SHAPE = VoxelShapes.cuboid(4/16f, 3/16f, 4/16f, 12/16f, 13/16f, 12/16f);
@@ -94,7 +92,7 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 		ShardCollection shardCollection = ScatteredShardsAPI.getServerCollection(player);
 		
 		if (shardCollection.add(be.shardId) && player instanceof ServerPlayerEntity serverPlayer) {
-			S2CCollectShard.send(serverPlayer, be.shardId);
+			ServerPlayNetworking.send(serverPlayer, new S2CUpdateShard(be.shardId, S2CUpdateShard.Mode.COLLECT));
 			
 			return true;
 		} else {

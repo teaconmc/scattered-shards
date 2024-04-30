@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -15,7 +16,7 @@ import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.impl.ShardCollectionPersistentState;
 import net.modfest.scatteredshards.networking.S2CSyncCollection;
-import net.modfest.scatteredshards.networking.S2CUncollectShard;
+import net.modfest.scatteredshards.networking.S2CUpdateShard;
 
 public class UncollectCommand {
 	public static final DynamicCommandExceptionType NOT_IN_COLLECTION = new DynamicCommandExceptionType(
@@ -37,8 +38,8 @@ public class UncollectCommand {
 		
 		var server = ctx.getSource().getServer();
 		ShardCollectionPersistentState.get(server).markDirty();
-		
-		S2CUncollectShard.send(player, id);
+
+		ServerPlayNetworking.send(player, new S2CUpdateShard(id, S2CUpdateShard.Mode.UNCOLLECT));
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.uncollect", id), false);
 		return Command.SINGLE_SUCCESS;
 	}
@@ -54,7 +55,7 @@ public class UncollectCommand {
 		var collection = ScatteredShardsAPI.getServerCollection(player);
 		int shardsToDelete = collection.size();
 		collection.clear();
-		S2CSyncCollection.send(player);
+		ServerPlayNetworking.send(player, new S2CSyncCollection(collection));
 		var server = ctx.getSource().getServer();
 		ShardCollectionPersistentState.get(server).markDirty();
 		

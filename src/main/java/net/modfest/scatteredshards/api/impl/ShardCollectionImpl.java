@@ -9,7 +9,15 @@ import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.ShardCollection;
 
 public class ShardCollectionImpl implements ShardCollection {
-	private Set<Identifier> data = new HashSet<>();
+	private final Set<Identifier> data;
+
+	public ShardCollectionImpl() {
+		this(new HashSet<>());
+	}
+
+	public ShardCollectionImpl(Set<Identifier> data) {
+		this.data = data;
+	}
 	
 	@Override
 	public boolean contains(Identifier shardId) {

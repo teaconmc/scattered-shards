@@ -1,19 +1,15 @@
 package net.modfest.scatteredshards.command;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -22,9 +18,9 @@ import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.impl.ShardLibraryPersistentState;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
-import net.modfest.scatteredshards.networking.S2CDeleteShard;
 import net.modfest.scatteredshards.networking.S2CSyncLibrary;
 import net.modfest.scatteredshards.networking.S2CSyncShard;
+import net.modfest.scatteredshards.networking.S2CUpdateShard;
 
 public class LibraryCommand {
 
@@ -41,7 +37,10 @@ public class LibraryCommand {
 		});
 		var server = ctx.getSource().getServer();
 		ShardLibraryPersistentState.get(server).markDirty();
-		S2CDeleteShard.sendToAll(server, shardId);
+		var deletePacket = new S2CUpdateShard(shardId, S2CUpdateShard.Mode.DELETE);
+		for (var player : server.getPlayerManager().getPlayerList()) {
+			ServerPlayNetworking.send(player, deletePacket);
+		}
 		
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.delete", shardId), true);
 		
@@ -55,7 +54,10 @@ public class LibraryCommand {
 		library.shardSets().clear();
 		var server = ctx.getSource().getServer();
 		ShardLibraryPersistentState.get(server).markDirty();
-		S2CSyncLibrary.sendToAll(server);
+		var syncLibrary = new S2CSyncLibrary(library);
+		for (var player : server.getPlayerManager().getPlayerList()) {
+			ServerPlayNetworking.send(player, syncLibrary);
+		}
 		
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.delete.all", toDelete), true);
 		
@@ -79,9 +81,11 @@ public class LibraryCommand {
 		var server = ctx.getSource().getServer();
 		ShardLibraryPersistentState.get(server).markDirty();
 
-		S2CDeleteShard.sendToAll(server, shardId);
+		var deleteShard = new S2CUpdateShard(shardId, S2CUpdateShard.Mode.DELETE);
+		var syncShard = new S2CSyncShard(newShardId, shard);
 		for (var player : server.getPlayerManager().getPlayerList()) {
-			S2CSyncShard.send(player, newShardId, shard);
+			ServerPlayNetworking.send(player, deleteShard);
+			ServerPlayNetworking.send(player, syncShard);
 		}
 		
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.migrate", shardId, newShardId), true);

@@ -1,5 +1,7 @@
 package net.modfest.scatteredshards.api.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -13,15 +15,25 @@ import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 
 public class ShardLibraryImpl implements ShardLibrary {
-	private MiniRegistry<Shard> shards = new MiniRegistry<>(Shard.CODEC);
-	private MiniRegistry<ShardType> shardTypes = new MiniRegistry<ShardType>(ShardType.CODEC);
-	private SetMultimap<Identifier, Identifier> shardSets = MultimapBuilder.hashKeys().hashSetValues(3).build();
+	private final MiniRegistry<Shard> shards;
+	private final MiniRegistry<ShardType> shardTypes;
+	private final SetMultimap<Identifier, Identifier> shardSets;
 	
 	@Override
 	public void clearAll() {
 		shards.clear();
 		shardSets.clear();
 		shardTypes.clear();
+	}
+
+	public ShardLibraryImpl() {
+		this(new MiniRegistry<>(Shard.CODEC), new MiniRegistry<>(ShardType.CODEC), MultimapBuilder.hashKeys().hashSetValues(3).build());
+	}
+
+	public ShardLibraryImpl(MiniRegistry<Shard> shards, MiniRegistry<ShardType> shardTypes, SetMultimap<Identifier, Identifier> shardSets) {
+		this.shards = shards;
+		this.shardTypes = shardTypes;
+		this.shardSets = shardSets;
 	}
 	
 	@Override

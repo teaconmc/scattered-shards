@@ -29,9 +29,9 @@ public class ShardCollectionPersistentState extends PersistentState {
 		return result;
 	}
 	
-	public static ShardCollectionPersistentState createFromNbt(NbtCompound tag) {
+	public static ShardCollectionPersistentState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup lookup) {
 		ShardCollectionPersistentState state = new ShardCollectionPersistentState();
-		ScatteredShards.LOGGER.info("Loading shard collections for " + tag.getSize() + " players...");
+        ScatteredShards.LOGGER.info("Loading shard collections for {} players...", tag.getSize());
 		
 		for(String s : tag.getKeys()) {
 			try {
@@ -46,7 +46,7 @@ public class ShardCollectionPersistentState extends PersistentState {
 					}
 				};
 			} catch (Throwable t) {
-				ScatteredShards.LOGGER.error("Could not load collection for uuid \"" + s + "\": " + t.getLocalizedMessage());
+                ScatteredShards.LOGGER.error("Could not load collection for uuid \"{}\": {}", s, t.getLocalizedMessage());
 			}
 		}
 		/* Later we can go user by user if things get mega laggy. But in the grand scheme of things, even for a thousand
@@ -60,7 +60,7 @@ public class ShardCollectionPersistentState extends PersistentState {
 	@Override
 	public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		Map<UUID, ShardCollection> collections = ScatteredShardsAPI.exportServerCollections();
-		ScatteredShards.LOGGER.info("Saving ShardCollections for " + collections.size() + " players...");
+        ScatteredShards.LOGGER.info("Saving ShardCollections for {} players...", collections.size());
 
 		collections.forEach((id, collection) -> {
 			NbtList list = new NbtList();

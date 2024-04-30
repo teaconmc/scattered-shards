@@ -2,13 +2,11 @@ package net.modfest.scatteredshards.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
@@ -16,24 +14,20 @@ import net.modfest.scatteredshards.client.ScatteredShardsClient;
 /**
  * Reports success or failure to a client in response to a request to modify a shard.
  */
-public class S2CModifyShardResult {
-	public static final Identifier ID = ScatteredShards.id("modify_shard_result");
-	
-	public static void send(ServerPlayerEntity player, Identifier shardId, boolean success) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeIdentifier(shardId);
-		buf.writeBoolean(success);
-		ServerPlayNetworking.send(player, ID, buf);
-	}
+public record S2CModifyShardResult(Identifier shardId, boolean success) implements CustomPayload {
+	public static final Id<S2CModifyShardResult> PACKET_ID = new Id<>(ScatteredShards.id("modify_shard_result"));
+	public static final PacketCodec<RegistryByteBuf, S2CModifyShardResult> PACKET_CODEC = PacketCodec.tuple(Identifier.PACKET_CODEC, S2CModifyShardResult::shardId, PacketCodecs.BOOL, S2CModifyShardResult::success, S2CModifyShardResult::new);
 	
 	@Environment(EnvType.CLIENT)
-	public static void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		final Identifier shardId = buf.readIdentifier();
-		final boolean success = buf.readBoolean();
-
-		client.execute(() -> {
-			ScatteredShardsClient.triggerShardModificationToast(shardId, success);
-			client.setScreen(null);
+	public static void receive(S2CModifyShardResult payload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
+			ScatteredShardsClient.triggerShardModificationToast(payload.shardId(), payload.success());
+			context.client().setScreen(null);
 		});
+	}
+
+	@Override
+	public Id<? extends CustomPayload> getId() {
+		return PACKET_ID;
 	}
 }

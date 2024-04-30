@@ -2,6 +2,7 @@ package net.modfest.scatteredshards.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -9,6 +10,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
@@ -19,27 +23,22 @@ import net.modfest.scatteredshards.api.shard.Shard;
 /**
  * Syncs or adds one shard to the client, leaving all others untouched
  */
-public class S2CSyncShard {
-	public static final Identifier ID = ScatteredShards.id("sync_shard");
-	
-	public static void send(ServerPlayerEntity player, Identifier shardId, Shard shard) {
-		PacketByteBuf buf = PacketByteBufs.create();
-		buf.writeIdentifier(shardId);
-		buf.writeNbt(shard.toNbt());
-		ServerPlayNetworking.send(player, ID, buf);
-	}
+public record S2CSyncShard(Identifier shardId, Shard shard) implements CustomPayload {
+	public static final Id<S2CSyncShard> PACKET_ID = new Id<>(ScatteredShards.id("sync_shard"));
+	public static final PacketCodec<RegistryByteBuf, S2CSyncShard> PACKET_CODEC = PacketCodec.tuple(Identifier.PACKET_CODEC, S2CSyncShard::shardId, Shard.PACKET_CODEC, S2CSyncShard::shard, S2CSyncShard::new);
 	
 	@Environment(EnvType.CLIENT)
-	public static void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		Identifier shardId = buf.readIdentifier();
-		NbtCompound compound = buf.readNbt();
-		
-		client.execute(() -> {
-			Shard shard = Shard.fromNbt(compound);
+	public static void receive(S2CSyncShard payload, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
 			ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
-			library.shards().put(shardId, shard);
-			library.shardSets().put(shard.sourceId(), shardId);
+			library.shards().put(payload.shardId(), payload.shard());
+			library.shardSets().put(payload.shard().sourceId(), payload.shardId());
 			//ScatteredShards.LOGGER.info("Updated data for shard \"" + shardId + "\"");
 		});
+	}
+
+	@Override
+	public Id<? extends CustomPayload> getId() {
+		return PACKET_ID;
 	}
 }

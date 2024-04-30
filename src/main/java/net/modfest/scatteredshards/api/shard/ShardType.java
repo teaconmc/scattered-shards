@@ -9,6 +9,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -27,6 +30,8 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 			Codec.optionalField("collect_sound", SoundEvent.CODEC, false).forGetter(ShardType::collectSound),
 			Codec.INT.fieldOf("list_order").forGetter(ShardType::listOrder)
 		).apply(instance, ShardType::new));
+
+	public static final PacketCodec<RegistryByteBuf, ShardType> PACKET_CODEC = PacketCodecs.codec(CODEC).cast();
 	
 	public static final SoundEvent COLLECT_VISITOR_SOUND = SoundEvent.of(ScatteredShards.id("collect_visitor"));
 	public static final SoundEvent COLLECT_CHALLENGE_SOUND = SoundEvent.of(ScatteredShards.id("collect_challenge"));

@@ -51,7 +51,7 @@ public class ShardLibraryPersistentState extends PersistentState {
 				library.shards().put(shardId, shard);
 				library.shardSets().put(shard.sourceId(), shardId);
 			} catch (Throwable t) {
-				ScatteredShards.LOGGER.error("Could not load shard \""+id+"\": " + t.getMessage());
+                ScatteredShards.LOGGER.error("Could not load shard \"{}\": {}", id, t.getMessage());
 			}
 		}
 		
@@ -66,11 +66,11 @@ public class ShardLibraryPersistentState extends PersistentState {
 					}
 				}
 			} catch (Throwable t) {
-				ScatteredShards.LOGGER.error("Could not load shardSet \""+id+"\": " + t.getMessage());
+                ScatteredShards.LOGGER.error("Could not load shardSet \"{}\": {}", id, t.getMessage());
 			}
 		}
-		
-		ScatteredShards.LOGGER.info("Loaded " + library.shards().size() + " shards and " + library.shardSets().size() + " shardSets.");
+
+        ScatteredShards.LOGGER.info("Loaded {} shards and {} shardSets.", library.shards().size(), library.shardSets().size());
 		
 		return state;
 	}
@@ -78,7 +78,7 @@ public class ShardLibraryPersistentState extends PersistentState {
 	@Override
 	public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		ShardLibrary library = ScatteredShardsAPI.getServerLibrary();
-		ScatteredShards.LOGGER.info("Saving the ShardLibrary with " + library.shards().size() + " shards and " + library.shardSets().size() + " shardSets...");
+        ScatteredShards.LOGGER.info("Saving the ShardLibrary with {} shards and {} shardSets...", library.shards().size(), library.shardSets().size());
 
 		tag.put(SHARDS_KEY, library.shards().toNbt());
 
@@ -88,7 +88,7 @@ public class ShardLibraryPersistentState extends PersistentState {
 			for(Identifier i : set) {
 				list.add(NbtString.of(i.toString()));
 			}
-
+			// TODO: Is this unfinished??
 		});
 		tag.put(SHARD_SETS_KEY, shardSets);
 
