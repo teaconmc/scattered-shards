@@ -133,6 +133,7 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 		ItemStack stack = new ItemStack(ScatteredShardsContent.SHARD_BLOCK);
 
 		NbtCompound blockEntityTag = new NbtCompound();
+		blockEntityTag.putString("id", ScatteredShardsContent.SHARD_BLOCK_ID.toString()); // required, see NbtComponent.CODEC_WITH_ID
 		blockEntityTag.putString("Shard", shardId.toString());
 		
 		//Fill in name / lore
