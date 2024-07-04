@@ -31,7 +31,14 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 			Codec.INT.fieldOf("list_order").forGetter(ShardType::listOrder)
 		).apply(instance, ShardType::new));
 
-	public static final PacketCodec<RegistryByteBuf, ShardType> PACKET_CODEC = PacketCodecs.codec(CODEC).cast();
+	public static final PacketCodec<RegistryByteBuf, ShardType> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.INTEGER, ShardType::textColor,
+			PacketCodecs.INTEGER, ShardType::glowColor,
+			PacketCodecs.optional(PacketCodecs.registryCodec(Registries.PARTICLE_TYPE.getCodec())), ShardType::collectParticle,
+			PacketCodecs.optional(SoundEvent.PACKET_CODEC), ShardType::collectSound,
+			PacketCodecs.INTEGER, ShardType::listOrder,
+			ShardType::new
+	);
 	
 	public static final SoundEvent COLLECT_VISITOR_SOUND = SoundEvent.of(ScatteredShards.id("collect_visitor"));
 	public static final SoundEvent COLLECT_CHALLENGE_SOUND = SoundEvent.of(ScatteredShards.id("collect_challenge"));
