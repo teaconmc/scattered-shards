@@ -19,7 +19,7 @@ public class ShardToast implements Toast {
 	public static final int WHITE = 0xFF_FFFFFF;
 	public static final Text COLLECTED_TEXT = Text.translatable("scattered_shards.toast.collect");
 
-	private static final Identifier TEXTURE = new Identifier("toast/advancement");
+	private static final Identifier TEXTURE = Identifier.ofVanilla("toast/advancement");
 	
 	public static final int DURATION = 5000;
 	private final Shard shard;

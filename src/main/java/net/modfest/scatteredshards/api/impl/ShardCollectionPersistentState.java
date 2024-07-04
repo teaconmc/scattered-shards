@@ -41,7 +41,7 @@ public class ShardCollectionPersistentState extends PersistentState {
 				
 				for(NbtElement elem : tag.getList(s, NbtElement.STRING_TYPE)) {
 					if (elem instanceof NbtString str) {
-						Identifier shardId = new Identifier(str.asString());
+						Identifier shardId = Identifier.of(str.asString());
 						coll.add(shardId);
 					}
 				};

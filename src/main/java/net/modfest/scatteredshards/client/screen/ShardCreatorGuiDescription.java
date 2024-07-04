@@ -171,11 +171,11 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 					String namespace = it.substring(0,firstSlash);
 					String path = it.substring(firstSlash+1);
 					
-					return new Identifier(namespace, path);
+					return Identifier.of(namespace, path);
 				})
 				.orElse(Shard.MISSING_ICON.right().get()); //TODO: Deal with non-resource icons here.
 		Shard.getSourceForModId(modId).ifPresent(shard::setSource);
-		shard.setSourceId(new Identifier(modId, "shard_pack"));
+		shard.setSourceId(Identifier.of(modId, "shard_pack"));
 	}
 	
 	public ShardCreatorGuiDescription(Identifier shardId) {

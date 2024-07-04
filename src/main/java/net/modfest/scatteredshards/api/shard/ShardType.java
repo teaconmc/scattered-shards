@@ -48,7 +48,7 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 	public static final Identifier MISSING_ID = ScatteredShards.id("missing");
 	
 	public static Identifier createModId(Identifier shardTypeId, String modId) {
-		return new Identifier(modId, shardTypeId.toUnderscoreSeparatedString());
+		return Identifier.of(modId, shardTypeId.toUnderscoreSeparatedString());
 	}
 
 	private static Identifier getTexture(Identifier id, String name) {

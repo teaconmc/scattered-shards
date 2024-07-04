@@ -8,7 +8,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 public class WDynamicSprite extends WWidget {
-	protected Supplier<Identifier> image = () -> new Identifier("");
+	protected Supplier<Identifier> image = () -> Identifier.of("");
 	protected int tint = 0xFF_FFFFFF;
 	
 	public WDynamicSprite() {

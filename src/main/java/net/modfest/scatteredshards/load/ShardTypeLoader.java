@@ -54,7 +54,7 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 				} else {
 					for(var shardEntry : root.entrySet()) {
 						JsonObject shardTypeObj = JsonHelper.asObject(shardEntry.getValue(), "shard-type object");
-						library.shardTypes().put(new Identifier(shardEntry.getKey()), ShardType.fromJson(shardTypeObj));
+						library.shardTypes().put(Identifier.of(shardEntry.getKey()), ShardType.fromJson(shardTypeObj));
 						successes++;
 					}
 				}

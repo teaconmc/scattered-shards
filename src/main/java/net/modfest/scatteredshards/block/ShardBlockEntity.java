@@ -99,7 +99,7 @@ public class ShardBlockEntity extends BlockEntity {
 	protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		super.readNbt(nbt, registryLookup);
 		if (nbt.contains(SHARD_NBT_KEY, NbtElement.STRING_TYPE)) {
-			setShardId(new Identifier(nbt.getString(SHARD_NBT_KEY)));
+			setShardId(Identifier.of(nbt.getString(SHARD_NBT_KEY)));
 		}
 
 		this.canInteract = nbt.getBoolean("CanInteract");

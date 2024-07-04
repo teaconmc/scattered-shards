@@ -33,7 +33,7 @@ import net.modfest.scatteredshards.client.screen.widget.scalable.WShardIcon;
 public class WShardPanel extends WPlainPanel {
 	
 	public static final IntSupplier WHITE = () -> 0xFFFFFF;
-	public static final Style HINT_STYLE = Style.EMPTY.withFont(new Identifier("minecraft:alt"));
+	public static final Style HINT_STYLE = Style.EMPTY.withFont(Identifier.of("minecraft:alt"));
 
 	private Shard shard = Shard.MISSING_SHARD.copy();
 	private ShardType shardType;

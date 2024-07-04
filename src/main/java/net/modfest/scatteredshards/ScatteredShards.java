@@ -21,7 +21,7 @@ public class ScatteredShards implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
 	public static Identifier id(String path) {
-		return new Identifier(ID, path);
+		return Identifier.of(ID, path);
 	}
 	
 	public static String permission(String path) {

@@ -45,7 +45,7 @@ public class ShardLibraryPersistentState extends PersistentState {
 		for(String id : shards.getKeys()) {
 			try {
 				NbtCompound shardNbt = shards.getCompound(id);
-				Identifier shardId = new Identifier(id);
+				Identifier shardId = Identifier.of(id);
 				Shard shard = Shard.fromNbt(shardNbt);
 				
 				library.shards().put(shardId, shard);
@@ -58,11 +58,11 @@ public class ShardLibraryPersistentState extends PersistentState {
 		NbtCompound shardSets = tag.getCompound(SHARD_SETS_KEY);
 		for(String id : shardSets.getKeys()) {
 			try {
-				Identifier setId = new Identifier(id);
+				Identifier setId = Identifier.of(id);
 				NbtList ids = shardSets.getList(id, NbtElement.STRING_TYPE);
 				for(NbtElement elem : ids) {
 					if (elem instanceof NbtString str) {
-						library.shardSets().put(setId, new Identifier(str.asString()));
+						library.shardSets().put(setId, Identifier.of(str.asString()));
 					}
 				}
 			} catch (Throwable t) {
