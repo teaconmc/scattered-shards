@@ -131,7 +131,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		});
 	
 	private Item item = null;
-	private ComponentMap itemComponents = null;
+	private ComponentMap itemComponents = ComponentMap.EMPTY;
 	private Identifier iconPath = null;
 	
 	
