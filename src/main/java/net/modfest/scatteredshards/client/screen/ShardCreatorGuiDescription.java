@@ -17,6 +17,7 @@ import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
@@ -31,6 +32,8 @@ import net.modfest.scatteredshards.client.screen.widget.WLeftRightPanel;
 import net.modfest.scatteredshards.client.screen.widget.WProtectableField;
 import net.modfest.scatteredshards.client.screen.widget.WShardPanel;
 import net.modfest.scatteredshards.networking.C2SModifyShard;
+
+import java.util.Objects;
 
 public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public static final String BASE_KEY = "gui.scattered_shards.creator.";
@@ -161,7 +164,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public ShardCreatorGuiDescription(Identifier shardId, Shard shard, String modId) {
 		this(shardId);
 		this.shard = shard;
-		shardPanel.setShard(shard);
+
 		this.modIcon = FabricLoader.getInstance().getModContainer(modId)
 				.flatMap(it -> it.getMetadata().getIconPath(16))
 				.filter(it -> it != null && it.startsWith("assets/"))
@@ -170,12 +173,41 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 					int firstSlash = it.indexOf("/");
 					String namespace = it.substring(0,firstSlash);
 					String path = it.substring(firstSlash+1);
-					
+
 					return Identifier.of(namespace, path);
 				})
 				.orElse(Shard.MISSING_ICON.right().get()); //TODO: Deal with non-resource icons here.
 		Shard.getSourceForModId(modId).ifPresent(shard::setSource);
 		shard.setSourceId(Identifier.of(modId, "shard_pack"));
+
+		// Initialize field values
+		this.nameField.setText(shard.name().getLiteralString());
+		this.loreField.setText(shard.lore().getLiteralString());
+		this.hintField.setText(shard.hint().getLiteralString());
+		shard.icon().ifRight(a -> {
+			this.iconToggle.setLeft();
+			if (Objects.equals(a, modIcon)) {
+				this.textureToggle.setToggle(true);
+			} else {
+				this.textureToggle.setToggle(false);
+				if (Objects.equals(a, Shard.MISSING_ICON_ID)) {
+					this.textureField.setText("");
+				} else {
+					this.textureField.setText(a.toString());
+				}
+			}
+		});
+		shard.icon().ifLeft(a -> {
+			ComponentChanges.CODEC.encodeStart(JsonOps.INSTANCE, a.getComponentChanges()).ifSuccess(componentJson -> {
+				this.iconToggle.setRight();
+				this.itemField.setText(Registries.ITEM.getId(a.getItem()).toString());
+				String nbt = componentJson.toString();
+				if ("{}".equals(nbt)) nbt = "";
+				this.nbtField.setText(nbt);
+			});
+		});
+
+		shardPanel.setShard(shard);
 	}
 	
 	public ShardCreatorGuiDescription(Identifier shardId) {

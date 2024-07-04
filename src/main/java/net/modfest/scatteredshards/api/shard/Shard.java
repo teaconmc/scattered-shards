@@ -42,8 +42,9 @@ public class Shard {
 		).apply(instance, Shard::new));
 
 	public static final PacketCodec<RegistryByteBuf, Shard> PACKET_CODEC = PacketCodecs.codec(CODEC).cast();
-	
-	public static final Either<ItemStack, Identifier> MISSING_ICON = Either.right(ScatteredShards.id("textures/gui/shards/missing_icon.png"));
+
+	public static final Identifier MISSING_ICON_ID = ScatteredShards.id("textures/gui/shards/missing_icon.png");
+	public static final Either<ItemStack, Identifier> MISSING_ICON = Either.right(MISSING_ICON_ID);
 	public static final Identifier MISSING_SHARD_SOURCE = ScatteredShards.id("missing");
 	public static final Identifier LOST_AND_FOUND_SHARD_SOURCE = ScatteredShards.id("lost_and_found");
 	public static final Shard MISSING_SHARD = new Shard(ShardType.MISSING_ID, Text.of("Missing"), Text.of(""), Text.of(""), Text.of("None"), MISSING_SHARD_SOURCE, MISSING_ICON);
