@@ -82,7 +82,7 @@ public class ScatteredShardsAPI {
 	public static boolean triggerShardCollection(ServerPlayerEntity player, Identifier shardId) {
 		var collection = getServerCollection(player);
 		if (collection.add(shardId)) {
-			if (player.getServer() != null) ShardCollectionPersistentState.get(player.getServer()).markDirty();
+			if (player.getServer() != null) collectionPersistentState.markDirty();
 			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.COLLECT));
 			return true;
 		} else {

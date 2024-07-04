@@ -81,20 +81,15 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 	}
 
 	public static boolean tryCollect(World world, PlayerEntity player, ShardBlockEntity be) {
-		// Make sure the shard exists and the player doesn't have it before awarding it!
+		// Make sure the shard exists before awarding it!
 		ShardLibrary library = ScatteredShardsAPI.getServerLibrary(); 
 		Optional<Shard> toCollect = library.shards().get(be.shardId);
 		if (toCollect.isEmpty()) {
 			return false;
 		}
 		
-		//TODO: Implement new shard collection
-		ShardCollection shardCollection = ScatteredShardsAPI.getServerCollection(player);
-		
-		if (shardCollection.add(be.shardId) && player instanceof ServerPlayerEntity serverPlayer) {
-			ServerPlayNetworking.send(serverPlayer, new S2CUpdateShard(be.shardId, S2CUpdateShard.Mode.COLLECT));
-			
-			return true;
+		if (player instanceof ServerPlayerEntity serverPlayer) {
+			return ScatteredShardsAPI.triggerShardCollection(serverPlayer, be.shardId);
 		} else {
 			return false;
 		}
