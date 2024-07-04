@@ -34,11 +34,5 @@
     "minecraft": "^1.21",
     "java": ">=17",
     "fabric-api": "*"
-  },
-  "custom": {
-    "cardinal-components": [
-      "scattered_shards:collection",
-      "scattered_shards:library"
-    ]
   }
 }
