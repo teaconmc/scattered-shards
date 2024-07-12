@@ -19,6 +19,11 @@ import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 
 public class ScatteredShardsClient implements ClientModInitializer {
+	public static final int ICON_Y_OFFSET = 4;
+	public static final boolean DRAW_MINI_ICONS = true;
+	public static final int LEFT = 0xFF_778888;
+	public static final int RIGHT_TOP = 0xFF_777777;
+	public static final int RIGHT_BOTTOM = 0xFF_555555;
 
 	public static final String SHARD_MODIFY_TOAST_KEY = "toast.scattered_shards.shard_mod";
 

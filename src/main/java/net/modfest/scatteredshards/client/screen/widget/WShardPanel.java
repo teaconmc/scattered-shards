@@ -26,6 +26,7 @@ import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
+import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledLabel;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledText;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WShardIcon;
@@ -131,7 +132,7 @@ public class WShardPanel extends WPlainPanel {
 	private int getLayoutWidth() {
 		return this.getWidth() - insets.left() - insets.right();
 	}
-	
+
 	public WShardPanel() {
 		this.shardType = ShardType.MISSING;
 		this.width = 124;
@@ -146,7 +147,7 @@ public class WShardPanel extends WPlainPanel {
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
 		add(backing, cardX, 40, 24*cardScale, 32*cardScale);
 		
-		add(icon, cardX + (4 * cardScale), 40 + (4 * cardScale), 16 * cardScale, 16 * cardScale);
+		add(icon, cardX + (4 * cardScale), 40 + (ScatteredShardsClient.ICON_Y_OFFSET * cardScale), 16 * cardScale, 16 * cardScale);
 
 		
 		add(lore, 0, 113, getLayoutWidth(), 32);
@@ -197,7 +198,7 @@ public class WShardPanel extends WPlainPanel {
 			context.setShaderColor(1, 1, 1, 1);
 			ScreenDrawing.drawGuiPanel(context, left, top, panel.getWidth(), panel.getHeight());
 			ScreenDrawing.drawBeveledPanel(context, left+4, top+4, panel.getWidth()-8, panel.getHeight()-8);
-			context.fillGradient(left+5, top+5, left+5+panel.getWidth()-10, top+5+panel.getHeight()-10, 0xFF_777777, 0xFF_555555);
+			context.fillGradient(left+5, top+5, left+5+panel.getWidth()-10, top+5+panel.getHeight()-10, ScatteredShardsClient.RIGHT_TOP, ScatteredShardsClient.RIGHT_BOTTOM);
 		});
 	}
 

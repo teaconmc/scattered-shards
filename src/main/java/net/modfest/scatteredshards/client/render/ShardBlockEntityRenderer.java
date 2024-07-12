@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards.client.render;
 
+import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -169,7 +170,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 		float ypx = 1/32f * cardHeight;
 
 		shard.icon().ifLeft( stack -> {
-			matrices.translate(0, 4*ypx, -0.005f); //extra -0.002 here to prevent full-cubes from zfighting the card
+			matrices.translate(0, ScatteredShardsClient.ICON_Y_OFFSET*ypx, -0.005f); //extra -0.002 here to prevent full-cubes from zfighting the card
 			matrices.scale(-0.38f, 0.38f, 0.001f /*0.6f*/);
 			
 

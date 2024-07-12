@@ -16,6 +16,7 @@ import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
+import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.modfest.scatteredshards.client.screen.widget.WLeftRightPanel;
 import net.modfest.scatteredshards.client.screen.widget.WShardPanel;
 import net.modfest.scatteredshards.client.screen.widget.WShardSetPanel;
@@ -70,7 +71,7 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 	
 	@Override
 	public void addPainters() {
-		selectorPanel.setBackgroundPainter(BackgroundPainter.createColorful(0xFF_778888));
+		selectorPanel.setBackgroundPainter(BackgroundPainter.createColorful(ScatteredShardsClient.LEFT));
 	}
 	
 	public static class Screen extends CottonClientScreen {

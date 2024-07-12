@@ -15,6 +15,7 @@ import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
+import net.modfest.scatteredshards.client.ScatteredShardsClient;
 
 public class WMiniShard extends WWidget {
 	private static final Identifier MINI_OUTLINE = ScatteredShards.id("/textures/gui/shards/mini_outline.png");
@@ -46,7 +47,7 @@ public class WMiniShard extends WWidget {
 		int color = (isCollected) ? 0xFF_FFFFFF : 0xFF_668866;
 		float opacity = (isCollected) ? 1.0f : 0.6f;
 		ScreenDrawing.texturedRect(context, x, y, 12, 16, tex, color, opacity);
-		if (isCollected) {
+		if (isCollected && ScatteredShardsClient.DRAW_MINI_ICONS) {
 			//Maybe draw a teeny tiny icon
 			shard.icon().ifLeft((it) -> {
 				context.getMatrices().push();
