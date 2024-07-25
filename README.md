@@ -1,6 +1,15 @@
-# Scattered Shards
+**Scattered Shards** is a collectible system designed for events like [ModFest](https://modfest.net) and BlanketCon. From an event-running standpoint, it lets booth builders create personalized in-world challenges for their mods with **shards** as the reward! Players can keep track of their collection progress using the **Shard Tablet**.
 
-TODO: Write this description
+### Basic Rundown
+
+- See [this guide](https://github.com/ModFest/scattered-shards/wiki/Creating-Shard-Types) to learn how to create **shard types**.
+- Run `/shardc creator new ...` in-game to create a new shard.
+- Run `/shard block <your_shard_id>` to get a placeable version of the shard.
+- Place it down... then run into it and see what happens!
+
+### Interested?
+
+Scattered Shards is pretty esoteric, so if you're interested in using the mod for your own events, we'd love to help you get started. Head over to [our Discord server](https://discord.gg/cmVKB2Z464) and chat with us in the `#scattered-shards` channel if you have any questions!
 
 ## Credits
 
