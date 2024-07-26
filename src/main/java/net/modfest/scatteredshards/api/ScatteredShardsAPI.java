@@ -29,10 +29,10 @@ public class ScatteredShardsAPI {
 	private static Map<UUID, ShardCollection> serverCollections = new HashMap<>();
 	public static ShardLibrary clientShardLibrary = null;
 	public static ShardCollection clientShardCollection = null;
-	public static ShardProgress clientShardProgress = null;
+	public static GlobalCollection clientGlobalCollection = null;
 	private static Thread serverThread = null;
 	private static Thread clientThread = null;
-	public static ShardProgress serverShardProgress = null;
+	public static GlobalCollection serverGlobalCollection = null;
 
 
 	public static ShardLibrary getServerLibrary() {
@@ -72,7 +72,7 @@ public class ScatteredShardsAPI {
 			});
 		}));
 
-		serverShardProgress = new ShardProgress(totalCount, shardCountMap);
+		serverGlobalCollection = new GlobalCollection(totalCount, shardCountMap);
 	}
 
 	public static ShardCollection getServerCollection(PlayerEntity player) {
@@ -99,7 +99,7 @@ public class ScatteredShardsAPI {
 		if (collection.add(shardId)) {
 			if (player.getServer() != null) collectionPersistentState.markDirty();
 
-			serverShardProgress.update(shardId, 1, serverCollections.size());
+			serverGlobalCollection.update(shardId, 1, serverCollections.size());
 			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.COLLECT));
 			return true;
 		} else {
@@ -113,7 +113,7 @@ public class ScatteredShardsAPI {
 			if (player.getServer() != null) collectionPersistentState.markDirty();
 
 
-			serverShardProgress.update(shardId, -1, serverCollections.size());
+			serverGlobalCollection.update(shardId, -1, serverCollections.size());
 			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.UNCOLLECT));
 			return true;
 		} else {

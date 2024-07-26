@@ -78,9 +78,9 @@ public class WMiniShard extends WWidget {
 	
 	@Override
 	public void addTooltip(TooltipBuilder tooltip) {
-		var progress = ScatteredShardsAPI.clientShardProgress;
+		var globalCollection = ScatteredShardsAPI.clientGlobalCollection;
 		
-		tooltip.add(Text.translatable("gui.scattered_shards.tablet.tooltip.progress", progress.getCount(shardId), progress.totalPlayers()));
+		tooltip.add(Text.translatable("gui.scattered_shards.tablet.tooltip.global_collection", globalCollection.getCount(shardId), globalCollection.totalPlayers()));
 		
 		super.addTooltip(tooltip);
 	}

@@ -22,7 +22,7 @@ import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.modfest.scatteredshards.client.screen.widget.WLeftRightPanel;
 import net.modfest.scatteredshards.client.screen.widget.WShardPanel;
 import net.modfest.scatteredshards.client.screen.widget.WShardSetPanel;
-import net.modfest.scatteredshards.networking.C2SRequestProgress;
+import net.modfest.scatteredshards.networking.C2SRequestGlobalCollection;
 
 public class ShardTabletGuiDescription extends LightweightGuiDescription {
 	public static final int ROWS_PER_SCREEN = 5;
@@ -51,7 +51,7 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 		WLeftRightPanel root = new WLeftRightPanel(selectorPanel, shardPanel);
 		selectorPanel.add(shardSelector, 0, 0, getLayoutWidth(selectorPanel), getLayoutHeight(selectorPanel));
 
-		ClientPlayNetworking.send(C2SRequestProgress.INSTANCE);
+		ClientPlayNetworking.send(C2SRequestGlobalCollection.INSTANCE);
 
 		this.setRootPanel(root);
 

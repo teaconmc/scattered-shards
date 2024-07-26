@@ -17,7 +17,7 @@ public class ScatteredShardsNetworking {
 		ClientPlayNetworking.registerGlobalReceiver(S2CSyncShard.PACKET_ID, S2CSyncShard::receive);
 		ClientPlayNetworking.registerGlobalReceiver(S2CSyncLibrary.PACKET_ID, S2CSyncLibrary::receive);
 		ClientPlayNetworking.registerGlobalReceiver(S2CSyncCollection.PACKET_ID, S2CSyncCollection::receive);
-		ClientPlayNetworking.registerGlobalReceiver(S2CSyncProgress.PACKET_ID, S2CSyncProgress::receive);
+		ClientPlayNetworking.registerGlobalReceiver(S2CSyncGlobalCollection.PACKET_ID, S2CSyncGlobalCollection::receive);
 		ClientPlayNetworking.registerGlobalReceiver(S2CModifyShardResult.PACKET_ID, S2CModifyShardResult::receive);
 		ClientPlayNetworking.registerGlobalReceiver(S2CUpdateShard.PACKET_ID, S2CUpdateShard::receive);
 	}
@@ -26,14 +26,14 @@ public class ScatteredShardsNetworking {
 		PayloadTypeRegistry.playS2C().register(S2CSyncShard.PACKET_ID, S2CSyncShard.PACKET_CODEC);
 		PayloadTypeRegistry.playS2C().register(S2CSyncLibrary.PACKET_ID, S2CSyncLibrary.PACKET_CODEC);
 		PayloadTypeRegistry.playS2C().register(S2CSyncCollection.PACKET_ID, S2CSyncCollection.PACKET_CODEC);
-		PayloadTypeRegistry.playS2C().register(S2CSyncProgress.PACKET_ID, S2CSyncProgress.PACKET_CODEC);
+		PayloadTypeRegistry.playS2C().register(S2CSyncGlobalCollection.PACKET_ID, S2CSyncGlobalCollection.PACKET_CODEC);
 		PayloadTypeRegistry.playC2S().register(C2SModifyShard.PACKET_ID, C2SModifyShard.PACKET_CODEC);
-		PayloadTypeRegistry.playC2S().register(C2SRequestProgress.PACKET_ID, C2SRequestProgress.PACKET_CODEC);
+		PayloadTypeRegistry.playC2S().register(C2SRequestGlobalCollection.PACKET_ID, C2SRequestGlobalCollection.PACKET_CODEC);
 		PayloadTypeRegistry.playS2C().register(S2CModifyShardResult.PACKET_ID, S2CModifyShardResult.PACKET_CODEC);
 		PayloadTypeRegistry.playS2C().register(S2CUpdateShard.PACKET_ID, S2CUpdateShard.PACKET_CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(C2SModifyShard.PACKET_ID, C2SModifyShard::receive);
-		ServerPlayNetworking.registerGlobalReceiver(C2SRequestProgress.PACKET_ID, C2SRequestProgress::receive);
+		ServerPlayNetworking.registerGlobalReceiver(C2SRequestGlobalCollection.PACKET_ID, C2SRequestGlobalCollection::receive);
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ShardLibraryPersistentState.get(server); // Trigger the PersistentState load if it hasn't yet
@@ -42,11 +42,11 @@ public class ScatteredShardsNetworking {
 			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncCollection(ScatteredShardsAPI.getServerCollection(handler.getPlayer())));
 
 
-			if (ScatteredShardsAPI.serverShardProgress == null) {
+			if (ScatteredShardsAPI.serverGlobalCollection == null) {
 				ScatteredShardsAPI.calculateShardProgress();
 			}
 
-			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncProgress(ScatteredShardsAPI.serverShardProgress));
+			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncGlobalCollection(ScatteredShardsAPI.serverGlobalCollection));
 		});
 
 	}
