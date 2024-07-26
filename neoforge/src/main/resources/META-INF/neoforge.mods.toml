@@ -1,0 +1,25 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "scattered_shards"
+version = "1.5.3"
+displayName = "Scattered Shards"
+authors = "Falkreon, acikek et al., ported by Zbx1425"
+description = '''
+Collectible trading cards... without the trading. Shards!
+'''
+logoFile = "assets/scattered_shards/icon.png"
+
+[[dependencies.scattered_shards]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.1.12,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "scattered_shards.mixins.json"
+
