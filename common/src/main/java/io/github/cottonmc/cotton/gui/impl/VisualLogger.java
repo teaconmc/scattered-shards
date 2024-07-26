@@ -1,8 +1,8 @@
 package io.github.cottonmc.cotton.gui.impl;
 
+import dev.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
@@ -43,7 +43,7 @@ public final class VisualLogger {
 	private void log(String message, Object[] params, Level level, Formatting formatting) {
 		logger.log(level, message, params);
 
-		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+		if (Platform.isDevelopmentEnvironment()) {
 			var text = Text.literal(clazz.getSimpleName() + '/');
 			text.append(Text.literal(level.name()).formatted(formatting));
 			text.append(Text.literal(": " + ParameterizedMessage.format(message, params)));

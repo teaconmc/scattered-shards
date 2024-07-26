@@ -1,7 +1,6 @@
 package net.modfest.scatteredshards.client;
 
 import io.github.cottonmc.cotton.gui.impl.client.LibGuiClient;
-import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.toast.SystemToast;
@@ -19,7 +18,7 @@ import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 
-public class ScatteredShardsClient implements ClientModInitializer {
+public class ScatteredShardsClient {
 	public static final int ICON_Y_OFFSET = 6;
 	public static final boolean DRAW_MINI_ICONS = false;
 	public static final int LEFT = 0xFF_3e2d58;
@@ -30,7 +29,6 @@ public class ScatteredShardsClient implements ClientModInitializer {
 
 	private final LibGuiClient libGuiClient = new LibGuiClient();
 
-	@Override
 	public void onInitializeClient() {
 		libGuiClient.onInitializeClient();
 		ClientShardCommand.register();

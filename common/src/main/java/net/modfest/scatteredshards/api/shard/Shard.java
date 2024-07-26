@@ -12,8 +12,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import dev.architectury.platform.Mod;
+import dev.architectury.platform.Platform;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -171,12 +171,16 @@ public class Shard {
 		return Text.translatable("shard_pack." + namespace + ".name");
 	}
 
-	public static Text getSourceForMod(ModContainer mod) {
-		return Text.literal(mod.getMetadata().getName());
+	public static Text getSourceForMod(Mod mod) {
+		return Text.literal(mod.getName());
 	}
 
 	public static Optional<Text> getSourceForModId(String modId) {
-		return FabricLoader.getInstance().getModContainer(modId).map(Shard::getSourceForMod);
+		try {
+			return Optional.of(getSourceForMod(Platform.getMod(modId)));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 	
 	public static Text getSourceForSourceId(Identifier id) {

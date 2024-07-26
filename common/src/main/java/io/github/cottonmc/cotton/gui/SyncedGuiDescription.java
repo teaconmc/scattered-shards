@@ -1,5 +1,6 @@
 package io.github.cottonmc.cotton.gui;
 
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -11,6 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
@@ -563,16 +565,21 @@ public class SyncedGuiDescription extends ScreenHandler implements GuiDescriptio
 	 * @return the packet sender
 	 * @since 3.3.0
 	 */
-//	public final PacketSender getPacketSender() {
-//		if (getNetworkSide() == NetworkSide.SERVER) {
-//			return ServerPlayNetworking.getSender((ServerPlayerEntity) playerInventory.player);
-//		} else {
-//			return getClientPacketSender();
-//		}
-//	}
-//
-//	@Environment(EnvType.CLIENT)
-//	private PacketSender getClientPacketSender() {
-//		return ClientPlayNetworking.getSender();
-//	}
+	public final PacketSender getPacketSender() {
+		if (getNetworkSide() == NetworkSide.SERVER) {
+			return payload -> NetworkManager.sendToPlayer((ServerPlayerEntity) playerInventory.player, payload);
+		} else {
+			return getClientPacketSender();
+		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	private PacketSender getClientPacketSender() {
+		return NetworkManager::sendToServer;
+	}
+
+	@FunctionalInterface
+	public interface PacketSender {
+		void sendPacket(CustomPayload payload);
+	}
 }

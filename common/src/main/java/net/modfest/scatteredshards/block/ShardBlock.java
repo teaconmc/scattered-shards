@@ -124,7 +124,7 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 	 * @return the shard block
 	 */
 	public static ItemStack createShardBlock(ShardLibrary library, Identifier shardId, boolean canInteract, float glowSize, float glowStrength) {
-		ItemStack stack = new ItemStack(ScatteredShardsContent.SHARD_BLOCK);
+		ItemStack stack = new ItemStack(ScatteredShardsContent.SHARD_BLOCK.get());
 
 		NbtCompound blockEntityTag = new NbtCompound();
 		blockEntityTag.putString("id", ScatteredShardsContent.SHARD_BLOCK_ID.toString()); // required, see NbtComponent.CODEC_WITH_ID

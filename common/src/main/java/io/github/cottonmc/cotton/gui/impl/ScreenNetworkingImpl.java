@@ -1,10 +1,10 @@
 package io.github.cottonmc.cotton.gui.impl;
 
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Encoder;
-import com.mojang.serialization.Lifecycle;
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.Env;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
@@ -34,13 +34,68 @@ public class ScreenNetworkingImpl implements ScreenNetworking {
 	// Matches the one used in PacketCodecs.codec() etc
 	private static final long MAX_NBT_SIZE = 0x200000L;
 
-	public record ScreenMessage(int syncId, Identifier message, NbtElement nbt) implements CustomPayload {
-		public static final Id<ScreenMessage> ID = new Id<>(LibGuiCommon.id("screen_message"));
-		public static final PacketCodec<RegistryByteBuf, ScreenMessage> CODEC = PacketCodec.tuple(
-			PacketCodecs.INTEGER, ScreenMessage::syncId,
-			Identifier.PACKET_CODEC, ScreenMessage::message,
-			PacketCodecs.nbt(() -> NbtSizeTracker.of(MAX_NBT_SIZE)), ScreenMessage::nbt,
-			ScreenMessage::new
+	public static class ScreenMessageBase implements CustomPayload {
+
+		private final int syncId;
+		private final Identifier message;
+		private final NbtElement nbt;
+
+		public ScreenMessageBase(int syncId, Identifier message, NbtElement nbt) {
+			this.syncId = syncId;
+			this.message = message;
+			this.nbt = nbt;
+		}
+
+		public int syncId() {
+			return syncId;
+		}
+
+		public Identifier message() {
+			return message;
+		}
+
+		public NbtElement nbt() {
+			return nbt;
+		}
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return null;
+		}
+	}
+
+	public static class ScreenMessageC2S extends ScreenMessageBase {
+		public static final Id<ScreenMessageC2S> ID = new Id<>(LibGuiCommon.id("screen_message_c2s"));
+
+		public ScreenMessageC2S(int syncId, Identifier message, NbtElement nbt) {
+			super(syncId, message, nbt);
+		}
+
+		public static final PacketCodec<RegistryByteBuf, ScreenMessageC2S> CODEC = PacketCodec.tuple(
+				PacketCodecs.INTEGER, ScreenMessageC2S::syncId,
+				Identifier.PACKET_CODEC, ScreenMessageC2S::message,
+				PacketCodecs.nbt(() -> NbtSizeTracker.of(MAX_NBT_SIZE)), ScreenMessageC2S::nbt,
+				ScreenMessageC2S::new
+		);
+
+		@Override
+		public Id<? extends CustomPayload> getId() {
+			return ID;
+		}
+	}
+
+	public static class ScreenMessageS2C extends ScreenMessageBase {
+		public static final Id<ScreenMessageS2C> ID = new Id<>(LibGuiCommon.id("screen_message_s2c"));
+
+		public ScreenMessageS2C(int syncId, Identifier message, NbtElement nbt) {
+			super(syncId, message, nbt);
+		}
+
+		public static final PacketCodec<RegistryByteBuf, ScreenMessageS2C> CODEC = PacketCodec.tuple(
+				PacketCodecs.INTEGER, ScreenMessageS2C::syncId,
+				Identifier.PACKET_CODEC, ScreenMessageS2C::message,
+				PacketCodecs.nbt(() -> NbtSizeTracker.of(MAX_NBT_SIZE)), ScreenMessageS2C::nbt,
+				ScreenMessageS2C::new
 		);
 
 		@Override
@@ -85,19 +140,27 @@ public class ScreenNetworkingImpl implements ScreenNetworking {
 
 		var ops = getRegistryOps(description.getWorld().getRegistryManager());
 		NbtElement encoded = encoder.encodeStart(ops, data).getOrThrow();
-		ScreenMessage packet = new ScreenMessage(description.syncId, message, encoded);
-//		description.getPacketSender().sendPacket(packet);
+		if (description.getNetworkSide() == NetworkSide.SERVER) {
+			ScreenMessageS2C packet = new ScreenMessageS2C(description.syncId, message, encoded);
+			description.getPacketSender().sendPacket(packet);
+		} else {
+			ScreenMessageC2S packet = new ScreenMessageC2S(description.syncId, message, encoded);
+			description.getPacketSender().sendPacket(packet);
+		}
 	}
 
 	public static void init() {
-		NetworkManager.registerS2CPayloadType(ScreenMessage.ID, ScreenMessage.CODEC);
+		System.out.println("ScreenMessageS2C PayloadType: " + ScreenMessageS2C.ID);
+		if (Platform.getEnvironment() == Env.SERVER) {
+			NetworkManager.registerS2CPayloadType(ScreenMessageS2C.ID, ScreenMessageS2C.CODEC);
+		}
 //		PayloadTypeRegistry.playC2S().register(ScreenMessage.ID, ScreenMessage.CODEC);
-		NetworkManager.registerReceiver(NetworkManager.Side.C2S, ScreenMessage.ID, ScreenMessage.CODEC, (payload, context) -> {
+		NetworkManager.registerReceiver(NetworkManager.Side.C2S, ScreenMessageC2S.ID, ScreenMessageC2S.CODEC, (payload, context) -> {
 			handle(context.getPlayer().getServer(), context.getPlayer(), payload);
 		});
 	}
 
-	public static void handle(Executor executor, PlayerEntity player, ScreenMessage packet) {
+	public static void handle(Executor executor, PlayerEntity player, ScreenMessageBase packet) {
 		ScreenHandler screenHandler = player.currentScreenHandler;
 
 		if (!(screenHandler instanceof SyncedGuiDescription)) {
@@ -122,7 +185,7 @@ public class ScreenNetworkingImpl implements ScreenNetworking {
 		}
 	}
 
-	private static <D> void processMessage(Executor executor, PlayerEntity player, ScreenMessage packet, ScreenHandler description, ReceiverData<D> receiverData) {
+	private static <D> void processMessage(Executor executor, PlayerEntity player, ScreenMessageBase packet, ScreenHandler description, ReceiverData<D> receiverData) {
 		var ops = getRegistryOps(player.getRegistryManager());
 		var result = receiverData.decoder().parse(ops, packet.nbt());
 

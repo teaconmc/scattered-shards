@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.JsonOps;
 import dev.architectury.networking.NetworkManager;
+import dev.architectury.platform.Mod;
+import dev.architectury.platform.Platform;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -15,7 +17,6 @@ import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
@@ -165,18 +166,22 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		this(shardId);
 		this.shard = shard;
 
-		this.modIcon = FabricLoader.getInstance().getModContainer(modId)
-				.flatMap(it -> it.getMetadata().getIconPath(16))
-				.filter(it -> it != null && it.startsWith("assets/"))
-				.map(it -> it.substring("assets/".length()))
-				.map(it -> {
-					int firstSlash = it.indexOf("/");
-					String namespace = it.substring(0,firstSlash);
-					String path = it.substring(firstSlash+1);
+		try {
+			Mod mod = Platform.getMod(modId);
+			this.modIcon = mod.getLogoFile(16)
+					.filter(it -> it.startsWith("assets/"))
+					.map(it -> it.substring("assets/".length()))
+					.map(it -> {
+						int firstSlash = it.indexOf("/");
+						String namespace = it.substring(0,firstSlash);
+						String path = it.substring(firstSlash+1);
 
-					return Identifier.of(namespace, path);
-				})
-				.orElse(Shard.MISSING_ICON.right().get()); //TODO: Deal with non-resource icons here.
+						return Identifier.of(namespace, path);
+					})
+					.orElse(Shard.MISSING_ICON.right().get()); //TODO: Deal with non-resource icons here.
+		} catch (Exception e) {
+			this.modIcon = Shard.MISSING_ICON.right().get();
+		}
 		Shard.getSourceForModId(modId).ifPresent(shard::setSource);
 		shard.setSourceId(Identifier.of(modId, "shard_pack"));
 

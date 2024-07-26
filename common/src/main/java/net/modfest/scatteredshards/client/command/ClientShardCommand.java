@@ -11,7 +11,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import dev.architectury.event.events.client.ClientCommandRegistrationEvent;
-import net.fabricmc.loader.api.FabricLoader;
+import dev.architectury.platform.Platform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.text.Text;
@@ -100,8 +100,8 @@ public class ClientShardCommand {
 	}
 
 	public static CompletableFuture<Suggestions> suggestModIds(CommandContext<ClientCommandRegistrationEvent.ClientCommandSourceStack> context, SuggestionsBuilder builder) {
-		for (var mod : FabricLoader.getInstance().getAllMods()) {
-			builder.suggest(mod.getMetadata().getId());
+		for (var mod : Platform.getModIds()) {
+			builder.suggest(mod);
 		}
 		return builder.buildFuture();
 	}

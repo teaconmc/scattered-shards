@@ -7,6 +7,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryByteBuf;
@@ -40,9 +42,9 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 			ShardType::new
 	);
 	
-	public static final SoundEvent COLLECT_VISITOR_SOUND = SoundEvent.of(ScatteredShards.id("collect_visitor"));
-	public static final SoundEvent COLLECT_CHALLENGE_SOUND = SoundEvent.of(ScatteredShards.id("collect_challenge"));
-	public static final SoundEvent COLLECT_SECRET_SOUND = SoundEvent.of(ScatteredShards.id("collect_secret"));
+	public static RegistrySupplier<SoundEvent> COLLECT_VISITOR_SOUND;
+	public static RegistrySupplier<SoundEvent> COLLECT_CHALLENGE_SOUND;
+	public static RegistrySupplier<SoundEvent> COLLECT_SECRET_SOUND;
 
 	public static final ShardType MISSING = new ShardType(0xFFFFFF, 0xFF00FF, Optional.empty(), Optional.empty(), -1);
 	public static final Identifier MISSING_ID = ScatteredShards.id("missing");
@@ -92,8 +94,9 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 	}
 
 	public static void register() {
-		Registry.register(Registries.SOUND_EVENT, COLLECT_VISITOR_SOUND.getId(), COLLECT_VISITOR_SOUND);
-		Registry.register(Registries.SOUND_EVENT, COLLECT_CHALLENGE_SOUND.getId(), COLLECT_CHALLENGE_SOUND);
-		Registry.register(Registries.SOUND_EVENT, COLLECT_SECRET_SOUND.getId(), COLLECT_SECRET_SOUND);
+		Registrar<SoundEvent> SOUND_EVENTS = ScatteredShards.REGISTRIES.get().get(Registries.SOUND_EVENT);
+		COLLECT_VISITOR_SOUND = SOUND_EVENTS.register(ScatteredShards.id("collect_visitor"), () -> SoundEvent.of(ScatteredShards.id("collect_visitor")));
+		COLLECT_CHALLENGE_SOUND = SOUND_EVENTS.register(ScatteredShards.id("collect_challenge"), () -> SoundEvent.of(ScatteredShards.id("collect_challenge")));
+		COLLECT_SECRET_SOUND = SOUND_EVENTS.register(ScatteredShards.id("collect_secret"), () -> SoundEvent.of(ScatteredShards.id("collect_secret")));
 	}
 }

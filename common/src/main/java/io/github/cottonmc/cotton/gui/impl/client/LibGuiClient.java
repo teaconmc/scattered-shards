@@ -7,11 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 public class LibGuiClient {
 	public static final Logger logger = LogManager.getLogger();
 	public static volatile LibGuiConfig config;
@@ -21,8 +16,9 @@ public class LibGuiClient {
 	public void onInitializeClient() {
 		config = new LibGuiConfig();
 
-		NetworkManager.registerReceiver(NetworkManager.Side.S2C, ScreenNetworkingImpl.ScreenMessage.ID,
-			ScreenNetworkingImpl.ScreenMessage.CODEC, (payload, context) -> {
+		System.out.println("ScreenMessageS2C Receiver: " + ScreenNetworkingImpl.ScreenMessageS2C.ID);
+		NetworkManager.registerReceiver(NetworkManager.Side.S2C, ScreenNetworkingImpl.ScreenMessageS2C.ID,
+			ScreenNetworkingImpl.ScreenMessageS2C.CODEC, (payload, context) -> {
 			ScreenNetworkingImpl.handle(MinecraftClient.getInstance(), context.getPlayer(), payload);
 		});
 

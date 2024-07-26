@@ -44,7 +44,7 @@ public class ShardBlockEntity extends BlockEntity {
 	private Animations animations = null;
 
 	public ShardBlockEntity(BlockPos pos, BlockState state) {
-		super(ScatteredShardsContent.SHARD_BLOCKENTITY, pos, state);
+		super(ScatteredShardsContent.SHARD_BLOCKENTITY.get(), pos, state);
 
 	}
 

@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.networking.NetworkManager;
+import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.api.EnvType;
@@ -30,7 +32,6 @@ public class ScatteredShardsAPI {
 	public static ShardLibrary clientShardLibrary = null;
 	public static ShardCollection clientShardCollection = null;
 	private static Thread serverThread = null;
-	private static Thread clientThread = null;
 	
 	
 	public static ShardLibrary getServerLibrary() {
@@ -43,7 +44,7 @@ public class ScatteredShardsAPI {
 	
 	@Environment(EnvType.CLIENT)
 	public static ShardLibrary getClientLibrary() {
-		if (clientThread != null && !Thread.currentThread().equals(clientThread)) {
+		if (!RenderSystem.isOnRenderThread()) {
 			throw new IllegalStateException("getClientLibrary called from thread '"+Thread.currentThread().getName()+"'. This method can only be accessed from the client thread.");
 		}
 		
@@ -71,7 +72,7 @@ public class ScatteredShardsAPI {
 	
 	@Environment(EnvType.CLIENT)
 	public static ShardCollection getClientCollection() {
-		if (clientThread != null && !Thread.currentThread().equals(clientThread)) {
+		if (!RenderSystem.isOnRenderThread()) {
 			throw new IllegalStateException("getClientCollection called from thread '"+Thread.currentThread().getName()+"'. This method can only be accessed from the client thread.");
 		}
 		
@@ -98,7 +99,6 @@ public class ScatteredShardsAPI {
 	@ApiStatus.Internal
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		clientThread = Thread.currentThread();
 		clientShardLibrary = new ShardLibraryImpl();
 		clientShardCollection = new ShardCollectionImpl();
 	}

@@ -1,31 +1,40 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "scattered_shards",
   "version": "${version}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Scattered Shards",
+  "description": "Collectible trading cards... without the trading. Shards!",
   "authors": [
-    "Me!"
+    "Falkreon",
+    "acikek"
+  ],
+  "contributors": [
+    "Trudle",
+    "FoundationGames",
+    "TheEpicBlock",
+    "hama"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://modrinth.com/mod/scattered-shards",
+    "issues": "https://github.com/ModFest/scattered-shards/issues",
+    "sources": "https://github.com/ModFest/scattered-shards"
   },
-  "license": "Insert License Here",
-  "icon": "assets/examplemod/icon.png",
-  "environment": "*",
+  "license": "MIT",
+  "icon": "assets/scattered_shards/icon.png",
   "entrypoints": {
     "main": [
       "net.modfest.scatteredshards.fabric.ScatteredShardsFabric"
+    ],
+    "client": [
+      "net.modfest.scatteredshards.fabric.ScatteredShardsFabricClient"
     ]
   },
   "mixins": [
-    "examplemod.mixins.json",
-    "examplemod-common.mixins.json"
+    "scattered_shards.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
-    "minecraft": ">=1.20.1",
+    "minecraft": ">=${mc}",
+    "fabricloader": ">=${fl}",
     "architectury": ">=9.1.12"
   }
 }

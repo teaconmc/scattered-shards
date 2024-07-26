@@ -1,6 +1,8 @@
 package net.modfest.scatteredshards;
 
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.modfest.scatteredshards.block.ShardBlock;
@@ -12,7 +14,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.client.render.ShardBlockEntityRenderer;
 
@@ -20,22 +21,27 @@ public class ScatteredShardsContent {
 	public static final Identifier SHARD_BLOCK_ID = ScatteredShards.id("shard_block");
 	public static final Identifier SHARD_TABLET_ID = ScatteredShards.id("shard_tablet");
 
-	public static final Block SHARD_BLOCK = new ShardBlock();
-	public static final Item SHARD_BLOCK_ITEM = new BlockItem(SHARD_BLOCK, new Item.Settings());
+	public static RegistrySupplier<Block> SHARD_BLOCK;
+	public static RegistrySupplier<Item> SHARD_BLOCK_ITEM;
 
-	public static final Item SHARD_TABLET = new ShardTablet(new Item.Settings());
+	public static RegistrySupplier<Item> SHARD_TABLET;
 
-	public static final BlockEntityType<ShardBlockEntity> SHARD_BLOCKENTITY = BlockEntityType.Builder.create(ShardBlockEntity::new, SHARD_BLOCK).build(null);
+	public static RegistrySupplier<BlockEntityType<ShardBlockEntity>> SHARD_BLOCKENTITY;
 	
 	public static void register() {
-		Registry.register(Registries.BLOCK, SHARD_BLOCK_ID, SHARD_BLOCK);
-		Registry.register(Registries.ITEM, SHARD_BLOCK_ID, SHARD_BLOCK_ITEM);
-		Registry.register(Registries.BLOCK_ENTITY_TYPE, SHARD_BLOCK_ID, SHARD_BLOCKENTITY);
-		Registry.register(Registries.ITEM, SHARD_TABLET_ID, SHARD_TABLET);
+		Registrar<Item> ITEMS = ScatteredShards.REGISTRIES.get().get(Registries.ITEM);
+		Registrar<Block> BLOCKS = ScatteredShards.REGISTRIES.get().get(Registries.BLOCK);
+		Registrar<BlockEntityType<?>> BLOCK_ENTITY_TYPES = ScatteredShards.REGISTRIES.get().get(Registries.BLOCK_ENTITY_TYPE);
+
+		SHARD_BLOCK = BLOCKS.register(SHARD_BLOCK_ID, ShardBlock::new);
+		SHARD_BLOCK_ITEM = ITEMS.register(SHARD_BLOCK_ID, () -> new BlockItem(SHARD_BLOCK.get(), new Item.Settings()));
+		SHARD_BLOCKENTITY = BLOCK_ENTITY_TYPES.register(SHARD_BLOCK_ID, () ->
+				BlockEntityType.Builder.create(ShardBlockEntity::new, SHARD_BLOCK.get()).build(null));
+		SHARD_TABLET = ITEMS.register(SHARD_TABLET_ID, () -> new ShardTablet(new Item.Settings()));
 	}
 
 	@Environment(EnvType.CLIENT)
 	public static void registerClient() {
-		BlockEntityRendererRegistry.register(SHARD_BLOCKENTITY, ShardBlockEntityRenderer::new);
+		BlockEntityRendererRegistry.register(SHARD_BLOCKENTITY.get(), ShardBlockEntityRenderer::new);
 	}
 }

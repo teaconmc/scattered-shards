@@ -23,3 +23,6 @@ side = "BOTH"
 [[mixins]]
 config = "scattered_shards.mixins.json"
 
+[[mixins]]
+config = "mixins.libgui.json"
+

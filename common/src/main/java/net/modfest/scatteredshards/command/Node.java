@@ -12,7 +12,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 
-import net.fabricmc.loader.api.FabricLoader;
+import dev.architectury.platform.Platform;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
@@ -104,8 +104,8 @@ public class Node {
 	}
 
 	public static CompletableFuture<Suggestions> suggestModIds(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
-		for (var mod : FabricLoader.getInstance().getAllMods()) {
-			builder.suggest(mod.getMetadata().getId());
+		for (var mod : Platform.getModIds()) {
+			builder.suggest(mod);
 		}
 		return builder.buildFuture();
 	}
