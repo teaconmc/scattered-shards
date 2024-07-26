@@ -5,11 +5,13 @@ import java.util.function.Consumer;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
+import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
@@ -23,15 +25,18 @@ public class WMiniShard extends WWidget {
 	protected Shard shard = null;
 	protected ShardType shardType = null;
 	protected boolean isCollected = false;
+	protected Identifier shardId;
 	
 	protected Consumer<Shard> shardConsumer = (it) -> {};
 	
 	public WMiniShard() {}
 	
-	public WMiniShard setShard(Shard shard, boolean collected) {
+	public WMiniShard setShard(Shard shard, boolean collected, Identifier shardId) {
 		this.shard = shard;
 		this.shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING);
 		this.isCollected = collected;
+		this.shardId = shardId;
+		
 		return this;
 	}
 	
@@ -58,14 +63,26 @@ public class WMiniShard extends WWidget {
 				context.getMatrices().pop();
 			});
 			shard.icon().ifRight((it) -> {
-				ScreenDrawing.texturedRect(context, x+3, y+3, 6, 6, it, 0xFF_FFFFFF);
+				ScreenDrawing.texturedRect(context, x + 3, y + 3, 6, 6, it, 0xFF_FFFFFF);
 			});
 		}
 		
-		boolean hovered = (mouseX>=0 && mouseY>=0 && mouseX<getWidth() && mouseY<getHeight());
+		boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
 		if (hovered) {
 			ScreenDrawing.texturedRect(context, x - 2, y - 2, 16, 20, MINI_OUTLINE, 0, 0, 1, 1, 0xFF_FFFFFF);
+			
+			renderTooltip(context, x, y, mouseX, mouseY);
 		}
+		
+	}
+	
+	@Override
+	public void addTooltip(TooltipBuilder tooltip) {
+		var progress = ScatteredShardsAPI.clientShardProgress;
+		
+		tooltip.add(Text.translatable("gui.scattered_shards.tablet.tooltip.progress", progress.getCount(shardId), progress.totalPlayers()));
+		
+		super.addTooltip(tooltip);
 	}
 	
 	@Override
