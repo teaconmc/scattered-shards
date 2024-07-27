@@ -14,6 +14,10 @@ subprojects {
         silentMojangMappingsLicense()
     }
 
+    configurations {
+        shadowCommon
+    }
+
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
         // The following line declares the mojmap mappings, you may use other mappings as well
@@ -23,6 +27,9 @@ subprojects {
             it.mappings("net.fabricmc:yarn:1.21+build.9:v2")
             it.mappings("dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4")
         }
+
+        implementation 'io.lettuce:lettuce-core:6.2.3.RELEASE'
+        shadowCommon 'io.lettuce:lettuce-core:6.2.3.RELEASE'
     }
 }
 

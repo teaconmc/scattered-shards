@@ -15,6 +15,7 @@ import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardCollection;
 
+@Deprecated(forRemoval = true)
 public class ShardCollectionPersistentState extends PersistentState {
 	
 	public static PersistentState.Type<ShardCollectionPersistentState> TYPE = new PersistentState.Type<>(
@@ -25,7 +26,7 @@ public class ShardCollectionPersistentState extends PersistentState {
 	
 	public static ShardCollectionPersistentState get(MinecraftServer server) {
 		var result = server.getOverworld().getPersistentStateManager().getOrCreate(TYPE, ScatteredShards.ID+"_collections");
-		ScatteredShardsAPI.register(result);
+//		ScatteredShardsAPI.register(result);
 		return result;
 	}
 	
@@ -36,15 +37,15 @@ public class ShardCollectionPersistentState extends PersistentState {
 		for(String s : tag.getKeys()) {
 			try {
 				UUID uuid = UUID.fromString(s);
-				ShardCollection coll = ScatteredShardsAPI.getServerCollection(uuid);
-				coll.clear();
-				
-				for(NbtElement elem : tag.getList(s, NbtElement.STRING_TYPE)) {
-					if (elem instanceof NbtString str) {
-						Identifier shardId = Identifier.of(str.asString());
-						coll.add(shardId);
-					}
-				};
+//				ShardCollection coll = ScatteredShardsAPI.getServerCollection(uuid);
+//				coll.clear();
+//
+//				for(NbtElement elem : tag.getList(s, NbtElement.STRING_TYPE)) {
+//					if (elem instanceof NbtString str) {
+//						Identifier shardId = Identifier.of(str.asString());
+//						coll.add(shardId);
+//					}
+//				};
 			} catch (Throwable t) {
                 ScatteredShards.LOGGER.error("Could not load collection for uuid \"{}\": {}", s, t.getLocalizedMessage());
 			}

@@ -12,11 +12,11 @@ public class ShardCollectionImpl implements ShardCollection {
 	private final Set<Identifier> data;
 
 	public ShardCollectionImpl() {
-		this(new HashSet<>());
+		this.data = new HashSet<>();
 	}
 
 	public ShardCollectionImpl(Set<Identifier> data) {
-		this.data = data;
+		this.data = new HashSet<>(data);
 	}
 	
 	@Override

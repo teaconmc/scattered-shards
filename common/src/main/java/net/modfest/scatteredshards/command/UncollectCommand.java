@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
 
 import dev.architectury.networking.NetworkManager;
+import net.modfest.scatteredshards.api.impl.ShardCollectionImpl;
 import vendor.cn.zbx1425.scatteredshards.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,9 +15,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
-import net.modfest.scatteredshards.api.impl.ShardCollectionPersistentState;
 import net.modfest.scatteredshards.networking.S2CSyncCollection;
 import net.modfest.scatteredshards.networking.S2CUpdateShard;
+
+import java.io.IOException;
 
 public class UncollectCommand {
 	public static final DynamicCommandExceptionType NOT_IN_COLLECTION = new DynamicCommandExceptionType(
@@ -33,11 +35,16 @@ public class UncollectCommand {
 		Identifier id = ctx.getArgument("shard_id", Identifier.class);
 		ServerPlayerEntity player = ctx.getSource().getPlayerOrThrow();
 		
-		boolean success = ScatteredShardsAPI.getServerCollection(player).remove(id);
+		boolean success = ScatteredShardsAPI.getServerCollection(player).contains(id);
 		if (!success) throw NOT_IN_COLLECTION.create(id);
-		
-		var server = ctx.getSource().getServer();
-		ShardCollectionPersistentState.get(server).markDirty();
+
+		var collection = new ShardCollectionImpl(ScatteredShardsAPI.getServerCollection(player));
+		collection.remove(id);
+		try {
+			ScatteredShardsAPI.DATABASE.update(player.getUuid(), collection, false);
+		} catch (IOException ex) {
+			ScatteredShards.LOGGER.error("Failed to update collection for player {}", player.getName().getString(), ex);
+		}
 
 		NetworkManager.sendToPlayer(player, new S2CUpdateShard(id, S2CUpdateShard.Mode.UNCOLLECT));
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.uncollect", id), false);
@@ -52,12 +59,17 @@ public class UncollectCommand {
 	 */
 	public static int uncollectAll(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
 		ServerPlayerEntity player = ctx.getSource().getPlayerOrThrow();
-		var collection = ScatteredShardsAPI.getServerCollection(player);
+		var collection = new ShardCollectionImpl(ScatteredShardsAPI.getServerCollection(player));
 		int shardsToDelete = collection.size();
 		collection.clear();
-		NetworkManager.sendToPlayer(player, new S2CSyncCollection(collection));
-		var server = ctx.getSource().getServer();
-		ShardCollectionPersistentState.get(server).markDirty();
+        try {
+            ScatteredShardsAPI.DATABASE.update(player.getUuid(), collection, false);
+        } catch (IOException ex) {
+            ScatteredShards.LOGGER.error("Failed to update collection for player {}", player.getName().getString(), ex);
+        }
+        NetworkManager.sendToPlayer(player, new S2CSyncCollection(collection));
+//		var server = ctx.getSource().getServer();
+//		ShardCollectionPersistentState.get(server).markDirty();
 		
 		ctx.getSource().sendFeedback(() -> Text.translatable("commands.scattered_shards.shard.uncollect.all", shardsToDelete), false);
 
