@@ -6,6 +6,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
 
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -40,7 +41,7 @@ public class ScatteredShardsClient implements ClientModInitializer {
 		var collection = ScatteredShardsAPI.getClientCollection();
 		
 		Shard shard = library.shards().get(shardId).orElse(Shard.MISSING_SHARD);
-		if (shard == null) {
+		if (shard == Shard.MISSING_SHARD) {
 			ScatteredShards.LOGGER.warn("Received shard collection event with ID '" + shardId + "' but it does not exist on this client");
 			return;
 		}
@@ -77,5 +78,9 @@ public class ScatteredShardsClient implements ClientModInitializer {
 			client.setScreen(new ShardTabletGuiDescription.Screen(collection, library));
 			client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ITEM_BOOK_PAGE_TURN, 1.0f, 1.0f));
 		});
+	}
+
+	public static boolean hasShiftDown() {
+		return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344);
 	}
 }

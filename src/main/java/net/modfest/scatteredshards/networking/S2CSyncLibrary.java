@@ -23,7 +23,7 @@ public record S2CSyncLibrary(ShardLibrary library) implements CustomPayload {
 		ScatteredShards.LOGGER.info("Syncing ShardLibrary...");
 		
 		context.client().execute(() -> {
-			ScatteredShardsAPI.clientShardLibrary = payload.library(); // bad, TODO: fix
+			ScatteredShardsAPI.updateClientShardLibrary(payload.library());
 			ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
 			
 			//Tidy up in case MISSING got dropped

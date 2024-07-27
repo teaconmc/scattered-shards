@@ -13,7 +13,7 @@ public class C2SRequestGlobalCollection implements CustomPayload {
 	public static final PacketCodec<RegistryByteBuf, C2SRequestGlobalCollection> PACKET_CODEC = PacketCodec.unit(INSTANCE);
 
 	public static void receive(C2SRequestGlobalCollection payload, ServerPlayNetworking.Context context) {
-		ServerPlayNetworking.send(context.player(), new S2CSyncGlobalCollection(ScatteredShardsAPI.serverGlobalCollection));
+		ServerPlayNetworking.send(context.player(), new S2CSyncGlobalCollection(ScatteredShardsAPI.getServerGlobalCollection()));
 	}
 
 	@Override

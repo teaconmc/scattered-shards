@@ -18,7 +18,7 @@ public record S2CSyncCollection(ShardCollection collection) implements CustomPay
 	public static void receive(S2CSyncCollection payload, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
             ScatteredShards.LOGGER.info("Syncing ShardCollection with {} shards collected.", payload.collection().size());
-			ScatteredShardsAPI.clientShardCollection = payload.collection(); // TODO: bad, fix
+			ScatteredShardsAPI.updateClientShardCollection(payload.collection());
 		});
 	}
 

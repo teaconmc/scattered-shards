@@ -40,13 +40,8 @@ public class ScatteredShardsNetworking {
 			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncLibrary(ScatteredShardsAPI.getServerLibrary()));
 			ShardCollectionPersistentState.get(server); // Trigger the PersistentState load if it hasn't yet
 			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncCollection(ScatteredShardsAPI.getServerCollection(handler.getPlayer())));
-
-
-			if (ScatteredShardsAPI.serverGlobalCollection == null) {
-				ScatteredShardsAPI.calculateShardProgress();
-			}
-
-			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncGlobalCollection(ScatteredShardsAPI.serverGlobalCollection));
+			ScatteredShardsAPI.calculateShardProgress();
+			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncGlobalCollection(ScatteredShardsAPI.getServerGlobalCollection()));
 		});
 
 	}

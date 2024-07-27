@@ -1,14 +1,12 @@
 package net.modfest.scatteredshards;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.load.ShardTypeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.command.ShardCommand;
@@ -30,11 +28,11 @@ public class ScatteredShards implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		//ScatteredShardsAPI.init();
 		ShardType.register();
 		ShardTypeLoader.register();
 		ShardCommand.register();
 		ScatteredShardsNetworking.register();
 		ScatteredShardsContent.register();
+		ServerLifecycleEvents.SERVER_STOPPED.register(ScatteredShardsAPI::serverStopped);
 	}
 }

@@ -19,9 +19,8 @@ public record S2CSyncGlobalCollection(GlobalCollection globalCollection) impleme
 		ScatteredShards.LOGGER.info("Syncing GlobalShardCollection...");
 
 		context.client().execute(() -> {
-			ScatteredShardsAPI.clientGlobalCollection = payload.globalCollection(); // bad, TODO: fix
-
-			ScatteredShards.LOGGER.info("Sync complete.");
+			ScatteredShardsAPI.updateClientGlobalCollection(payload.globalCollection());
+			ScatteredShards.LOGGER.info("Sync complete. Received data for {} players.", payload.globalCollection.totalPlayers());
 		});
 	}
 

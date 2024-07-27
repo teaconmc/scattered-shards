@@ -22,10 +22,11 @@ public class WShardSetPanel extends WPanelWithInsets {
 	
 	protected Consumer<Shard> shardConsumer = (it) -> {};
 	
-	private WScaledLabel sourceLabel = new WScaledLabel(Text.literal(""), 0.8f)
+	private final WScaledLabel sourceLabel = new WScaledLabel(Text.literal(""), 0.8f)
 			.setColor(0xFF_CCFFCC)
 			.setShadow(true);
-	private List<WMiniShard> shards = new ArrayList<>();
+	private final List<WMiniShard> shards = new ArrayList<>();
+
 	public WShardSetPanel() {
 		this.setInsets(new Insets(2));
 	}
@@ -51,17 +52,16 @@ public class WShardSetPanel extends WPanelWithInsets {
 	}
 	
 	public void setShardSet(Identifier setId, ShardLibrary library, ShardCollection collection) {
-		List<Identifier> shardSet = new ArrayList<>();
-		shardSet.addAll(library.shardSets().get(setId));
+        List<Identifier> shardSet = new ArrayList<>(library.shardSets().get(setId));
 		shardSet.sort((a, b) -> {
 			int aPriority = library.shards().get(a)
-					.map(it -> it.shardTypeId())
+					.map(Shard::shardTypeId)
 					.flatMap(library.shardTypes()::get)
 					.map(ShardType::listOrder)
 					.orElse(Integer.MAX_VALUE);
 			
 			int bPriority = library.shards().get(b)
-					.map(it -> it.shardTypeId())
+					.map(Shard::shardTypeId)
 					.flatMap(library.shardTypes()::get)
 					.map(ShardType::listOrder)
 					.orElse(Integer.MAX_VALUE);
@@ -76,7 +76,7 @@ public class WShardSetPanel extends WPanelWithInsets {
 		//Start fresh on this panel's actual children
 		this.children.clear();
 		this.add(sourceLabel, 0, 96, 18);
-		sourceLabel.setLocation(0+this.insets.left(), 2+this.insets.top());
+		sourceLabel.setLocation(this.insets.left(), 2+this.insets.top());
 		sourceLabel.setText(Shard.getSourceForSourceId(setId));
 		
 		//The actual remaining layout width is less the label and the width of the card itself

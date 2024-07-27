@@ -21,7 +21,7 @@ public class WScaledText extends WScalableWidget {
 	
 	protected Supplier<Text> text;
 	protected IntSupplier color = () -> 0xFF_FFFFFF;
-	protected Supplier<List<OrderedText>> hover = () -> List.of();
+	protected Supplier<List<OrderedText>> hover = List::of;
 	protected boolean shadow = false;
 	protected int backgroundColor = 0;
 	
