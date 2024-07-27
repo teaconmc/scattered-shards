@@ -1,25 +1,21 @@
 {
   "schemaVersion": 1,
-  "id": "scattered_shards",
+  "id": "${modId}",
   "version": "${version}",
-  "name": "Scattered Shards",
-  "description": "Collectible trading cards... without the trading. Shards!",
+  "name": "${modName}",
+  "description": "${modDescription}",
   "authors": [
-    "Falkreon",
-    "acikek"
+    "${authors}"
   ],
   "contributors": [
-    "Trudle",
-    "FoundationGames",
-    "TheEpicBlock",
-    "hama"
+    "${contributors}"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/scattered-shards",
-    "issues": "https://github.com/ModFest/scattered-shards/issues",
-    "sources": "https://github.com/ModFest/scattered-shards"
+    "homepage": "${homepage}",
+    "issues": "${issues}",
+    "sources": "${sources}"
   },
-  "license": "MIT",
+  "license": "${license}",
   "icon": "assets/scattered_shards/icon.png",
   "entrypoints": {
     "main": [
