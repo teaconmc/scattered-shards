@@ -19,7 +19,7 @@ dependencies {
     mappings variantOf(libs.yarn) { classifier "v2" }
     modImplementation libs.fl
     modImplementation libs.fapi
-    modCompileOnly libs.libgui
+    modImplementation libs.libgui
     modImplementation libs.fpapi
 
     include libs.libgui
