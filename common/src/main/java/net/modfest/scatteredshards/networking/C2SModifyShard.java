@@ -1,7 +1,7 @@
 package net.modfest.scatteredshards.networking;
 
 import dev.architectury.networking.NetworkManager;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import vendor.cn.zbx1425.scatteredshards.permissions.v0.Permissions;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;

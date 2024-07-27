@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import io.github.cottonmc.cotton.gui.client.Scissors;
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
-import io.github.cottonmc.cotton.gui.widget.data.VerticalAlignment;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.Scissors;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.HorizontalAlignment;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.VerticalAlignment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

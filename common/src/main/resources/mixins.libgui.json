@@ -3,12 +3,12 @@
 	"minVersion": "0.8",
 	"compatibilityLevel": "JAVA_17",
 	"package": "io.github.cottonmc.cotton.gui.impl.mixin",
-	"plugin": "io.github.cottonmc.cotton.gui.impl.LibGuiMixinPlugin",
+	"plugin": "vendor.cn.zbx1425.scatteredshards.cotton.gui.impl.LibGuiMixinPlugin",
 
 	"client": [
-		"client.PressableWidgetAccessor",
-		"client.ScreenAccessor",
-		"client.SliderWidgetAccessor"
+		"vendor.cn.zbx1425.scatteredshards.gui.impl.mixin.client.PressableWidgetAccessor",
+		"vendor.cn.zbx1425.scatteredshards.gui.impl.mixin.client.ScreenAccessor",
+		"vendor.cn.zbx1425.scatteredshards.gui.impl.mixin.client.SliderWidgetAccessor"
 	],
 
 	"injectors": {

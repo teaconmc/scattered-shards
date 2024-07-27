@@ -4,9 +4,9 @@ import java.util.function.Consumer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
-import io.github.cottonmc.cotton.gui.widget.data.InputResult;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.InputResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;

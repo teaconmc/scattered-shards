@@ -1,8 +1,8 @@
 package net.modfest.scatteredshards.client.screen.widget;
 
-import io.github.cottonmc.cotton.gui.widget.WPanelWithInsets;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
-import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WPanelWithInsets;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.Insets;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.ShardCollection;

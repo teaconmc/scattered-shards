@@ -1,6 +1,6 @@
 package net.modfest.scatteredshards.client;
 
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.Toast;

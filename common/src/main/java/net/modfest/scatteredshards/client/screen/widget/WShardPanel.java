@@ -6,12 +6,12 @@ import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Either;
 
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WSprite;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
-import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
-import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WPlainPanel;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WSprite;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.HorizontalAlignment;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.Insets;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;

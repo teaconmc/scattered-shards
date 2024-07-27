@@ -3,7 +3,7 @@ package net.modfest.scatteredshards.client.screen.widget.scalable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import io.github.cottonmc.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
 import net.minecraft.client.gui.DrawContext;
 
 public abstract class WScalableWidget extends WWidget {

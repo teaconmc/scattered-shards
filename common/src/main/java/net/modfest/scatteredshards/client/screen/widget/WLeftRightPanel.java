@@ -1,8 +1,8 @@
 package net.modfest.scatteredshards.client.screen.widget;
 
-import io.github.cottonmc.cotton.gui.widget.WPanel;
-import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WPanel;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WPlainPanel;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
 
 public class WLeftRightPanel extends WPlainPanel {
 	protected final WPanel leftPanel;

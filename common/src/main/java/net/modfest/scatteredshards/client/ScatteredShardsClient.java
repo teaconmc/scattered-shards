@@ -1,6 +1,6 @@
 package net.modfest.scatteredshards.client;
 
-import io.github.cottonmc.cotton.gui.impl.client.LibGuiClient;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.impl.client.LibGuiClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.toast.SystemToast;

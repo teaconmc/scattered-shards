@@ -2,8 +2,8 @@ package net.modfest.scatteredshards.client.screen.widget;
 
 import java.util.function.Supplier;
 
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 

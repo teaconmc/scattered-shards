@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
-import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
-import io.github.cottonmc.cotton.gui.widget.data.VerticalAlignment;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WText;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.HorizontalAlignment;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.VerticalAlignment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -15,7 +16,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 /**
- * A scaled multiline label widget. See {@link io.github.cottonmc.cotton.gui.widget.WText WText}.
+ * A scaled multiline label widget. See {@link WText WText}.
  */
 public class WScaledText extends WScalableWidget {
 	

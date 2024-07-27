@@ -1,8 +1,8 @@
 package net.modfest.scatteredshards.client.screen.widget;
 
-import io.github.cottonmc.cotton.gui.widget.WBox;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
-import io.github.cottonmc.cotton.gui.widget.data.Axis;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WBox;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WWidget;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.Axis;
 
 public class WLayoutBox extends WBox {
 

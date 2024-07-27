@@ -2,7 +2,7 @@ package net.modfest.scatteredshards;
 
 import com.google.common.base.Suppliers;
 import dev.architectury.registry.registries.RegistrarManager;
-import io.github.cottonmc.cotton.gui.impl.LibGuiCommon;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.impl.LibGuiCommon;
 import net.modfest.scatteredshards.load.ShardTypeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

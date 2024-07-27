@@ -9,7 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 
 import dev.architectury.networking.NetworkManager;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import vendor.cn.zbx1425.scatteredshards.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;

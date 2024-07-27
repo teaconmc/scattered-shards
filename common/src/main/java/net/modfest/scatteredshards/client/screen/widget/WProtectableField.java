@@ -2,8 +2,8 @@ package net.modfest.scatteredshards.client.screen.widget;
 
 import java.util.function.Consumer;
 
-import io.github.cottonmc.cotton.gui.widget.WTextField;
-import io.github.cottonmc.cotton.gui.widget.data.InputResult;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WTextField;
+import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.data.InputResult;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
