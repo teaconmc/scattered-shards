@@ -62,7 +62,7 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		if (world.isClient() && type == ScatteredShardsContent.SHARD_BLOCKENTITY) {
+		if (world.isClient() && type == ScatteredShardsContent.SHARD_BLOCKENTITY.get()) {
 			return ShardBlockEntity::clientTick;
 		}
 
