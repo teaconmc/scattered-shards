@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class RedisMessage {
 
-    public static final String COMMAND_CHANNEL = "WORLD_COMMENT_COMMAND_CHANNEL";
+    public static final String COMMAND_CHANNEL = "SCATSHARD_COMMAND_CHANNEL";
 
     private static final String INSTANCE_ID = Long.toHexString(ServerWorldData.SNOWFLAKE.nextId());
 

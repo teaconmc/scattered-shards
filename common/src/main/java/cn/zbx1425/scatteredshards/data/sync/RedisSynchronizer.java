@@ -20,7 +20,7 @@ public class RedisSynchronizer implements Synchronizer {
     private final StatefulRedisPubSubConnection<String, String> redisSub;
     private final StatefulRedisConnection<String, String> redisConn;
 
-    public static final String HMAP_ALL_KEY = "WORLD_COMMENT_DATA_ALL";
+    public static final String HMAP_ALL_KEY = "SCATSHARD_DATA_ALL";
 
     private final ServerWorldData serverWorldData;
 
