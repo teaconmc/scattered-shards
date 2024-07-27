@@ -22,7 +22,7 @@ public class UncollectCommand {
 	public static final DynamicCommandExceptionType NOT_IN_COLLECTION = new DynamicCommandExceptionType(
 			it -> Text.stringifiedTranslatable("error.scattered_shards.shard_not_in_collection", it)
 			);
-	
+
 	/**
 	 * Syntax: <code>/shard uncollect &lt;shard_id&gt;</code>
 	 * <p>Removes the specified shard from the library / tablet of the person running the command. Must be used by a player.
@@ -31,19 +31,19 @@ public class UncollectCommand {
 	 */
 	public static int uncollect(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
 		Identifier id = ctx.getArgument("shard_id", Identifier.class);
-		ServerPlayerEntity player = ctx.getSource().getPlayerOrThrow();
-		
-		boolean success = ScatteredShardsAPI.getServerCollection(player).remove(id);
-		if (!success) throw NOT_IN_COLLECTION.create(id);
-		
-		var server = ctx.getSource().getServer();
-		ShardCollectionPersistentState.get(server).markDirty();
 
-		ServerPlayNetworking.send(player, new S2CUpdateShard(id, S2CUpdateShard.Mode.UNCOLLECT));
+		//Validate shard
+		ScatteredShardsAPI.getServerLibrary().shards().get(id)
+			.orElseThrow(() -> ShardCommand.INVALID_SHARD.create(id));
+
+		//Validate that source is a player and uncollect it
+		ScatteredShardsAPI.triggerShardUncollection(ctx.getSource().getPlayerOrThrow(), id);
+
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.uncollect", id), false);
+
 		return Command.SINGLE_SUCCESS;
 	}
-	
+
 	/**
 	 * Syntax: <code>/shard uncollect all</code>
 	 * <p>Removes all shards from the library / tablet of the person running the command. Must be used by a player.
@@ -58,12 +58,12 @@ public class UncollectCommand {
 		ServerPlayNetworking.send(player, new S2CSyncCollection(collection));
 		var server = ctx.getSource().getServer();
 		ShardCollectionPersistentState.get(server).markDirty();
-		
+
 		ctx.getSource().sendFeedback(() -> Text.translatable("commands.scattered_shards.shard.uncollect.all", shardsToDelete), false);
 
 		return shardsToDelete;
 	}
-	
+
 	public static void register(CommandNode<ServerCommandSource> parent) {
 		var uncollectCommand = Node.literal("uncollect")
 				.requires(
@@ -71,13 +71,13 @@ public class UncollectCommand {
 					)
 				.build();
 		parent.addChild(uncollectCommand);
-		
+
 		//syntax: uncollect <shard_id>
 		var uncollectIdArgument = Node.collectedShardId("shard_id")
 				.executes(UncollectCommand::uncollect)
 				.build();
 		uncollectCommand.addChild(uncollectIdArgument);
-		
+
 		//syntax: uncollect all
 		var uncollectAllCommand = Node.literal("all")
 				.executes(UncollectCommand::uncollectAll)

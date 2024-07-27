@@ -89,7 +89,7 @@ public class WShardSetPanel extends WPanelWithInsets {
 			WMiniShard widget = shards.get(i);
 			widget.setShardConsumer(shardConsumer);
 			collection.contains(shardId);
-			widget.setShard(library.shards().get(shardId).orElse(Shard.MISSING_SHARD), collection.contains(shardId));
+			widget.setShard(library.shards().get(shardId).orElse(Shard.MISSING_SHARD), collection.contains(shardId), shardId);
 			this.add(widget, xofs + (spacePerShard * i), MINI_SHARD_WIDTH, MINI_SHARD_HEIGHT);
 		}
 		
