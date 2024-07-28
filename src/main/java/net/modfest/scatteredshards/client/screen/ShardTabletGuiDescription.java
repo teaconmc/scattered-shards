@@ -1,10 +1,5 @@
 package net.modfest.scatteredshards.client.screen;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
 import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
@@ -28,15 +23,17 @@ import net.modfest.scatteredshards.client.screen.widget.WShardSetPanel;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledLabel;
 import net.modfest.scatteredshards.networking.C2SRequestGlobalCollection;
 
-public class ShardTabletGuiDescription extends LightweightGuiDescription {
-	public static final int ROWS_PER_SCREEN = 5;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
+public class ShardTabletGuiDescription extends LightweightGuiDescription {
 	protected final ShardCollection collection;
 	protected final ShardLibrary library;
 
 	WShardPanel shardPanel = new WShardPanel();
 	WPlainPanel selectorPanel = new WPlainPanel();
-	WScrollBar shardSelectorScrollBar = new WScrollBar(Axis.VERTICAL);
 	WListPanel<Identifier, WShardSetPanel> shardSelector;
 
 	public ShardTabletGuiDescription(ShardCollection collection, ShardLibrary library) {
@@ -61,13 +58,13 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 			if (!ScatteredShardsClient.hasShiftDown()) return Text.empty();
 			int visitedSets = 0;
 			for (Collection<Identifier> set : library.shardSets().asMap().values()) {
-                for (Identifier identifier : set) {
-                    if (collection.contains(identifier)) {
-                        visitedSets++;
-                        break;
-                    }
-                }
-            }
+				for (Identifier identifier : set) {
+					if (collection.contains(identifier)) {
+						visitedSets++;
+						break;
+					}
+				}
+			}
 			return Text.translatable("gui.scattered_shards.tablet.label.progress.started", "%.0f%%".formatted(100 * visitedSets / (float) library.shardSets().asMap().keySet().size()));
 		}, 1.0f).setColor(Colors.LIGHT_GRAY);
 		selectorPanel.add(progressVisited, 0, 0);

@@ -20,23 +20,22 @@ public class ShardToast implements Toast {
 	public static final Text COLLECTED_TEXT = Text.translatable("scattered_shards.toast.collect");
 
 	private static final Identifier TEXTURE = Identifier.ofVanilla("toast/advancement");
-	
+
 	public static final int DURATION = 5000;
 	private final Shard shard;
-	
+
 	public ShardToast(Shard shard) {
 		this.shard = shard;
 	}
-	
-	@SuppressWarnings("resource")
+
 	@Override
 	public Visibility draw(DrawContext graphics, ToastManager manager, long startTime) {
 		graphics.drawGuiTexture(TEXTURE, 0, 0, this.getWidth(), this.getHeight());
 		TextRenderer textRenderer = manager.getClient().textRenderer;
-		
+
 		if (shard == null) return Toast.Visibility.HIDE;
 		ShardType shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING);
-		
+
 		List<OrderedText> lines = manager.getClient().textRenderer.wrapLines(shard.name(), 125); // 160 is the total toast width so this is reasonable
 		if (lines.size() == 1) {
 			graphics.drawText(textRenderer, COLLECTED_TEXT, 30, 7, YELLOW, false);
@@ -44,19 +43,15 @@ public class ShardToast implements Toast {
 		} else {
 			int y = this.getHeight() / 2 - lines.size() * 9 / 2;
 
-			for(OrderedText orderedText : lines) {
+			for (OrderedText orderedText : lines) {
 				graphics.drawText(manager.getClient().textRenderer, orderedText, 30, y, shardType.textColor(), false);
 				y += 9;
 			}
 		}
-		
-		shard.icon().ifLeft(it -> {
-			graphics.drawItemWithoutEntity(it, 8, 8);
-		});
-		
-		shard.icon().ifRight(it -> {
-			ScreenDrawing.texturedRect(graphics, 8, 8, 16, 16, it, 0xFF_FFFFFF);
-		});
-		return (double)startTime >= 5000.0 * manager.getNotificationDisplayTimeMultiplier() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
+
+		shard.icon().ifLeft(it -> graphics.drawItemWithoutEntity(it, 8, 8));
+
+		shard.icon().ifRight(it -> ScreenDrawing.texturedRect(graphics, 8, 8, 16, 16, it, WHITE));
+		return (double) startTime >= DURATION * manager.getNotificationDisplayTimeMultiplier() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
 	}
 }

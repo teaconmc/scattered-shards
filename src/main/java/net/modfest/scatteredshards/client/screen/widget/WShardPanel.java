@@ -1,11 +1,6 @@
 package net.modfest.scatteredshards.client.screen.widget;
 
-import java.util.List;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
-
 import com.mojang.datafixers.util.Either;
-
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WSprite;
@@ -31,8 +26,12 @@ import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledLabel;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledText;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WShardIcon;
 
+import java.util.List;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+
 public class WShardPanel extends WPlainPanel {
-	
+
 	public static final IntSupplier WHITE = () -> 0xFFFFFF;
 	public static final Style HINT_STYLE = Style.EMPTY.withFont(Identifier.of("minecraft:alt"));
 
@@ -40,25 +39,25 @@ public class WShardPanel extends WPlainPanel {
 	private ShardType shardType;
 	private boolean isHidden = false;
 	private Text hideText = Text.translatable("gui.scattered_shards.tablet.click_on_a_shard");
-	
+
 	private final WDynamicSprite backing = new WDynamicSprite(() -> ShardType.getFrontTexture(shard.shardTypeId()));
 	private final WShardIcon icon = new WShardIcon(2.0f);
 	private final WScaledLabel name = new WScaledLabel(() -> shard.name(), 1.4f)
-			.setShadow(true)
-			.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		.setShadow(true)
+		.setHorizontalAlignment(HorizontalAlignment.CENTER);
 	private final WScaledLabel typeDescription = new WScaledLabel(() -> ShardType.getDescription(shard.shardTypeId()), 0.5f)
-			.setShadow(true)
-			.setHorizontalAlignment(HorizontalAlignment.CENTER)
-			.setColor(() -> shardType.textColor());
+		.setShadow(true)
+		.setHorizontalAlignment(HorizontalAlignment.CENTER)
+		.setColor(() -> shardType.textColor());
 	private final WScaledLabel source = new WScaledLabel(shard::source, 0.9f)
-			.setShadow(true)
-			.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		.setShadow(true)
+		.setHorizontalAlignment(HorizontalAlignment.CENTER);
 	private final WScaledText lore = new WScaledText(shard::lore, 0.8f)
-			.setShadow(true)
-			.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		.setShadow(true)
+		.setHorizontalAlignment(HorizontalAlignment.CENTER);
 	private final WScaledText hint = new WScaledText(shard::hint, 0.8f)
-			.setShadow(true)
-			.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		.setShadow(true)
+		.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
 	/**
 	 * Sets the shardType displayed to a static value. Note: Prevents the shardType from being updated if the configured shard is mutated!
@@ -122,13 +121,13 @@ public class WShardPanel extends WPlainPanel {
 		this.isHidden = true;
 		return this;
 	}
-	
+
 	public WShardPanel hideWithMessage(Text message) {
 		this.isHidden = true;
 		this.hideText = message;
 		return this;
 	}
-	
+
 	private int getLayoutWidth() {
 		return this.getWidth() - insets.left() - insets.right();
 	}
@@ -138,37 +137,36 @@ public class WShardPanel extends WPlainPanel {
 		this.width = 124;
 		this.height = 200;
 		this.setInsets(Insets.ROOT_PANEL);
-		
+
 		add(name, 0, 0, getLayoutWidth(), 18);
 		add(typeDescription, 0, 16, getLayoutWidth(), 16);
 		add(source, 0, 25, getLayoutWidth(), 16);
-		
+
 		int cardScale = 2;
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
-		add(backing, cardX, 40, 24*cardScale, 32*cardScale);
-		
+		add(backing, cardX, 40, 24 * cardScale, 32 * cardScale);
+
 		add(icon, cardX + (4 * cardScale), 40 + (ScatteredShardsClient.ICON_Y_OFFSET * cardScale), 16 * cardScale, 16 * cardScale);
 
-		
+
 		add(lore, 0, 113, getLayoutWidth(), 32);
-		
+
 		//TODO: Add divider image
 		add(new WSprite(ScatteredShards.id("textures/gui/divider.png")), cardX, 145, 24 * cardScale, 1);
-		
+
 		add(hint, 0, 149, getLayoutWidth(), 32);
 	}
-	
+
 	@Override
 	public void layout() {
 		// We are already perfectly laid out from the constructor.
 	}
-	
+
 	@Override
 	protected void expandToFit(WWidget w, Insets insets) {
 		// Do not expand to fit anything.
-		return;
 	}
-	
+
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void paint(DrawContext context, int x, int y, int mouseX, int mouseY) {
@@ -176,29 +174,28 @@ public class WShardPanel extends WPlainPanel {
 			super.paint(context, x, y, mouseX, mouseY);
 			return;
 		}
-		
+
 		var backgroundPainter = this.getBackgroundPainter();
-		if (backgroundPainter!=null) backgroundPainter.paintBackground(context, x, y, this);
-		
-		@SuppressWarnings("resource")
+		if (backgroundPainter != null) backgroundPainter.paintBackground(context, x, y, this);
+
 		var textRenderer = MinecraftClient.getInstance().textRenderer;
 		List<OrderedText> lines = textRenderer.wrapLines(hideText, 108);
 		int yOffset = 30;
 		int layoutWidth = this.getWidth() - this.getInsets().left() - this.getInsets().right();
-		for(OrderedText t : lines) {
+		for (OrderedText t : lines) {
 			ScreenDrawing.drawStringWithShadow(context, t, HorizontalAlignment.CENTER, x + this.insets.left(), y + yOffset, layoutWidth, 0xFF_FFFFFF);
 			yOffset += textRenderer.fontHeight;
 		}
 	}
-	
+
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void addPainters() {
 		this.setBackgroundPainter((context, left, top, panel) -> {
 			context.setShaderColor(1, 1, 1, 1);
 			ScreenDrawing.drawGuiPanel(context, left, top, panel.getWidth(), panel.getHeight());
-			ScreenDrawing.drawBeveledPanel(context, left+4, top+4, panel.getWidth()-8, panel.getHeight()-8);
-			context.fillGradient(left+5, top+5, left+5+panel.getWidth()-10, top+5+panel.getHeight()-10, ScatteredShardsClient.RIGHT_TOP, ScatteredShardsClient.RIGHT_BOTTOM);
+			ScreenDrawing.drawBeveledPanel(context, left + 4, top + 4, panel.getWidth() - 8, panel.getHeight() - 8);
+			context.fillGradient(left + 5, top + 5, left + 5 + panel.getWidth() - 10, top + 5 + panel.getHeight() - 10, ScatteredShardsClient.RIGHT_TOP, ScatteredShardsClient.RIGHT_BOTTOM);
 		});
 	}
 
@@ -209,7 +206,7 @@ public class WShardPanel extends WPlainPanel {
 	public Shard getShard() {
 		return shard;
 	}
-	
+
 	@Override
 	public boolean canResize() {
 		return false;

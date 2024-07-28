@@ -1,13 +1,10 @@
 package net.modfest.scatteredshards.command;
 
-import java.util.Optional;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
-
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,32 +19,32 @@ import net.modfest.scatteredshards.networking.S2CSyncLibrary;
 import net.modfest.scatteredshards.networking.S2CSyncShard;
 import net.modfest.scatteredshards.networking.S2CUpdateShard;
 
+import java.util.Optional;
+
 public class LibraryCommand {
 
 	public static int delete(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
 		Identifier shardId = ctx.getArgument("shard_id", Identifier.class);
-		
+
 		var library = ScatteredShardsAPI.getServerLibrary();
 		library.shards().get(shardId).orElseThrow(() -> ShardCommand.INVALID_SHARD.create(shardId));
-		
+
 		Optional<Shard> shard = library.shards().get(shardId);
 		library.shards().remove(shardId);
-		shard.ifPresent(it -> {
-			library.shardSets().remove(it.sourceId(), shardId);
-		});
+		shard.ifPresent(it -> library.shardSets().remove(it.sourceId(), shardId));
 		var server = ctx.getSource().getServer();
 		ShardLibraryPersistentState.get(server).markDirty();
 		var deletePacket = new S2CUpdateShard(shardId, S2CUpdateShard.Mode.DELETE);
 		for (var player : server.getPlayerManager().getPlayerList()) {
 			ServerPlayNetworking.send(player, deletePacket);
 		}
-		
+
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.delete", shardId), true);
-		
+
 		return Command.SINGLE_SUCCESS;
 	}
-	
-	public static int deleteAll(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+
+	public static int deleteAll(CommandContext<ServerCommandSource> ctx) {
 		var library = ScatteredShardsAPI.getServerLibrary();
 		int toDelete = library.shards().size();
 		library.shards().clear();
@@ -58,9 +55,9 @@ public class LibraryCommand {
 		for (var player : server.getPlayerManager().getPlayerList()) {
 			ServerPlayNetworking.send(player, syncLibrary);
 		}
-		
+
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.delete.all", toDelete), true);
-		
+
 		return toDelete;
 	}
 
@@ -87,38 +84,38 @@ public class LibraryCommand {
 			ServerPlayNetworking.send(player, deleteShard);
 			ServerPlayNetworking.send(player, syncShard);
 		}
-		
+
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.migrate", shardId, newShardId), true);
-		
+
 		return Command.SINGLE_SUCCESS;
 	}
-	
+
 	public static void register(CommandNode<ServerCommandSource> parent) {
 		var library = Node.literal("library")
-				.requires(
-					Permissions.require(ScatteredShards.permission("command.library"), 3)
-				)
-				.build();
-		
+			.requires(
+				Permissions.require(ScatteredShards.permission("command.library"), 3)
+			)
+			.build();
+
 		//Usage: /shard library delete <shard_id>
 		var deleteCommand = Node.literal("delete")
-				.requires(
-						Permissions.require(ScatteredShards.permission("command.library.delete"), 3)
-					)
-				.build();
+			.requires(
+				Permissions.require(ScatteredShards.permission("command.library.delete"), 3)
+			)
+			.build();
 		var deleteIdArgument = Node.shardId("shard_id")
-				.executes(LibraryCommand::delete)
-				.build();
+			.executes(LibraryCommand::delete)
+			.build();
 		deleteCommand.addChild(deleteIdArgument);
 		library.addChild(deleteCommand);
-		
+
 		//Usage: /shard library delete all
 		var deleteAllCommand = Node.literal("all")
-				.executes(LibraryCommand::deleteAll)
-				.requires(
-					Permissions.require(ScatteredShards.permission("command.library.delete.all"), 4)
-				)
-				.build();
+			.executes(LibraryCommand::deleteAll)
+			.requires(
+				Permissions.require(ScatteredShards.permission("command.library.delete.all"), 4)
+			)
+			.build();
 		deleteCommand.addChild(deleteAllCommand);
 
 		var migrateCommand = Node.literal("migrate")
@@ -133,7 +130,7 @@ public class LibraryCommand {
 		migrateShardArg.addChild(migrateModArg);
 		migrateCommand.addChild(migrateShardArg);
 		library.addChild(migrateCommand);
-		
+
 		parent.addChild(library);
 	}
 }

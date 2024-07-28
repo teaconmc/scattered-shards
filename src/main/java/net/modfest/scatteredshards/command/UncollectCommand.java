@@ -3,9 +3,7 @@ package net.modfest.scatteredshards.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
-
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.command.ServerCommandSource;
@@ -16,16 +14,12 @@ import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.impl.ShardCollectionPersistentState;
 import net.modfest.scatteredshards.networking.S2CSyncCollection;
-import net.modfest.scatteredshards.networking.S2CUpdateShard;
 
 public class UncollectCommand {
-	public static final DynamicCommandExceptionType NOT_IN_COLLECTION = new DynamicCommandExceptionType(
-			it -> Text.stringifiedTranslatable("error.scattered_shards.shard_not_in_collection", it)
-			);
-
 	/**
 	 * Syntax: <code>/shard uncollect &lt;shard_id&gt;</code>
 	 * <p>Removes the specified shard from the library / tablet of the person running the command. Must be used by a player.
+	 *
 	 * @return Always 1 for the shard removed, unless an exception occurs.
 	 * @throws CommandSyntaxException if there was a problem executing the command.
 	 */
@@ -47,6 +41,7 @@ public class UncollectCommand {
 	/**
 	 * Syntax: <code>/shard uncollect all</code>
 	 * <p>Removes all shards from the library / tablet of the person running the command. Must be used by a player.
+	 *
 	 * @return The number of shards removed. Zero is a valid output from this command (if the collection was empty).
 	 * @throws CommandSyntaxException if there was a problem executing the command.
 	 */
@@ -66,25 +61,25 @@ public class UncollectCommand {
 
 	public static void register(CommandNode<ServerCommandSource> parent) {
 		var uncollectCommand = Node.literal("uncollect")
-				.requires(
-						Permissions.require(ScatteredShards.permission("command.uncollect"), 2)
-					)
-				.build();
+			.requires(
+				Permissions.require(ScatteredShards.permission("command.uncollect"), 2)
+			)
+			.build();
 		parent.addChild(uncollectCommand);
 
 		//syntax: uncollect <shard_id>
 		var uncollectIdArgument = Node.collectedShardId("shard_id")
-				.executes(UncollectCommand::uncollect)
-				.build();
+			.executes(UncollectCommand::uncollect)
+			.build();
 		uncollectCommand.addChild(uncollectIdArgument);
 
 		//syntax: uncollect all
 		var uncollectAllCommand = Node.literal("all")
-				.executes(UncollectCommand::uncollectAll)
-				.requires(
-						Permissions.require(ScatteredShards.permission("command.uncollect.all"), 2)
-				)
-				.build();
+			.executes(UncollectCommand::uncollectAll)
+			.requires(
+				Permissions.require(ScatteredShards.permission("command.uncollect.all"), 2)
+			)
+			.build();
 		uncollectCommand.addChild(uncollectAllCommand);
 	}
 }

@@ -1,14 +1,5 @@
 package net.modfest.scatteredshards.block;
 
-import java.util.List;
-import java.util.Optional;
-
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;
@@ -18,6 +9,9 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,21 +29,23 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.modfest.scatteredshards.ScatteredShardsContent;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
-import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
-import net.modfest.scatteredshards.networking.S2CUpdateShard;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ShardBlock extends Block implements BlockEntityProvider {
-	public static final VoxelShape SHAPE = VoxelShapes.cuboid(4/16f, 3/16f, 4/16f, 12/16f, 13/16f, 12/16f);
+	public static final VoxelShape SHAPE = VoxelShapes.cuboid(4 / 16f, 3 / 16f, 4 / 16f, 12 / 16f, 13 / 16f, 12 / 16f);
 	private static final Block.Settings SETTINGS = Block.Settings.create()
-			.dropsNothing()
-			.noCollision()
-			.nonOpaque()
-			.luminance(state -> 3)
-			.strength(-1)
-			.mapColor(MapColor.EMERALD_GREEN);
+		.dropsNothing()
+		.noCollision()
+		.nonOpaque()
+		.luminance(state -> 3)
+		.strength(-1)
+		.mapColor(MapColor.EMERALD_GREEN);
 
 	public ShardBlock() {
 		super(SETTINGS);
@@ -82,12 +78,12 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 
 	public static boolean tryCollect(World world, PlayerEntity player, ShardBlockEntity be) {
 		// Make sure the shard exists before awarding it!
-		ShardLibrary library = ScatteredShardsAPI.getServerLibrary(); 
+		ShardLibrary library = ScatteredShardsAPI.getServerLibrary();
 		Optional<Shard> toCollect = library.shards().get(be.shardId);
 		if (toCollect.isEmpty()) {
 			return false;
 		}
-		
+
 		if (player instanceof ServerPlayerEntity serverPlayer) {
 			return ScatteredShardsAPI.triggerShardCollection(serverPlayer, be.shardId);
 		} else {
@@ -119,9 +115,10 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 			tryCollect(world, player, be);
 		}
 	}
-	
+
 	/**
 	 * Creates a shard block
+	 *
 	 * @return the shard block
 	 */
 	public static ItemStack createShardBlock(ShardLibrary library, Identifier shardId, boolean canInteract, float glowSize, float glowStrength) {
@@ -130,7 +127,7 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 		NbtCompound blockEntityTag = new NbtCompound();
 		blockEntityTag.putString("id", ScatteredShardsContent.SHARD_BLOCK_ID.toString()); // required, see NbtComponent.CODEC_WITH_ID
 		blockEntityTag.putString("Shard", shardId.toString());
-		
+
 		//Fill in name / lore
 		Shard shard = library.shards().get(shardId).orElse(Shard.MISSING_SHARD);
 		stack.set(DataComponentTypes.ITEM_NAME, shard.name());
@@ -147,7 +144,7 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 		blockEntityTag.put("Glow", glowTag);
 
 		stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(blockEntityTag));
-		
+
 		return stack;
 	}
 }

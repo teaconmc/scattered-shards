@@ -1,12 +1,13 @@
 package net.modfest.scatteredshards.api.impl;
 
+import net.minecraft.util.Identifier;
+import net.modfest.scatteredshards.api.ShardCollection;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import net.minecraft.util.Identifier;
-import net.modfest.scatteredshards.api.ShardCollection;
 
 public class ShardCollectionImpl implements ShardCollection {
 	private final Set<Identifier> data;
@@ -18,17 +19,17 @@ public class ShardCollectionImpl implements ShardCollection {
 	public ShardCollectionImpl(Set<Identifier> data) {
 		this.data = data;
 	}
-	
+
 	@Override
 	public boolean contains(Identifier shardId) {
 		return data.contains(shardId);
 	}
-	
+
 	@Override
 	public boolean add(Identifier shardId) {
 		return data.add(shardId);
 	}
-	
+
 	@Override
 	public void addAll(Collection<Identifier> shardIds) {
 		data.addAll(shardIds);
@@ -48,12 +49,12 @@ public class ShardCollectionImpl implements ShardCollection {
 	public void clear() {
 		data.clear();
 	}
-	
+
 	@Override
-	public Iterator<Identifier> iterator() {
+	public @NotNull Iterator<Identifier> iterator() {
 		return data.iterator();
 	}
-	
+
 	@Override
 	public Set<Identifier> toImmutableSet() {
 		return Set.copyOf(data);

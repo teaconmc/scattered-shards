@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "scattered_shards:item/shard_tablet"
-  }
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "scattered_shards:item/shard_tablet"
+	}
 }

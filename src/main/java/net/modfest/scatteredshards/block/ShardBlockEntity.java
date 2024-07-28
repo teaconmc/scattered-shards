@@ -1,11 +1,5 @@
 package net.modfest.scatteredshards.block;
 
-import java.util.Objects;
-
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.registry.RegistryWrapper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -15,6 +9,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -27,6 +23,9 @@ import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class ShardBlockEntity extends BlockEntity {
 	public static final String SHARD_NBT_KEY = "Shard";
@@ -85,7 +84,7 @@ public class ShardBlockEntity extends BlockEntity {
 	@Override
 	protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		super.writeNbt(nbt, registryLookup);
-		if (shardId!=null) nbt.putString(SHARD_NBT_KEY, shardId.toString());
+		if (shardId != null) nbt.putString(SHARD_NBT_KEY, shardId.toString());
 
 		nbt.putBoolean("CanInteract", this.canInteract);
 
@@ -113,7 +112,7 @@ public class ShardBlockEntity extends BlockEntity {
 	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
 		return createNbt(registryLookup);
 	}
-	
+
 	@Override
 	public Packet<ClientPlayPacketListener> toUpdatePacket() {
 		return BlockEntityUpdateS2CPacket.create(this);
@@ -138,7 +137,7 @@ public class ShardBlockEntity extends BlockEntity {
 		private float spinSpeed = UNCOLLECTED_SPIN_SPEED;
 
 		public float getAngle(float tickDelta) {
-			return (float) (MathHelper.lerp(tickDelta, this.lastAngle, this.angle) % Math.PI*2);
+			return (float) (MathHelper.lerp(tickDelta, this.lastAngle, this.angle) % Math.PI * 2);
 		}
 
 		public boolean collected() {
@@ -168,16 +167,15 @@ public class ShardBlockEntity extends BlockEntity {
 		public void playCollectAnimation() {
 			this.spinSpeed = ON_COLLECT_SPIN_SPEED;
 
-			@SuppressWarnings("resource")
 			final WorldRenderer worldRenderer = MinecraftClient.getInstance().worldRenderer;
 			final Random random = ShardBlockEntity.this.getWorld().getRandom();
 			final Vec3d pos = Vec3d.ofCenter(ShardBlockEntity.this.getPos());
-			
+
 			ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
-			
+
 			ShardType shardType = library.shardTypes()
-					.get(ShardBlockEntity.this.getShard(library).shardTypeId())
-					.orElse(ShardType.MISSING);
+				.get(ShardBlockEntity.this.getShard(library).shardTypeId())
+				.orElse(ShardType.MISSING);
 			shardType.collectParticle().ifPresent(p -> {
 				if (!(p instanceof ParticleEffect particle)) {
 					return;
@@ -188,9 +186,9 @@ public class ShardBlockEntity extends BlockEntity {
 					double speed = 0.5 + random.nextDouble();
 
 					worldRenderer.addParticle(
-							particle, false,
-							pos.x, pos.y, pos.z,
-							Math.sin(angle) * speed, 0, Math.cos(angle) * speed
+						particle, false,
+						pos.x, pos.y, pos.z,
+						Math.sin(angle) * speed, 0, Math.cos(angle) * speed
 					);
 				}
 			});

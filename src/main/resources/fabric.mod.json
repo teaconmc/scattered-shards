@@ -1,38 +1,35 @@
 {
-  "schemaVersion": 1,
-  "id": "${modId}",
-  "version": "${version}",
-  "name": "${modName}",
-  "description": "${modDescription}",
-  "authors": [
-    "${authors}"
-  ],
-  "contributors": [
-    "${contributors}"
-  ],
-  "contact": {
-    "homepage": "${homepage}",
-    "issues": "${issues}",
-    "sources": "${sources}"
-  },
-  "license": "${license}",
-  "icon": "assets/scattered_shards/icon.png",
-  "entrypoints": {
-    "main": [
-      "net.modfest.scatteredshards.ScatteredShards"
-    ],
-    "client": [
-      "net.modfest.scatteredshards.client.ScatteredShardsClient"
-    ]
-  },
-  "mixins": [
-    "scattered_shards.mixins.json"
-  ],
-  "depends": {
-    "minecraft": ">=${mc}",
-    "fabricloader": ">=${fl}",
-    "fabric-api": ">=${fapi}",
-    "fabric-permissions-api-v0": ">=${fpapi}",
-    "libgui": ">=${libgui}"
-  }
+	"schemaVersion": 1,
+	"id": "${modId}",
+	"version": "${version}",
+	"name": "${modName}",
+	"description": "${modDescription}",
+	"authors": [
+		"${authors}"
+	],
+	"contributors": [
+		"${contributors}"
+	],
+	"contact": {
+		"homepage": "${homepage}",
+		"issues": "${issues}",
+		"sources": "${sources}"
+	},
+	"license": "${license}",
+	"icon": "assets/scattered_shards/icon.png",
+	"entrypoints": {
+		"main": [
+			"net.modfest.scatteredshards.ScatteredShards"
+		],
+		"client": [
+			"net.modfest.scatteredshards.client.ScatteredShardsClient"
+		]
+	},
+	"depends": {
+		"minecraft": ">=${mc}",
+		"fabricloader": ">=${fl}",
+		"fabric-api": ">=${fapi}",
+		"fabric-permissions-api-v0": ">=${fpapi}",
+		"libgui": ">=${libgui}"
+	}
 }

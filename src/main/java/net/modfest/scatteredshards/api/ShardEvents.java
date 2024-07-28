@@ -7,7 +7,6 @@ import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.shard.Shard;
 
 public class ShardEvents {
-
 	public static final Event<Collect> COLLECT = EventFactory.createArrayBacked(Collect.class, (handlers) -> (player, shardId, shard) -> {
 		for (Collect handler : handlers) {
 			handler.handle(player, shardId, shard);
@@ -15,8 +14,8 @@ public class ShardEvents {
 	});
 
 	@FunctionalInterface
-	public static interface Collect {
-		public void handle(ServerPlayerEntity player, Identifier shardId, Shard shard);
+	public interface Collect {
+		void handle(ServerPlayerEntity player, Identifier shardId, Shard shard);
 	}
 
 }

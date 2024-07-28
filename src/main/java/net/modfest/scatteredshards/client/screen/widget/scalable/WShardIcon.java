@@ -1,14 +1,13 @@
 package net.modfest.scatteredshards.client.screen.widget.scalable;
 
-import java.util.function.Supplier;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Either;
-
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Supplier;
 
 public class WShardIcon extends WScalableWidget {
 	protected Supplier<Either<ItemStack, Identifier>> icon = () -> Either.left(ItemStack.EMPTY);
@@ -43,12 +42,10 @@ public class WShardIcon extends WScalableWidget {
 			RenderSystem.enableDepthTest();
 			context.drawItemWithoutEntity(it, width / 2 - 8, height / 2 - 8);
 		});
-		icon.get().ifRight(it -> {
-			ScreenDrawing.texturedRect(context, 0, 0, width, height, it, 0xFF_FFFFFF);
-		});
+		icon.get().ifRight(it -> ScreenDrawing.texturedRect(context, 0, 0, width, height, it, 0xFF_FFFFFF));
 	}
-	
-	
+
+
 	@Override
 	public boolean canResize() {
 		return true;

@@ -3,7 +3,6 @@ package net.modfest.scatteredshards.load;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -39,30 +38,30 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 	@Override
 	protected void apply(Map<Identifier, JsonElement> cache, ResourceManager manager, Profiler profiler) {
 		var library = ScatteredShardsAPI.getServerLibrary();
-		
+
 		library.shardTypes().clear();
 		library.shardTypes().put(ShardType.MISSING_ID, ShardType.MISSING);
-		
+
 		int successes = 0;
 		for (var entry : cache.entrySet()) {
 			try {
 				JsonObject root = JsonHelper.asObject(entry.getValue(), "root element");
-				
+
 				if (root.has("text_color")) {
 					library.shardTypes().put(entry.getKey(), ShardType.fromJson(root));
 					successes++;
 				} else {
-					for(var shardEntry : root.entrySet()) {
+					for (var shardEntry : root.entrySet()) {
 						JsonObject shardTypeObj = JsonHelper.asObject(shardEntry.getValue(), "shard-type object");
 						library.shardTypes().put(Identifier.of(shardEntry.getKey()), ShardType.fromJson(shardTypeObj));
 						successes++;
 					}
 				}
 			} catch (Exception ex) {
-                ScatteredShards.LOGGER.error("Failed to load shard type '{}':", entry.getKey(), ex);
+				ScatteredShards.LOGGER.error("Failed to load shard type '{}':", entry.getKey(), ex);
 			}
 		}
-        ScatteredShards.LOGGER.info("Loaded {} shard type{}", successes, successes == 1 ? "" : "s");
+		ScatteredShards.LOGGER.info("Loaded {} shard type{}", successes, successes == 1 ? "" : "s");
 	}
 
 	public static void register() {

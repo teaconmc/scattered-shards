@@ -29,7 +29,7 @@ public class ClientShardCommand {
 
 	private static DynamicCommandExceptionType createInvalidException(String item) {
 		return new DynamicCommandExceptionType(
-				obj -> Text.stringifiedTranslatable("error.scattered_shards.invalid_" + item, obj)
+			obj -> Text.stringifiedTranslatable("error.scattered_shards.invalid_" + item, obj)
 		);
 	}
 
@@ -49,8 +49,8 @@ public class ClientShardCommand {
 		String modId = StringArgumentType.getString(context, "mod_id");
 		Identifier shardTypeId = context.getArgument("shard_type", Identifier.class);
 		ShardType shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shardTypeId)
-				.orElseThrow(() -> ShardCommand.INVALID_SHARD_TYPE.create(shardTypeId));
-		
+			.orElseThrow(() -> ShardCommand.INVALID_SHARD_TYPE.create(shardTypeId));
+
 		var client = context.getSource().getClient();
 		client.send(() -> client.setScreen(ShardCreatorGuiDescription.Screen.newShard(modId, shardType)));
 		return Command.SINGLE_SUCCESS;
@@ -59,8 +59,8 @@ public class ClientShardCommand {
 	public static int creatorEdit(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
 		Identifier shardId = context.getArgument("shard_id", Identifier.class);
 		Shard shard = ScatteredShardsAPI.getClientLibrary().shards().get(shardId)
-				.orElseThrow(() -> INVALID_SHARD_ID.create(shardId));
-		
+			.orElseThrow(() -> INVALID_SHARD_ID.create(shardId));
+
 		var client = context.getSource().getClient();
 		client.send(() -> client.setScreen(ShardCreatorGuiDescription.Screen.editShard(shard)));
 		return Command.SINGLE_SUCCESS;
@@ -84,9 +84,7 @@ public class ClientShardCommand {
 	}
 
 	public static CompletableFuture<Suggestions> suggestShards(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) {
-		ScatteredShardsAPI.getClientLibrary().shards().forEach((id, shard) -> {
-			builder.suggest(id.toString());
-		});
+		ScatteredShardsAPI.getClientLibrary().shards().forEach((id, shard) -> builder.suggest(id.toString()));
 		return builder.buildFuture();
 	}
 
@@ -115,11 +113,11 @@ public class ClientShardCommand {
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Identifier> identifierArgument(String name) {
-		return RequiredArgumentBuilder.<FabricClientCommandSource, Identifier>argument(name, IdentifierArgumentType.identifier());
+		return RequiredArgumentBuilder.argument(name, IdentifierArgumentType.identifier());
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, String> stringArgument(String name) {
-		return RequiredArgumentBuilder.<FabricClientCommandSource, String>argument(name, StringArgumentType.string());
+		return RequiredArgumentBuilder.argument(name, StringArgumentType.string());
 	}
 
 	public static void register() {
@@ -131,30 +129,30 @@ public class ClientShardCommand {
 			//Usage: /shardc view <set_id>
 			var view = literal("view");
 			var setId = identifierArgument("set_id")
-					.suggests(ClientShardCommand::suggestShardSets)
-					.executes(ClientShardCommand::view);
+				.suggests(ClientShardCommand::suggestShardSets)
+				.executes(ClientShardCommand::view);
 			view.addChild(setId.build());
 			shardcRoot.addChild(view);
 
 			//Usage: /shardc creator
-				//-> new <mod_id> <shard_type>
-				//-> edit <shard_id>
+			//-> new <mod_id> <shard_type>
+			//-> edit <shard_id>
 			var creator = literal("creator");
 
 			var creatorNew = literal("new");
 			var modId = stringArgument("mod_id")
-					.suggests(ClientShardCommand::suggestModIds);
+				.suggests(ClientShardCommand::suggestModIds);
 			var modIdBuild = modId.build();
 			var shardType = identifierArgument("shard_type")
-					.suggests(ClientShardCommand::suggestShardTypes)
-					.executes(ClientShardCommand::creatorNew);
+				.suggests(ClientShardCommand::suggestShardTypes)
+				.executes(ClientShardCommand::creatorNew);
 			modIdBuild.addChild(shardType.build());
 			creatorNew.addChild(modIdBuild);
 
 			var creatorEdit = literal("edit");
 			var shardId = identifierArgument("shard_id")
-					.suggests(ClientShardCommand::suggestShards)
-					.executes(ClientShardCommand::creatorEdit);
+				.suggests(ClientShardCommand::suggestShards)
+				.executes(ClientShardCommand::creatorEdit);
 			creatorEdit.addChild(shardId.build());
 
 			creator.addChild(creatorNew);

@@ -22,7 +22,7 @@ import java.util.Optional;
 public record S2CUpdateShard(Identifier shardId, Mode mode) implements CustomPayload {
 	public static final Id<S2CUpdateShard> PACKET_ID = new Id<>(ScatteredShards.id("update_shard"));
 	public static final PacketCodec<RegistryByteBuf, S2CUpdateShard> PACKET_CODEC = PacketCodec.tuple(Identifier.PACKET_CODEC, S2CUpdateShard::shardId, Mode.PACKET_CODEC, S2CUpdateShard::mode, S2CUpdateShard::new);
-	
+
 	@Environment(EnvType.CLIENT)
 	public static void receive(S2CUpdateShard payload, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
@@ -36,9 +36,7 @@ public record S2CUpdateShard(Identifier shardId, Mode mode) implements CustomPay
 					ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
 					Optional<Shard> shard = library.shards().get(payload.shardId());
 					library.shards().remove(payload.shardId());
-					shard.ifPresent(it -> {
-						library.shardSets().remove(it.sourceId(), payload.shardId());
-					});
+					shard.ifPresent(it -> library.shardSets().remove(it.sourceId(), payload.shardId()));
 				}
 			}
 		});

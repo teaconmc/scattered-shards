@@ -1,9 +1,6 @@
 package net.modfest.scatteredshards.client.screen.widget;
 
-import java.util.function.Consumer;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.TooltipBuilder;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
@@ -20,32 +17,36 @@ import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
 
+import java.util.function.Consumer;
+
 public class WMiniShard extends WWidget {
 	private static final Identifier MINI_OUTLINE = ScatteredShards.id("/textures/gui/shards/mini_outline.png");
-	
+
 	protected Shard shard = null;
 	protected ShardType shardType = null;
 	protected boolean isCollected = false;
 	protected Identifier shardId;
-	
-	protected Consumer<Shard> shardConsumer = (it) -> {};
-	
-	public WMiniShard() {}
-	
+
+	protected Consumer<Shard> shardConsumer = (it) -> {
+	};
+
+	public WMiniShard() {
+	}
+
 	public WMiniShard setShard(Shard shard, boolean collected, Identifier shardId) {
 		this.shard = shard;
 		this.shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING);
 		this.isCollected = collected;
 		this.shardId = shardId;
-		
+
 		return this;
 	}
-	
+
 	public WMiniShard setShardConsumer(Consumer<Shard> onClick) {
 		this.shardConsumer = onClick;
 		return this;
 	}
-	
+
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void paint(DrawContext context, int x, int y, int mouseX, int mouseY) {
@@ -63,18 +64,16 @@ public class WMiniShard extends WWidget {
 				context.drawItemWithoutEntity(it, 0, 0);
 				context.getMatrices().pop();
 			});
-			shard.icon().ifRight((it) -> {
-				ScreenDrawing.texturedRect(context, x + 3, y + 3, 6, 6, it, 0xFF_FFFFFF);
-			});
+			shard.icon().ifRight((it) -> ScreenDrawing.texturedRect(context, x + 3, y + 3, 6, 6, it, 0xFF_FFFFFF));
 		}
-		
+
 		boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
 		if (hovered) {
 			ScreenDrawing.texturedRect(context, x - 2, y - 2, 16, 20, MINI_OUTLINE, 0, 0, 1, 1, 0xFF_FFFFFF);
-			
+
 			renderTooltip(context, x, y, mouseX, mouseY);
 		}
-		
+
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class WMiniShard extends WWidget {
 
 		super.addTooltip(tooltip);
 	}
-	
+
 	@Override
 	public InputResult onClick(int x, int y, int button) {
 		if (button == 0) {
@@ -103,17 +102,17 @@ public class WMiniShard extends WWidget {
 			return InputResult.IGNORED;
 		}
 	}
-	
+
 	@Override
 	public int getWidth() {
 		return 12;
 	}
-	
+
 	@Override
 	public int getHeight() {
 		return 16;
 	}
-	
+
 	@Override
 	public boolean canResize() {
 		return false;
