@@ -10,18 +10,18 @@ Maintained for use at <a href="https://modfest.net">ModFest</a> events.
 
 **Scattered Shards** adds a system of collectible "shards" that can be created via a UI and placed in-world.
 
-They're a tactile, convenient alternative to advancements for adventure maps and event servers.
-
 Type `/shards` or use a *Shard Tablet* any time to view which shards you've collected, and which ones are left!
 
 **Features:**
-- Shards can have titles, descriptions, and face art in the form of arbitrary item stacks (or installed mod icons)
+- Shards can have titles, descriptions, and face art in the form of item stacks or arbitrary textures
 - Shards can have collection "hints", which are shown in galactic alphabet, but revealed when moused over
 - Shards have a "type" (e.g. common, foil, rare, secret) which are data driven
 - Shard types can each have custom names, textures, and collection sounds which are resource-driven
 - Shards are arranged into "sets" which can have one shard of each type
 	- Suggested as **installed mod IDs** by default, but can be completely arbitrary (locations, skillsets, etc)
 - Tracks global collection statistics, displayed to players when holding shift in the shards screen
+
+![shards screen preview](https://cdn.modrinth.com/data/DB9GU3tx/images/ba00e12bef9b8d90d096a71bba11d71c14f6e01f.png)
 
 ### Shard Creation
 
@@ -31,6 +31,8 @@ Type `/shards` or use a *Shard Tablet* any time to view which shards you've coll
 - To allow regular players to collect the shard, either:
   - Run `/shard block [shard]` and place the provided block - this collects the shard when walking over
   - Place a command block with e.g. `/shard award @n [shard]` - this collects the shard for the nearest player
+
+![shard creator screen preview](https://cdn.modrinth.com/data/DB9GU3tx/images/a35729532f21b838fcfa91bcf3490cd5bbd6bbec.png)
 
 ### Shard Types
 
