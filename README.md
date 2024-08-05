@@ -1,17 +1,46 @@
-**Scattered Shards** is a collectible system designed for events like [ModFest](https://modfest.net) and BlanketCon. From an event-running standpoint, it lets booth builders create personalized in-world challenges for their mods with **shards** as the reward! Players can keep track of their collection progress using the **Shard Tablet**.
+<!--suppress HtmlDeprecatedTag, XmlDeprecatedElement -->
+<center><img alt="mod preview" src="https://cdn.modrinth.com/data/DB9GU3tx/images/fa20b10e5056ddf03b3f938f8818c7f0d0bbd2c7.png" /></center>
 
-### Basic Rundown
+<center>
+Collectible cards for adventure maps!<br/>
+Maintained for use at <a href="https://modfest.net">ModFest</a> events.
+</center>
 
-- See [this guide](https://github.com/ModFest/scattered-shards/wiki/Creating-Shard-Types) to learn how to create **shard types**.
-- Run `/shardc creator new ...` in-game to create a new shard.
-- Run `/shard block <your_shard_id>` to get a placeable version of the shard.
-- Place it down... then run into it and see what happens!
+---
 
-### Interested?
+**Scattered Shards** adds a system of collectible "shards" that can be created via a UI and placed in-world.
 
-Scattered Shards is pretty esoteric, so if you're interested in using the mod for your own events, we'd love to help you get started. Head over to [our Discord server](https://discord.gg/cmVKB2Z464) and chat with us in the `#scattered-shards` channel if you have any questions!
+They're a tactile, convenient alternative to advancements for adventure maps and event servers.
 
-## Credits
+Type `/shards` or use a *Shard Tablet* any time to view which shards you've collected, and which ones are left!
+
+**Features:**
+- Shards have a "type" (e.g. common, foil, rare, secret) which are data driven
+- Shard types can each have custom names, textures, and collection sounds which are resource-driven
+- Shards are arranged into "sets" which can have one shard of each type
+  - Suggested as **installed mod IDs** by default, but can be completely arbitrary (locations, skillsets, etc)
+- Shards can have collection "hints", which are shown in galactic alphabet, but revealed when moused over
+- Displays global collection statistics to players when holding shift in the shards screen
+
+### Shard Creation
+
+- Run `/shardc creator new [set] [type]` to open the shard creator - set can be an arbitary ID
+  - In the shard creator, you can fill in the title, description, hint, and icon for the shard
+  - If you used an installed mod ID for the set, you can enable "use mod icon" to use the mod icon
+- To allow regular players to collect the shard, either:
+  - Run `/shard block [shard]` and place the provided block - this collects the shard when walking over
+  - Place a command block with e.g. `/shard award @n [shard]` - this collects the shard for the nearest player
+
+### Shard Types
+
+See [Wiki: Creating Shard Types](https://github.com/ModFest/scattered-shards/wiki/Creating-Shard-Types) for a tutorial on customizing what types of shards are available to create.
+
+---
+
+This mod was originally created by Falkreon and acikek as a base mod for [BlanketCon '23](https://modfest.net/bc23).<br/>
+Feel free to contribute bugfixes and improvements!
+
+### Sound Effects
 
 - ["Victory Fanfare (Light Wills Ever)"](https://freesound.org/people/SilverIllusionist/sounds/669324/) by SilverIllusionist
 - ["Healing 5 (Crystalline Respite)"](https://freesound.org/people/SilverIllusionist/sounds/654071/) by SilverIllusionist
