@@ -15,12 +15,13 @@ They're a tactile, convenient alternative to advancements for adventure maps and
 Type `/shards` or use a *Shard Tablet* any time to view which shards you've collected, and which ones are left!
 
 **Features:**
+- Shards can have titles, descriptions, and face art in the form of arbitrary item stacks (or installed mod icons)
+- Shards can have collection "hints", which are shown in galactic alphabet, but revealed when moused over
 - Shards have a "type" (e.g. common, foil, rare, secret) which are data driven
 - Shard types can each have custom names, textures, and collection sounds which are resource-driven
 - Shards are arranged into "sets" which can have one shard of each type
-  - Suggested as **installed mod IDs** by default, but can be completely arbitrary (locations, skillsets, etc)
-- Shards can have collection "hints", which are shown in galactic alphabet, but revealed when moused over
-- Displays global collection statistics to players when holding shift in the shards screen
+	- Suggested as **installed mod IDs** by default, but can be completely arbitrary (locations, skillsets, etc)
+- Tracks global collection statistics, displayed to players when holding shift in the shards screen
 
 ### Shard Creation
 
