@@ -14,9 +14,9 @@ Type `/shards` or use a *Shard Tablet* any time to view which shards you've coll
 
 **Features:**
 - Shards can have titles, descriptions, and face art in the form of item stacks or arbitrary textures
-- Shards can have collection "hints", which are shown in galactic alphabet, but revealed when moused over
-- Shards have a "type" (e.g. common, foil, rare, secret) which are data driven
-- Shard types can each have custom names, textures, and collection sounds which are resource-driven
+  - Shards can also have a "hint", which is shown in standard galactic until moused over
+- Shards have a "type" e.g. clubs, foil, rare, secret, difficult (data-driven)
+  - Shard types can have custom names, textures, and collection sounds (resource-driven)
 - Shards are arranged into "sets" which can have one shard of each type
 	- Suggested as **installed mod IDs** by default, but can be completely arbitrary (locations, skillsets, etc)
 - Tracks global collection statistics, displayed to players when holding shift in the shards screen
