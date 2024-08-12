@@ -19,6 +19,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
       - name: Maven Publish
         id: maven_publish
         env:
