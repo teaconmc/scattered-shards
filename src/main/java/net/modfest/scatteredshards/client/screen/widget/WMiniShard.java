@@ -20,7 +20,7 @@ import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import java.util.function.Consumer;
 
 public class WMiniShard extends WWidget {
-	private static final Identifier MINI_OUTLINE = ScatteredShards.id("/textures/gui/shards/mini_outline.png");
+	private static final Identifier MINI_OUTLINE = ScatteredShards.id("textures/gui/shards/mini_outline.png");
 
 	protected Shard shard = null;
 	protected ShardType shardType = null;
