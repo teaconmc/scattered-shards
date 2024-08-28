@@ -3,7 +3,8 @@
 
 <center>
 Collectible cards for adventure maps!<br/>
-Maintained for use at <a href="https://modfest.net">ModFest</a> events.
+Maintained for use at <a href="https://modfest.net">ModFest</a> events.<br/>
+Requires <a href="https://modrinth.com/mod/connector">Connector</a> and <a href="https://modrinth.com/mod/forgified-fabric-api">FFAPI</a> on (neo)forge.<br/>
 </center>
 
 ---
