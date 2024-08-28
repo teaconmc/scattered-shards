@@ -16,7 +16,14 @@
 		"sources": "${sources}"
 	},
 	"license": "${license}",
-	"icon": "assets/scattered_shards/icon.png",
+	"icon": "assets/${modId}/icon.png",
+	"depends": {
+		"minecraft": ">=${mc}",
+		"fabricloader": ">=${fl}",
+		"fabric-api": ">=${fapi}",
+		"libgui": ">=${libgui}",
+		"fabric-permissions-api-v0": ">=${fpapi}"
+	},
 	"entrypoints": {
 		"main": [
 			"net.modfest.scatteredshards.ScatteredShards"
@@ -24,12 +31,5 @@
 		"client": [
 			"net.modfest.scatteredshards.client.ScatteredShardsClient"
 		]
-	},
-	"depends": {
-		"minecraft": ">=${mc}",
-		"fabricloader": ">=${fl}",
-		"fabric-api": ">=${fapi}",
-		"fabric-permissions-api-v0": ">=${fpapi}",
-		"libgui": ">=${libgui}"
 	}
 }
