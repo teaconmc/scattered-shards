@@ -40,6 +40,8 @@ processResources {
 shadowJar {
     exclude "architectury.common.json"
 
+    mergeServiceFiles()
+
     configurations = [project.configurations.shadowCommon]
     archiveClassifier = "dev-shadow"
 }
