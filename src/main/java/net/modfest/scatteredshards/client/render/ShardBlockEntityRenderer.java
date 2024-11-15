@@ -3,12 +3,7 @@ package net.modfest.scatteredshards.client.render;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
@@ -22,7 +17,6 @@ import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.block.ShardBlockEntity;
-import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -168,8 +162,10 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 		float xpx = 1 / 24f * cardWidth;
 		float ypx = 1 / 32f * cardHeight;
 
+		ShardType.IconOffset offset = shardType.iconOffset();
+
 		shard.icon().ifLeft(stack -> {
-			matrices.translate(0, ScatteredShardsClient.ICON_Y_OFFSET * ypx, -0.005f); //extra -0.002 here to prevent full-cubes from zfighting the card
+			matrices.translate((4 - offset.left()) * xpx, (8 - offset.up()) * ypx, -0.005f); //extra -0.002 here to prevent full-cubes from zfighting the card
 			matrices.scale(-0.38f, 0.38f, 0.001f /*0.6f*/);
 
 
@@ -179,28 +175,28 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 		shard.icon().ifRight(texId -> {
 			VertexConsumer v = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texId));
 
-			v.vertex(matrices.peek().getPositionMatrix(), dl.x + (4 * xpx), dl.y + (12 * ypx), dl.z - 0.002f)
+			v.vertex(matrices.peek().getPositionMatrix(), dl.x + (offset.right() * xpx), dl.y + (offset.down() * ypx), dl.z - 0.002f)
 				.color(0xFF_FFFFFF)
 				.texture(1, 1)
 				.overlay(overlay)
 				.light(actualLight)
 				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z());
 
-			v.vertex(matrices.peek().getPositionMatrix(), ul.x + (4 * xpx), ul.y - (4 * ypx), ul.z - 0.002f)
+			v.vertex(matrices.peek().getPositionMatrix(), ul.x + (offset.right() * xpx), ul.y - (offset.up() * ypx), ul.z - 0.002f)
 				.color(0xFF_FFFFFF)
 				.texture(1, 0)
 				.overlay(overlay)
 				.light(actualLight)
 				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z());
 
-			v.vertex(matrices.peek().getPositionMatrix(), ur.x - (4 * xpx), ur.y - (4 * ypx), ur.z - 0.002f)
+			v.vertex(matrices.peek().getPositionMatrix(), ur.x - (offset.left() * xpx), ur.y - (offset.up() * ypx), ur.z - 0.002f)
 				.color(0xFF_FFFFFF)
 				.texture(0, 0)
 				.overlay(overlay)
 				.light(actualLight)
 				.normal(matrices.peek(), revNormal.x(), revNormal.y(), revNormal.z());
 
-			v.vertex(matrices.peek().getPositionMatrix(), dr.x - (4 * xpx), dr.y + (12 * ypx), dr.z - 0.002f)
+			v.vertex(matrices.peek().getPositionMatrix(), dr.x - (offset.left() * xpx), dr.y + (offset.down() * ypx), dr.z - 0.002f)
 				.color(0xFF_FFFFFF)
 				.texture(0, 1)
 				.overlay(overlay)

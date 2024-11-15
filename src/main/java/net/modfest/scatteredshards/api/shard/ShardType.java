@@ -20,11 +20,12 @@ import net.modfest.scatteredshards.api.impl.ColorCodec;
 
 import java.util.Optional;
 
-public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> collectParticle, Optional<SoundEvent> collectSound, int listOrder) {
+public record ShardType(int textColor, int glowColor, IconOffset iconOffset, Optional<ParticleType<?>> collectParticle, Optional<SoundEvent> collectSound, int listOrder) {
 
 	public static final Codec<ShardType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		ColorCodec.CODEC.fieldOf("text_color").forGetter(ShardType::textColor),
 		ColorCodec.CODEC.fieldOf("glow_color").forGetter(ShardType::glowColor),
+		IconOffset.CODEC.fieldOf("icon_offset").forGetter(ShardType::iconOffset),
 		Codec.optionalField("collect_particle", Registries.PARTICLE_TYPE.getCodec(), false).forGetter(ShardType::collectParticle),
 		Codec.optionalField("collect_sound", SoundEvent.CODEC, false).forGetter(ShardType::collectSound),
 		Codec.INT.fieldOf("list_order").forGetter(ShardType::listOrder)
@@ -33,17 +34,48 @@ public record ShardType(int textColor, int glowColor, Optional<ParticleType<?>> 
 	public static final PacketCodec<RegistryByteBuf, ShardType> PACKET_CODEC = PacketCodec.tuple(
 		PacketCodecs.INTEGER, ShardType::textColor,
 		PacketCodecs.INTEGER, ShardType::glowColor,
+		IconOffset.PACKET_CODEC, ShardType::iconOffset,
 		PacketCodecs.optional(PacketCodecs.registryCodec(Registries.PARTICLE_TYPE.getCodec())), ShardType::collectParticle,
 		PacketCodecs.optional(SoundEvent.PACKET_CODEC), ShardType::collectSound,
 		PacketCodecs.INTEGER, ShardType::listOrder,
 		ShardType::new
 	);
 
+	//TODO: find a new home for this outside of ShardType
+	public record IconOffset(int up, int left)  {
+		public static final Codec<IconOffset> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("top").forGetter(IconOffset::up),
+			Codec.INT.fieldOf("left").forGetter(IconOffset::left)
+		).apply(instance, IconOffset::new));
+
+		public static final PacketCodec<RegistryByteBuf, IconOffset> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.INTEGER, IconOffset::up,
+			PacketCodecs.INTEGER, IconOffset::left,
+			IconOffset::new
+		);
+
+		public int up() {
+			return up;
+		}
+
+		public int down() {
+			return 16 - up;
+		}
+
+		public int left() {
+			return left;
+		}
+
+		public int right() {
+			return 8 - left;
+		}
+	}
+
 	public static final SoundEvent COLLECT_VISITOR_SOUND = SoundEvent.of(ScatteredShards.id("collect_visitor"));
 	public static final SoundEvent COLLECT_CHALLENGE_SOUND = SoundEvent.of(ScatteredShards.id("collect_challenge"));
 	public static final SoundEvent COLLECT_SECRET_SOUND = SoundEvent.of(ScatteredShards.id("collect_secret"));
 
-	public static final ShardType MISSING = new ShardType(0xFFFFFF, 0xFF00FF, Optional.empty(), Optional.empty(), -1);
+	public static final ShardType MISSING = new ShardType(0xFFFFFF, 0xFF00FF, new IconOffset(4, 4), Optional.empty(), Optional.empty(), -1);
 	public static final Identifier MISSING_ID = ScatteredShards.id("missing");
 
 	public static Identifier createModId(Identifier shardTypeId, String modId) {

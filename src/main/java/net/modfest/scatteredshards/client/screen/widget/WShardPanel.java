@@ -64,6 +64,12 @@ public class WShardPanel extends WPlainPanel {
 	 */
 	public WShardPanel setType(Identifier shardTypeId, ShardType value) {
 		this.shardType = value;
+
+		int cardScale = 2;
+		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
+		ShardType.IconOffset offset = this.shardType.iconOffset();
+		this.icon.setLocation(this.insets.left() + cardX + (offset.left() * cardScale), this.insets.top() + 40 + (offset.up() * cardScale));
+
 		backing.setImage(ShardType.getFrontTexture(shardTypeId));
 		typeDescription.setText(ShardType.getDescription(shardTypeId));
 		typeDescription.setColor(value::textColor);
@@ -146,7 +152,8 @@ public class WShardPanel extends WPlainPanel {
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
 		add(backing, cardX, 40, 24 * cardScale, 32 * cardScale);
 
-		add(icon, cardX + (4 * cardScale), 40 + (ScatteredShardsClient.ICON_Y_OFFSET * cardScale), 16 * cardScale, 16 * cardScale);
+		ShardType.IconOffset offset = this.shardType.iconOffset();
+		add(icon, cardX + (offset.left() * cardScale), 40 + (offset.up() * cardScale), 16 * cardScale, 16 * cardScale);
 
 
 		add(lore, 0, 113, getLayoutWidth(), 32);

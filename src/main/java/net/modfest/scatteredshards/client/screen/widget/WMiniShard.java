@@ -55,6 +55,7 @@ public class WMiniShard extends WWidget {
 		float opacity = (isCollected) ? 1.0f : 0.6f;
 		ScreenDrawing.texturedRect(context, x, y, 12, 16, tex, color, opacity);
 		if (isCollected && ScatteredShardsClient.DRAW_MINI_ICONS) {
+			//TODO: configure offset
 			//Maybe draw a teeny tiny icon
 			shard.icon().ifLeft((it) -> {
 				context.getMatrices().push();

@@ -19,7 +19,6 @@ import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 
 public class ScatteredShardsClient implements ClientModInitializer {
-	public static final int ICON_Y_OFFSET = 6;
 	public static final boolean DRAW_MINI_ICONS = false;
 	public static final int LEFT = 0xFF_3e2d58;
 	public static final int RIGHT_TOP = 0xFF_441209;
