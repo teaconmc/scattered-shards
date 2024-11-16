@@ -102,7 +102,7 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 	@Override
 	public void addPainters() {
 		selectorPanel.setBackgroundPainter(BackgroundPainter.createColorful(
-			ScatteredShardsAPI.getClientLibrary().shardDisplaySettings().libraryColor()
+			0xFF_000000 | (ScatteredShardsAPI.getClientLibrary().shardDisplaySettings().libraryColor())
 		));
 	}
 

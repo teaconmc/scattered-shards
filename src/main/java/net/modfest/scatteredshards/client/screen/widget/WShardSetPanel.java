@@ -5,6 +5,7 @@ import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
@@ -24,7 +25,7 @@ public class WShardSetPanel extends WPanelWithInsets {
 	};
 
 	private final WScaledLabel sourceLabel = new WScaledLabel(Text.literal(""), 0.8f)
-		.setColor(0xFF_CCFFCC)
+		.setColor(0xFF_000000 | ScatteredShardsAPI.getClientLibrary().shardDisplaySettings().librarySetNameColor())
 		.setShadow(true);
 	private final List<WMiniShard> shards = new ArrayList<>();
 

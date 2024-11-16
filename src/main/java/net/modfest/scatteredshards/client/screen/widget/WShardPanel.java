@@ -207,7 +207,7 @@ public class WShardPanel extends WPlainPanel {
 			context.fillGradient(
 				left + 5, top + 5,
 				left + 5 + panel.getWidth() - 10, top + 5 + panel.getHeight() - 10,
-				displaySettings.viewerTopColor(), displaySettings.viewerBottomColor()
+				0xFF_000000 | displaySettings.viewerTopColor(), 0xFF_000000 | displaySettings.viewerBottomColor()
 			);
 		});
 	}
