@@ -14,6 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
+import net.modfest.scatteredshards.api.shard.ShardIconOffsets;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.block.ShardBlockEntity;
@@ -162,7 +163,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 		float xpx = 1 / 24f * cardWidth;
 		float ypx = 1 / 32f * cardHeight;
 
-		ShardType.IconOffset offset = shardType.iconOffset();
+		ShardIconOffsets.Offset offset = shardType.iconMeta().normal();
 
 		shard.icon().ifLeft(stack -> {
 			matrices.translate((4 - offset.left()) * xpx, (8 - offset.up()) * ypx, -0.005f); //extra -0.002 here to prevent full-cubes from zfighting the card

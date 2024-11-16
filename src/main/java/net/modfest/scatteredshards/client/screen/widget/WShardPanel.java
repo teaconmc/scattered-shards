@@ -19,6 +19,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
+import net.modfest.scatteredshards.api.shard.ShardIconOffsets;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
@@ -67,7 +68,7 @@ public class WShardPanel extends WPlainPanel {
 
 		int cardScale = 2;
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
-		ShardType.IconOffset offset = this.shardType.iconOffset();
+		ShardIconOffsets.Offset offset = this.shardType.iconMeta().normal();
 		this.icon.setLocation(this.insets.left() + cardX + (offset.left() * cardScale), this.insets.top() + 40 + (offset.up() * cardScale));
 
 		backing.setImage(ShardType.getFrontTexture(shardTypeId));
@@ -152,7 +153,7 @@ public class WShardPanel extends WPlainPanel {
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
 		add(backing, cardX, 40, 24 * cardScale, 32 * cardScale);
 
-		ShardType.IconOffset offset = this.shardType.iconOffset();
+		ShardIconOffsets.Offset offset = this.shardType.iconMeta().normal();
 		add(icon, cardX + (offset.left() * cardScale), 40 + (offset.up() * cardScale), 16 * cardScale, 16 * cardScale);
 
 

@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.shard.Shard;
+import net.modfest.scatteredshards.api.shard.ShardIconOffsets;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
 
@@ -57,15 +58,18 @@ public class WMiniShard extends WWidget {
 		if (isCollected && ScatteredShardsClient.DRAW_MINI_ICONS) {
 			//TODO: configure offset
 			//Maybe draw a teeny tiny icon
+
+			ShardIconOffsets.Offset offset = this.shardType.iconMeta().mini();
+
 			shard.icon().ifLeft((it) -> {
 				context.getMatrices().push();
-				context.getMatrices().translate(x + 3, y + 3, 0);
+				context.getMatrices().translate(x + offset.left(), y + offset.up(), 0);
 				context.getMatrices().scale(0.375f, 0.375f, 1); // 16px -> 6px
 				RenderSystem.enableDepthTest();
 				context.drawItemWithoutEntity(it, 0, 0);
 				context.getMatrices().pop();
 			});
-			shard.icon().ifRight((it) -> ScreenDrawing.texturedRect(context, x + 3, y + 3, 6, 6, it, 0xFF_FFFFFF));
+			shard.icon().ifRight((it) -> ScreenDrawing.texturedRect(context, x + offset.left(), y + offset.up(), 6, 6, it, 0xFF_FFFFFF));
 		}
 
 		boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
