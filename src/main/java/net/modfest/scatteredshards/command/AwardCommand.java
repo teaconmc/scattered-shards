@@ -39,13 +39,14 @@ public class AwardCommand {
 	}
 
 	public static void register(CommandNode<ServerCommandSource> parent) {
-		var awardCommand = Node.literal("award").build();
-		var awardPlayerArgument = Node.players("players").build();
-		var awardIdArgument = Node.shardId("shard_id")
-			.executes(AwardCommand::award)
+		var awardCommand = Node.literal("award")
 			.requires(
 				Permissions.require(ScatteredShards.permission("command.award"), 2)
 			)
+			.build();
+		var awardPlayerArgument = Node.players("players").build();
+		var awardIdArgument = Node.shardId("shard_id")
+			.executes(AwardCommand::award)
 			.build();
 		awardCommand.addChild(awardPlayerArgument);
 		awardPlayerArgument.addChild(awardIdArgument);
