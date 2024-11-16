@@ -25,6 +25,8 @@ public interface ShardLibrary {
 
 	SetMultimap<Identifier, Identifier> shardSets();
 
+	ShardDisplaySettings shardDisplaySettings();
+
 	/**
 	 * Removes all Shards, ShardTypes, and ShardSets in this Library.
 	 */
@@ -53,6 +55,7 @@ public interface ShardLibrary {
 			}
 		).cast(),
 		ShardLibrary::shardSets,
+		ShardDisplaySettings.PACKET_CODEC, ShardLibrary::shardDisplaySettings,
 		ShardLibraryImpl::new
 	);
 }

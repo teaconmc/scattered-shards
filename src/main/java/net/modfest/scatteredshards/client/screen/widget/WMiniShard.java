@@ -55,12 +55,10 @@ public class WMiniShard extends WWidget {
 		int color = (isCollected) ? 0xFF_FFFFFF : 0xFF_668866;
 		float opacity = (isCollected) ? 1.0f : 0.6f;
 		ScreenDrawing.texturedRect(context, x, y, 12, 16, tex, color, opacity);
-		if (isCollected && ScatteredShardsClient.DRAW_MINI_ICONS) {
-			//TODO: configure offset
+		if (isCollected && ScatteredShardsAPI.getClientLibrary().shardDisplaySettings().drawMiniIcons()) {
 			//Maybe draw a teeny tiny icon
 
 			ShardIconOffsets.Offset offset = this.shardType.getOffsets().getMini();
-
 			shard.icon().ifLeft((it) -> {
 				context.getMatrices().push();
 				context.getMatrices().translate(x + offset.left(), y + offset.up(), 0);

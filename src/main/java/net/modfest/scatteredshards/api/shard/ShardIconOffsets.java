@@ -40,22 +40,22 @@ public record ShardIconOffsets(Optional<Offset> normal, Optional<Offset> mini) {
 		public static final Offset DEFAULT_MINI = new Offset(2, 2);
 
 		public int down() {
-			// (32 (card) - 16 (item)) - up
+			// (32 (card) - 16 (icon)) - up
 			return 16 - up;
 		}
 
 		public int right() {
-			// (24 (card) - 16 (item)) - left
+			// (24 (card) - 16 (icon)) - left
 			return 8 - left;
 		}
 
 		public int miniDown() {
-			// (16 (card) - 6 (item)) - up
+			// (16 (card) - 6 (icon)) - up
 			return 10 - up;
 		}
 
 		public int miniRight() {
-			// (12 (card) - 6 (item)) - left
+			// (12 (card) - 6 (icon)) - left
 			return 6 - left;
 		}
 	}

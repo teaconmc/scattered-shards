@@ -6,13 +6,12 @@ import io.github.cottonmc.cotton.gui.client.LightweightGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WListPanel;
 import io.github.cottonmc.cotton.gui.widget.WPanelWithInsets;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
-import io.github.cottonmc.cotton.gui.widget.WScrollBar;
-import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
+import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
@@ -102,7 +101,9 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 
 	@Override
 	public void addPainters() {
-		selectorPanel.setBackgroundPainter(BackgroundPainter.createColorful(ScatteredShardsClient.LEFT));
+		selectorPanel.setBackgroundPainter(BackgroundPainter.createColorful(
+			ScatteredShardsAPI.getClientLibrary().shardDisplaySettings().libraryColor()
+		));
 	}
 
 	public static class Screen extends CottonClientScreen {
