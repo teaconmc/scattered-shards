@@ -6,18 +6,22 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 
-public record ShardIconOffsets(Offset normal, Offset mini) {
+import java.util.Optional;
+
+public record ShardIconOffsets(Optional<Offset> normal, Optional<Offset> mini) {
 
 	public static final Codec<ShardIconOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		Offset.CODEC.fieldOf("normal").forGetter(ShardIconOffsets::normal),
-		Offset.CODEC.fieldOf("mini").forGetter(ShardIconOffsets::mini)
+		Codec.optionalField("normal", Offset.CODEC, false).forGetter(ShardIconOffsets::normal),
+		Codec.optionalField("mini", Offset.CODEC, false).forGetter(ShardIconOffsets::mini)
 	).apply(instance, ShardIconOffsets::new));
 
 	public static final PacketCodec<RegistryByteBuf, ShardIconOffsets> PACKET_CODEC = PacketCodec.tuple(
-		Offset.PACKET_CODEC, ShardIconOffsets::normal,
-		Offset.PACKET_CODEC, ShardIconOffsets::mini,
+		PacketCodecs.optional(Offset.PACKET_CODEC), ShardIconOffsets::normal,
+		PacketCodecs.optional(Offset.PACKET_CODEC), ShardIconOffsets::mini,
 		ShardIconOffsets::new
 	);
+
+	public static final ShardIconOffsets DEFAULT = new ShardIconOffsets(Optional.empty(), Optional.empty());
 
 	public record Offset(int up, int left) {
 
@@ -31,6 +35,9 @@ public record ShardIconOffsets(Offset normal, Offset mini) {
 			PacketCodecs.INTEGER, Offset::left,
 			Offset::new
 		);
+
+		public static final Offset DEFAULT = new Offset(4, 4);
+		public static final Offset DEFAULT_MINI = new Offset(2, 2);
 
 		public int down() {
 			// (32 (card) - 16 (item)) - up
@@ -53,7 +60,11 @@ public record ShardIconOffsets(Offset normal, Offset mini) {
 		}
 	}
 
-	public ShardIconOffsets(int normalLeft, int normalUp, int miniLeft, int miniUp) {
-		this(new Offset(normalUp, normalLeft), new Offset(miniUp, miniLeft));
+	public Offset getNormal() {
+		return normal.orElse(Offset.DEFAULT);
+	}
+
+	public Offset getMini() {
+		return mini.orElse(Offset.DEFAULT_MINI);
 	}
 }

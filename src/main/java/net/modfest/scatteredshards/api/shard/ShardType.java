@@ -20,12 +20,12 @@ import net.modfest.scatteredshards.api.impl.ColorCodec;
 
 import java.util.Optional;
 
-public record ShardType(int textColor, int glowColor, ShardIconOffsets iconMeta, Optional<ParticleType<?>> collectParticle, Optional<SoundEvent> collectSound, int listOrder) {
+public record ShardType(int textColor, int glowColor, Optional<ShardIconOffsets> offsets, Optional<ParticleType<?>> collectParticle, Optional<SoundEvent> collectSound, int listOrder) {
 
 	public static final Codec<ShardType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 		ColorCodec.CODEC.fieldOf("text_color").forGetter(ShardType::textColor),
 		ColorCodec.CODEC.fieldOf("glow_color").forGetter(ShardType::glowColor),
-		ShardIconOffsets.CODEC.fieldOf("icon_offsets").forGetter(ShardType::iconMeta),
+		Codec.optionalField("icon_offsets", ShardIconOffsets.CODEC, false).forGetter(ShardType::offsets),
 		Codec.optionalField("collect_particle", Registries.PARTICLE_TYPE.getCodec(), false).forGetter(ShardType::collectParticle),
 		Codec.optionalField("collect_sound", SoundEvent.CODEC, false).forGetter(ShardType::collectSound),
 		Codec.INT.fieldOf("list_order").forGetter(ShardType::listOrder)
@@ -34,7 +34,7 @@ public record ShardType(int textColor, int glowColor, ShardIconOffsets iconMeta,
 	public static final PacketCodec<RegistryByteBuf, ShardType> PACKET_CODEC = PacketCodec.tuple(
 		PacketCodecs.INTEGER, ShardType::textColor,
 		PacketCodecs.INTEGER, ShardType::glowColor,
-		ShardIconOffsets.PACKET_CODEC, ShardType::iconMeta,
+		PacketCodecs.optional(ShardIconOffsets.PACKET_CODEC), ShardType::offsets,
 		PacketCodecs.optional(PacketCodecs.registryCodec(Registries.PARTICLE_TYPE.getCodec())), ShardType::collectParticle,
 		PacketCodecs.optional(SoundEvent.PACKET_CODEC), ShardType::collectSound,
 		PacketCodecs.INTEGER, ShardType::listOrder,
@@ -45,7 +45,7 @@ public record ShardType(int textColor, int glowColor, ShardIconOffsets iconMeta,
 	public static final SoundEvent COLLECT_CHALLENGE_SOUND = SoundEvent.of(ScatteredShards.id("collect_challenge"));
 	public static final SoundEvent COLLECT_SECRET_SOUND = SoundEvent.of(ScatteredShards.id("collect_secret"));
 
-	public static final ShardType MISSING = new ShardType(0xFFFFFF, 0xFF00FF, new ShardIconOffsets(4, 4, 3, 3), Optional.empty(), Optional.empty(), -1);
+	public static final ShardType MISSING = new ShardType(0xFFFFFF, 0xFF00FF, Optional.empty(), Optional.empty(), Optional.empty(), -1);
 	public static final Identifier MISSING_ID = ScatteredShards.id("missing");
 
 	public static Identifier createModId(Identifier shardTypeId, String modId) {
@@ -74,6 +74,10 @@ public record ShardType(int textColor, int glowColor, ShardIconOffsets iconMeta,
 
 	public static Text getDescription(Identifier id) {
 		return Text.translatable(id.toTranslationKey("shard_type", "description"));
+	}
+
+	public ShardIconOffsets getOffsets() {
+		return this.offsets.orElse(ShardIconOffsets.DEFAULT);
 	}
 
 	public NbtCompound toNbt() {

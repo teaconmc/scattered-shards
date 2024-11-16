@@ -68,7 +68,7 @@ public class WShardPanel extends WPlainPanel {
 
 		int cardScale = 2;
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
-		ShardIconOffsets.Offset offset = this.shardType.iconMeta().normal();
+		ShardIconOffsets.Offset offset = this.shardType.getOffsets().getNormal();
 		this.icon.setLocation(this.insets.left() + cardX + (offset.left() * cardScale), this.insets.top() + 40 + (offset.up() * cardScale));
 
 		backing.setImage(ShardType.getFrontTexture(shardTypeId));
@@ -153,7 +153,7 @@ public class WShardPanel extends WPlainPanel {
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
 		add(backing, cardX, 40, 24 * cardScale, 32 * cardScale);
 
-		ShardIconOffsets.Offset offset = this.shardType.iconMeta().normal();
+		ShardIconOffsets.Offset offset = this.shardType.getOffsets().getNormal();
 		add(icon, cardX + (offset.left() * cardScale), 40 + (offset.up() * cardScale), 16 * cardScale, 16 * cardScale);
 
 

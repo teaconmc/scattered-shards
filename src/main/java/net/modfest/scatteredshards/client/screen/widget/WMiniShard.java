@@ -59,7 +59,7 @@ public class WMiniShard extends WWidget {
 			//TODO: configure offset
 			//Maybe draw a teeny tiny icon
 
-			ShardIconOffsets.Offset offset = this.shardType.iconMeta().mini();
+			ShardIconOffsets.Offset offset = this.shardType.getOffsets().getMini();
 
 			shard.icon().ifLeft((it) -> {
 				context.getMatrices().push();
