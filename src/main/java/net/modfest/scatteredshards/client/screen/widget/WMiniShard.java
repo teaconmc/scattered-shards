@@ -64,12 +64,12 @@ public class WMiniShard extends WWidget {
 			shard.icon().ifLeft((it) -> {
 				context.getMatrices().push();
 				context.getMatrices().translate(x + offset.left(), y + offset.up(), 0);
-				context.getMatrices().scale(0.375f, 0.375f, 1); // 16px -> 6px
+				context.getMatrices().scale(0.5f, 0.5f, 1); // 16px -> 8px
 				RenderSystem.enableDepthTest();
 				context.drawItemWithoutEntity(it, 0, 0);
 				context.getMatrices().pop();
 			});
-			shard.icon().ifRight((it) -> ScreenDrawing.texturedRect(context, x + offset.left(), y + offset.up(), 6, 6, it, 0xFF_FFFFFF));
+			shard.icon().ifRight((it) -> ScreenDrawing.texturedRect(context, x + offset.left(), y + offset.up(), 8, 8, it, 0xFF_FFFFFF));
 		}
 
 		boolean hovered = (mouseX >= 0 && mouseY >= 0 && mouseX < getWidth() && mouseY < getHeight());
