@@ -15,6 +15,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
+import net.modfest.scatteredshards.api.ShardDisplaySettings;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.networking.S2CSyncLibrary;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +47,14 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 		for (var entry : cache.entrySet()) {
 			try {
 				JsonObject root = JsonHelper.asObject(entry.getValue(), "root element");
+
+				//TODO: improve this accursed way of datafying these settings
+				if (root.has("display_settings")) {
+					library.shardDisplaySettings().copyFrom(ShardDisplaySettings.fromJson(root.getAsJsonObject("display_settings")));
+
+					// remove it all to avoid messing with shard processing
+					root.remove("display_settings");
+				}
 
 				if (root.has("text_color")) {
 					library.shardTypes().put(entry.getKey(), ShardType.fromJson(root));

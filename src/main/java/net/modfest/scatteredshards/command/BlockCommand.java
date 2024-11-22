@@ -48,12 +48,13 @@ public class BlockCommand {
 
 	public static void register(CommandNode<ServerCommandSource> parent) {
 		//Usage: /shard block <shard_id>
-		var blockCommand = Node.literal("block").build();
-		var blockIdArgument = Node.shardId("shard_id")
-			.executes(BlockCommand::block)
+		var blockCommand = Node.literal("block")
 			.requires(
 				Permissions.require(ScatteredShards.permission("command.block"), 2)
 			)
+			.build();
+		var blockIdArgument = Node.shardId("shard_id")
+			.executes(BlockCommand::block)
 			.build();
 		var blockInteractArgument = Node.booleanValue("can_interact").build();
 		var blockGlowSizeArgument = Node.floatValue("glow_size").build();

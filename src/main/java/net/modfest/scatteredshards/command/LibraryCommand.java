@@ -111,17 +111,18 @@ public class LibraryCommand {
 
 		//Usage: /shard library delete all
 		var deleteAllCommand = Node.literal("all")
-			.executes(LibraryCommand::deleteAll)
 			.requires(
 				Permissions.require(ScatteredShards.permission("command.library.delete.all"), 4)
 			)
+			.executes(LibraryCommand::deleteAll)
 			.build();
 		deleteCommand.addChild(deleteAllCommand);
 
 		var migrateCommand = Node.literal("migrate")
 			.requires(
 				Permissions.require(ScatteredShards.permission("command.library.migrate"), 3)
-			).build();
+			)
+			.build();
 		var migrateShardArg = Node.shardId("shard_id").build();
 		var migrateModArg = Node.stringArgument("mod_id").suggests(Node::suggestModIds).build();
 		var migrateShardTypeArg = Node.identifier("shard_type").suggests(Node::suggestShardTypes)

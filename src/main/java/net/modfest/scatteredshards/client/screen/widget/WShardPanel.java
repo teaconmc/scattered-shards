@@ -19,9 +19,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
+import net.modfest.scatteredshards.api.ShardDisplaySettings;
 import net.modfest.scatteredshards.api.shard.Shard;
+import net.modfest.scatteredshards.api.shard.ShardIconOffsets;
 import net.modfest.scatteredshards.api.shard.ShardType;
-import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledLabel;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledText;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WShardIcon;
@@ -64,6 +65,12 @@ public class WShardPanel extends WPlainPanel {
 	 */
 	public WShardPanel setType(Identifier shardTypeId, ShardType value) {
 		this.shardType = value;
+
+		int cardScale = 2;
+		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
+		ShardIconOffsets.Offset offset = this.shardType.getOffsets().getNormal();
+		this.icon.setLocation(this.insets.left() + cardX + (offset.left() * cardScale), this.insets.top() + 40 + (offset.up() * cardScale));
+
 		backing.setImage(ShardType.getFrontTexture(shardTypeId));
 		typeDescription.setText(ShardType.getDescription(shardTypeId));
 		typeDescription.setColor(value::textColor);
@@ -146,7 +153,8 @@ public class WShardPanel extends WPlainPanel {
 		int cardX = ((this.getLayoutWidth()) / 2) - (12 * cardScale);
 		add(backing, cardX, 40, 24 * cardScale, 32 * cardScale);
 
-		add(icon, cardX + (4 * cardScale), 40 + (ScatteredShardsClient.ICON_Y_OFFSET * cardScale), 16 * cardScale, 16 * cardScale);
+		ShardIconOffsets.Offset offset = this.shardType.getOffsets().getNormal();
+		add(icon, cardX + (offset.left() * cardScale), 40 + (offset.up() * cardScale), 16 * cardScale, 16 * cardScale);
 
 
 		add(lore, 0, 113, getLayoutWidth(), 32);
@@ -191,11 +199,16 @@ public class WShardPanel extends WPlainPanel {
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void addPainters() {
+		ShardDisplaySettings displaySettings = ScatteredShardsAPI.getClientLibrary().shardDisplaySettings();
 		this.setBackgroundPainter((context, left, top, panel) -> {
 			context.setShaderColor(1, 1, 1, 1);
 			ScreenDrawing.drawGuiPanel(context, left, top, panel.getWidth(), panel.getHeight());
 			ScreenDrawing.drawBeveledPanel(context, left + 4, top + 4, panel.getWidth() - 8, panel.getHeight() - 8);
-			context.fillGradient(left + 5, top + 5, left + 5 + panel.getWidth() - 10, top + 5 + panel.getHeight() - 10, ScatteredShardsClient.RIGHT_TOP, ScatteredShardsClient.RIGHT_BOTTOM);
+			context.fillGradient(
+				left + 5, top + 5,
+				left + 5 + panel.getWidth() - 10, top + 5 + panel.getHeight() - 10,
+				0xFF_000000 | displaySettings.viewerTopColor(), 0xFF_000000 | displaySettings.viewerBottomColor()
+			);
 		});
 	}
 

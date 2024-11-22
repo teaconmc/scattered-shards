@@ -75,10 +75,10 @@ public class UncollectCommand {
 
 		//syntax: uncollect all
 		var uncollectAllCommand = Node.literal("all")
-			.executes(UncollectCommand::uncollectAll)
 			.requires(
 				Permissions.require(ScatteredShards.permission("command.uncollect.all"), 2)
 			)
+			.executes(UncollectCommand::uncollectAll)
 			.build();
 		uncollectCommand.addChild(uncollectAllCommand);
 	}

@@ -4,6 +4,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.MiniRegistry;
+import net.modfest.scatteredshards.api.ShardDisplaySettings;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
@@ -15,6 +16,7 @@ public class ShardLibraryImpl implements ShardLibrary {
 	private final MiniRegistry<Shard> shards;
 	private final MiniRegistry<ShardType> shardTypes;
 	private final SetMultimap<Identifier, Identifier> shardSets;
+	private final ShardDisplaySettings shardDisplaySettings;
 
 	@Override
 	public void clearAll() {
@@ -24,13 +26,19 @@ public class ShardLibraryImpl implements ShardLibrary {
 	}
 
 	public ShardLibraryImpl() {
-		this(new MiniRegistry<>(Shard.CODEC), new MiniRegistry<>(ShardType.CODEC), MultimapBuilder.hashKeys().hashSetValues(3).build());
+		this(
+			new MiniRegistry<>(Shard.CODEC),
+			new MiniRegistry<>(ShardType.CODEC),
+			MultimapBuilder.hashKeys().hashSetValues(3).build(),
+			new ShardDisplaySettings()
+		);
 	}
 
-	public ShardLibraryImpl(MiniRegistry<Shard> shards, MiniRegistry<ShardType> shardTypes, SetMultimap<Identifier, Identifier> shardSets) {
+	public ShardLibraryImpl(MiniRegistry<Shard> shards, MiniRegistry<ShardType> shardTypes, SetMultimap<Identifier, Identifier> shardSets, ShardDisplaySettings settings) {
 		this.shards = shards;
 		this.shardTypes = shardTypes;
 		this.shardSets = shardSets;
+		this.shardDisplaySettings = settings;
 	}
 
 	@Override
@@ -46,6 +54,11 @@ public class ShardLibraryImpl implements ShardLibrary {
 	@Override
 	public SetMultimap<Identifier, Identifier> shardSets() {
 		return shardSets;
+	}
+
+	@Override
+	public ShardDisplaySettings shardDisplaySettings() {
+		return shardDisplaySettings;
 	}
 
 	@Override
