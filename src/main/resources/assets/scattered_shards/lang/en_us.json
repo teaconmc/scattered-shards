@@ -37,5 +37,9 @@
 	"toast.scattered_shards.shard_mod.fail": "Failed to modify '%s'",
 	"block.scattered_shards.shard_block": "Shard",
 	"block.scattered_shards.shard_block.pickup_fail": "Shard already collected!",
-	"item.scattered_shards.shard_tablet": "Shard Tablet"
+	"item.scattered_shards.shard_tablet": "Shard Tablet",
+
+	"shard_type.scattered_shards.visitor.description": "Visitor Shard",
+	"shard_type.scattered_shards.challenge.description": "Challenge Shard",
+	"shard_type.scattered_shards.secret.description": "Secret Shard"
 }

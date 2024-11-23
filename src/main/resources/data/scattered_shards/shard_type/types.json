@@ -1,5 +1,5 @@
 {
-	"bc23:visitor": {
+	"scattered_shards:visitor": {
 		"text_color": "#6de851",
 		"glow_color": "#00ff48",
 		"collect_particle": "minecraft:totem_of_undying",
@@ -9,7 +9,7 @@
 		"list_order": 1
 	},
 	
-	"bc23:challenge": {
+	"scattered_shards:challenge": {
 		"text_color": "#5174e8",
 		"glow_color": "#0026ff",
 		"collect_particle": "minecraft:glow",
@@ -19,7 +19,7 @@
 		"list_order": 2
 	},
 	
-	"bc23:secret": {
+	"scattered_shards:secret": {
 		"text_color": "#eb4034",
 		"glow_color": "#f08",
 		"collect_particle": "minecraft:witch",
