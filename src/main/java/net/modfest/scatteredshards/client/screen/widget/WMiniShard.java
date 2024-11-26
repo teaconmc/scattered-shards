@@ -84,7 +84,7 @@ public class WMiniShard extends WWidget {
 	@Override
 	public void addTooltip(TooltipBuilder tooltip) {
 
-		if (ScatteredShardsClient.hasShiftDown()) {
+		if (ScatteredShardsClient.hasShiftDown() && !shard.name().getString().isBlank()) {
 			tooltip.add(shard.name());
 		}
 		tooltip.add(ShardType.getDescription(shard.shardTypeId()).copy().withColor(shardType.textColor()));
