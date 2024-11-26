@@ -1,9 +1,6 @@
 package net.modfest.scatteredshards.api.impl;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
@@ -21,7 +18,6 @@ public class ShardLibraryPersistentState extends PersistentState {
 	);
 
 	public static final String SHARDS_KEY = "Shards";
-	public static final String SHARD_SETS_KEY = "ShardSets";
 
 	public static ShardLibraryPersistentState get(MinecraftServer server) {
 		return server.getOverworld().getPersistentStateManager().getOrCreate(TYPE, ScatteredShards.ID + "_library");
@@ -53,21 +49,6 @@ public class ShardLibraryPersistentState extends PersistentState {
 			}
 		}
 
-		NbtCompound shardSets = tag.getCompound(SHARD_SETS_KEY);
-		for (String id : shardSets.getKeys()) {
-			try {
-				Identifier setId = Identifier.of(id);
-				NbtList ids = shardSets.getList(id, NbtElement.STRING_TYPE);
-				for (NbtElement elem : ids) {
-					if (elem instanceof NbtString str) {
-						library.shardSets().put(setId, Identifier.of(str.asString()));
-					}
-				}
-			} catch (Throwable t) {
-				ScatteredShards.LOGGER.error("Could not load shardSet \"{}\": {}", id, t.getMessage());
-			}
-		}
-
 		ScatteredShards.LOGGER.info("Loaded {} shards and {} shardSets.", library.shards().size(), library.shardSets().size());
 
 		return state;
@@ -79,16 +60,6 @@ public class ShardLibraryPersistentState extends PersistentState {
 		ScatteredShards.LOGGER.info("Saving the ShardLibrary with {} shards and {} shardSets...", library.shards().size(), library.shardSets().size());
 
 		tag.put(SHARDS_KEY, library.shards().toNbt());
-
-		NbtCompound shardSets = new NbtCompound();
-		library.shardSets().asMap().forEach((id, set) -> {
-			NbtList list = new NbtList();
-			for (Identifier i : set) {
-				list.add(NbtString.of(i.toString()));
-			}
-			shardSets.put(id.toString(), list);
-		});
-		tag.put(SHARD_SETS_KEY, shardSets);
 
 		ScatteredShards.LOGGER.info("ShardLibrary saved.");
 

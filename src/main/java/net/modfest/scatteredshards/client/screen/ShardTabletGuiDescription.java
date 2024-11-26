@@ -46,6 +46,7 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 		ids.sort(Comparator.comparing(Identifier::getNamespace));
 
 		shardSelector = new WListPanel<>(ids, WShardSetPanel::new, this::configurePanel);
+		shardSelector.getScrollBar().setScrollingSpeed(1);
 		selectorPanel.setInsets(Insets.ROOT_PANEL);
 
 		WLeftRightPanel root = new WLeftRightPanel(selectorPanel, shardPanel);

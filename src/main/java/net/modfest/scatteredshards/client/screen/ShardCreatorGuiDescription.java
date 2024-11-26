@@ -15,7 +15,6 @@ import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
@@ -32,6 +31,7 @@ import net.modfest.scatteredshards.client.screen.widget.WLeftRightPanel;
 import net.modfest.scatteredshards.client.screen.widget.WProtectableField;
 import net.modfest.scatteredshards.client.screen.widget.WShardPanel;
 import net.modfest.scatteredshards.networking.C2SModifyShard;
+import net.modfest.scatteredshards.util.ModMetaUtil;
 
 import java.util.Objects;
 
@@ -163,19 +163,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		this(shardId);
 		this.shard = shard;
 
-		this.modIcon = FabricLoader.getInstance().getModContainer(modId)
-			.flatMap(it -> it.getMetadata().getIconPath(16))
-			.filter(it -> it.startsWith("assets/"))
-			.map(it -> it.substring("assets/".length()))
-			.map(it -> {
-				int firstSlash = it.indexOf("/");
-				String namespace = it.substring(0, firstSlash);
-				String path = it.substring(firstSlash + 1);
-
-				return Identifier.of(namespace, path);
-			})
-			.orElse(Shard.MISSING_ICON.right().get()); //TODO: Deal with non-resource icons here.
-		Shard.getSourceForModId(modId).ifPresent(shard::setSource);
+		this.modIcon = ModMetaUtil.touchModIcon(modId);
 		shard.setSourceId(Identifier.of(modId, "shard_pack"));
 
 		// Initialize field values

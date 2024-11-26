@@ -17,6 +17,7 @@ import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardIconOffsets;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
+import net.modfest.scatteredshards.util.ModMetaUtil;
 
 import java.util.function.Consumer;
 
@@ -35,6 +36,7 @@ public class WMiniShard extends WWidget {
 	}
 
 	public WMiniShard setShard(Shard shard, boolean collected, Identifier shardId) {
+		shard.icon().ifRight(ModMetaUtil::touchIconTexture);
 		this.shard = shard;
 		this.shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING);
 		this.isCollected = collected;

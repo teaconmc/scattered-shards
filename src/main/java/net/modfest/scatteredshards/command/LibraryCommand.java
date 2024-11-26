@@ -72,6 +72,7 @@ public class LibraryCommand {
 		Shard shard = library.shards().get(shardId).orElseThrow(() -> ShardCommand.INVALID_SHARD.create(shardId));
 
 		library.shards().remove(shardId);
+		library.shardSets().values().removeIf(i -> i.equals(shardId));
 		shard.setShardType(shardTypeId);
 		library.shards().put(newShardId, shard);
 

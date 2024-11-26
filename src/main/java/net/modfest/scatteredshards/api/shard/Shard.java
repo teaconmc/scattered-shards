@@ -30,7 +30,6 @@ public class Shard {
 		TextCodecs.CODEC.fieldOf("name").forGetter(Shard::name),
 		TextCodecs.CODEC.fieldOf("lore").forGetter(Shard::lore),
 		TextCodecs.CODEC.fieldOf("hint").forGetter(Shard::hint),
-		TextCodecs.CODEC.fieldOf("source").forGetter(Shard::source),
 		Identifier.CODEC.fieldOf("source_id").forGetter(Shard::sourceId),
 		ICON_CODEC.fieldOf("icon").forGetter(Shard::icon)
 	).apply(instance, Shard::new));
@@ -40,23 +39,21 @@ public class Shard {
 	public static final Identifier MISSING_ICON_ID = ScatteredShards.id("textures/gui/shards/missing_icon.png");
 	public static final Either<ItemStack, Identifier> MISSING_ICON = Either.right(MISSING_ICON_ID);
 	public static final Identifier MISSING_SHARD_SOURCE = ScatteredShards.id("missing");
-	public static final Shard MISSING_SHARD = new Shard(ShardType.MISSING_ID, Text.of("Missing"), Text.of(""), Text.of(""), Text.of("None"), MISSING_SHARD_SOURCE, MISSING_ICON);
+	public static final Shard MISSING_SHARD = new Shard(ShardType.MISSING_ID, Text.of("Missing"), Text.of(""), Text.of(""), MISSING_SHARD_SOURCE, MISSING_ICON);
 
 	protected Identifier shardTypeId;
 	protected Text name;
 	protected Text lore;
 	protected Text hint;
-	protected Text source;
 	protected Identifier sourceId;
 	protected Either<ItemStack, Identifier> icon;
 
-	public Shard(Identifier shardTypeId, Text name, Text lore, Text hint, Text source, Identifier sourceId, Either<ItemStack, Identifier> icon) {
-		Stream.of(name, lore, hint, source, icon).forEach(Objects::requireNonNull);
+	public Shard(Identifier shardTypeId, Text name, Text lore, Text hint, Identifier sourceId, Either<ItemStack, Identifier> icon) {
+		Stream.of(name, lore, hint, icon).forEach(Objects::requireNonNull);
 		this.shardTypeId = shardTypeId;
 		this.name = name;
 		this.lore = lore;
 		this.hint = hint;
-		this.source = source;
 		this.sourceId = sourceId;
 		this.icon = icon;
 	}
@@ -75,10 +72,6 @@ public class Shard {
 
 	public Text hint() {
 		return hint;
-	}
-
-	public Text source() {
-		return source;
 	}
 
 	public Identifier sourceId() {
@@ -124,11 +117,6 @@ public class Shard {
 		return this;
 	}
 
-	public Shard setSource(Text source) {
-		this.source = source;
-		return this;
-	}
-
 	public Shard setSourceId(Identifier id) {
 		this.sourceId = id;
 		return this;
@@ -148,7 +136,7 @@ public class Shard {
 
 	public Shard copy() {
 		Either<ItemStack, Identifier> icon = icon().mapBoth(stack -> stack, id -> id);
-		return new Shard(shardTypeId, name.copy(), lore.copy(), hint.copy(), source.copy(), sourceId, icon);
+		return new Shard(shardTypeId, name.copy(), lore.copy(), hint.copy(), sourceId, icon);
 	}
 
 	@Override
@@ -157,11 +145,7 @@ public class Shard {
 	}
 
 	public static Shard emptyOfType(Identifier id) {
-		return MISSING_SHARD.copy().setShardType(id);
-	}
-
-	public static Text getSourceForNamespace(String namespace) {
-		return Text.translatable("shard_pack." + namespace + ".name");
+		return MISSING_SHARD.copy().setShardType(id).setName(Text.of(""));
 	}
 
 	public static Text getSourceForMod(ModContainer mod) {
@@ -179,9 +163,5 @@ public class Shard {
 
 		return getSourceForModId(id.getNamespace())
 			.orElse(Text.translatable("shard_pack." + id.getNamespace() + ".name"));
-	}
-
-	public static Identifier getSourceIdForNamespace(String namespace) {
-		return Identifier.of(namespace, "shard_pack");
 	}
 }

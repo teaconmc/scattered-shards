@@ -26,6 +26,7 @@ import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledLabel;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledText;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WShardIcon;
+import net.modfest.scatteredshards.util.ModMetaUtil;
 
 import java.util.List;
 import java.util.function.IntSupplier;
@@ -50,7 +51,7 @@ public class WShardPanel extends WPlainPanel {
 		.setShadow(true)
 		.setHorizontalAlignment(HorizontalAlignment.CENTER)
 		.setColor(() -> shardType.textColor());
-	private final WScaledLabel source = new WScaledLabel(shard::source, 0.9f)
+	private final WScaledLabel source = new WScaledLabel(() -> Shard.getSourceForSourceId(shard.sourceId()), 0.9f)
 		.setShadow(true)
 		.setHorizontalAlignment(HorizontalAlignment.CENTER);
 	private final WScaledText lore = new WScaledText(shard::lore, 0.8f)
@@ -111,13 +112,14 @@ public class WShardPanel extends WPlainPanel {
 	}
 
 	public WShardPanel setShard(Shard shard) {
+		shard.icon().ifRight(ModMetaUtil::touchIconTexture);
 		this.shard = shard;
 		this.isHidden = false;
 
 		setType(shard.shardTypeId(), ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING));
 		icon.setIcon(shard::icon);
 		setName(shard::name, WHITE);
-		setSource(shard::source, WHITE);
+		setSource(() -> Shard.getSourceForSourceId(shard.sourceId()), WHITE);
 		setLore(shard::lore, WHITE);
 		setHint(shard::hint, WHITE);
 

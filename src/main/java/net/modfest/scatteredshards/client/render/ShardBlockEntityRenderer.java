@@ -18,6 +18,7 @@ import net.modfest.scatteredshards.api.shard.ShardIconOffsets;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.block.ShardBlockEntity;
+import net.modfest.scatteredshards.util.ModMetaUtil;
 import org.joml.AxisAngle4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -43,6 +44,7 @@ public class ShardBlockEntityRenderer implements BlockEntityRenderer<ShardBlockE
 			shard = Shard.MISSING_SHARD;
 		}
 
+		shard.icon().ifRight(ModMetaUtil::touchIconTexture);
 		ShardType shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING);
 
 		float angle = entity.getAnimations().getAngle(tickDelta);
