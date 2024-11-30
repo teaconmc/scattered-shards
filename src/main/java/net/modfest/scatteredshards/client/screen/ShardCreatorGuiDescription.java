@@ -19,7 +19,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.resource.Resource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
@@ -34,6 +36,7 @@ import net.modfest.scatteredshards.networking.C2SModifyShard;
 import net.modfest.scatteredshards.util.ModMetaUtil;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public static final String BASE_KEY = "gui.scattered_shards.creator.";
@@ -84,11 +87,11 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		if (path.isBlank()) {
 			return null;
 		}
-		var id = Identifier.tryParse(path);
+		Identifier id = Identifier.tryParse(path);
 		if (id == null) {
 			return null;
 		}
-		var resource = MinecraftClient.getInstance().getResourceManager().getResource(id);
+		Optional<Resource> resource = MinecraftClient.getInstance().getResourceManager().getResource(id);
 		return resource.isPresent() ? id : null;
 	}
 
@@ -107,7 +110,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public WProtectableField itemField = new WProtectableField(ITEM_TEXT)
 		.setChangedListener((it) -> {
 			this.item = null;
-			var id = Identifier.tryParse(it);
+			Identifier id = Identifier.tryParse(it);
 			if (id != null) {
 				this.item = Registries.ITEM.containsId(id)
 					? Registries.ITEM.get(id)
@@ -120,7 +123,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		.setChangedListener((it) -> {
 			try {
 				this.itemComponents = ComponentMap.EMPTY;
-				var json = GSON.fromJson(it, JsonElement.class);
+				JsonElement json = GSON.fromJson(it, JsonElement.class);
 				this.itemComponents = ComponentMap.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
 			} catch (Exception ignored) {
 			}
@@ -141,7 +144,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 			shard.setIcon(Shard.MISSING_ICON);
 			return;
 		}
-		var stack = item.getDefaultStack();
+		ItemStack stack = item.getDefaultStack();
 		if (!itemComponents.isEmpty()) {
 			stack.applyComponentsFrom(itemComponents);
 		}
