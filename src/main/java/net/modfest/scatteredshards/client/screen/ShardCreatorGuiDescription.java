@@ -36,18 +36,17 @@ import net.modfest.scatteredshards.util.ModMetaUtil;
 import java.util.Objects;
 
 public class ShardCreatorGuiDescription extends LightweightGuiDescription {
-	public static final String BASE_KEY = "gui.scattered_shards.creator.";
-	public static final Text TITLE_TEXT = Text.translatable(BASE_KEY + "title");
-	public static final Text NAME_TEXT = Text.translatable(BASE_KEY + "field.name");
-	public static final Text LORE_TEXT = Text.translatable(BASE_KEY + "field.lore");
-	public static final Text HINT_TEXT = Text.translatable(BASE_KEY + "field.hint");
-	public static final Text TEXTURE_TEXT = Text.translatable(BASE_KEY + "field.texture");
-	public static final Text ICON_TEXTURE_TEXT = Text.translatable(BASE_KEY + "icon.texture");
-	public static final Text ICON_ITEM_TEXT = Text.translatable(BASE_KEY + "icon.item");
-	public static final Text ITEM_TEXT = Text.translatable(BASE_KEY + "field.item.id");
-	public static final Text NBT_TEXT = Text.translatable(BASE_KEY + "field.item.nbt");
-	public static final Text USE_MOD_ICON_TEXT = Text.translatable(BASE_KEY + "toggle.mod_icon");
-	public static final Text SAVE_TEXT = Text.translatable(BASE_KEY + "button.save");
+	public static final Text TITLE_TEXT = Text.translatable("gui.scattered_shards.creator.title");
+	public static final Text NAME_TEXT = Text.translatable("gui.scattered_shards.creator.field.name");
+	public static final Text LORE_TEXT = Text.translatable("gui.scattered_shards.creator.field.lore");
+	public static final Text HINT_TEXT = Text.translatable("gui.scattered_shards.creator.field.hint");
+	public static final Text TEXTURE_TEXT = Text.translatable("gui.scattered_shards.creator.field.texture");
+	public static final Text ICON_TEXTURE_TEXT = Text.translatable("gui.scattered_shards.creator.icon.texture");
+	public static final Text ICON_ITEM_TEXT = Text.translatable("gui.scattered_shards.creator.icon.item");
+	public static final Text ITEM_TEXT = Text.translatable("gui.scattered_shards.creator.field.item.id");
+	public static final Text NBT_TEXT = Text.translatable("gui.scattered_shards.creator.field.item.nbt");
+	public static final Text USE_MOD_ICON_TEXT = Text.translatable("gui.scattered_shards.creator.toggle.mod_icon");
+	public static final Text SAVE_TEXT = Text.translatable("gui.scattered_shards.creator.button.save");
 
 	private static final Gson GSON = new Gson();
 

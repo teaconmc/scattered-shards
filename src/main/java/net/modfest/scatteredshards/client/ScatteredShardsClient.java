@@ -1,7 +1,10 @@
 package net.modfest.scatteredshards.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
@@ -19,7 +22,11 @@ import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 
 public class ScatteredShardsClient implements ClientModInitializer {
-	public static final String SHARD_MODIFY_TOAST_KEY = "toast.scattered_shards.shard_mod";
+	public static final KeyBinding VIEW_COLLECTION = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		"key.scattered_shards.collection",
+		InputUtil.GLFW_KEY_J,
+		"key.categories.scattered_shards"
+	));
 
 	@Override
 	public void onInitializeClient() {
@@ -27,9 +34,14 @@ public class ScatteredShardsClient implements ClientModInitializer {
 		ScatteredShardsNetworking.registerClient();
 		ScatteredShardsContent.registerClient();
 		ScatteredShardsAPI.initClient();
+		ClientTickEvents.END_CLIENT_TICK.register(c -> {
+			if (VIEW_COLLECTION.wasPressed()) {
+				openShardTablet();
+			}
+		});
 	}
 
-	public static void triggerShardCollectAnimation(Identifier shardId) {
+	public static void onShardCollected(Identifier shardId) {
 		var library = ScatteredShardsAPI.getClientLibrary();
 		var collection = ScatteredShardsAPI.getClientCollection();
 
@@ -39,6 +51,9 @@ public class ScatteredShardsClient implements ClientModInitializer {
 			return;
 		}
 
+		ShardTabletGuiDescription.INITIAL_SHARD = shardId;
+		ShardTabletGuiDescription.INITIAL_SCROLL_POSITION = -1;
+
 		collection.add(shardId);
 		ScatteredShards.LOGGER.info("Collected shard '{}'!", shardId.toString());
 
@@ -47,15 +62,15 @@ public class ScatteredShardsClient implements ClientModInitializer {
 			.flatMap(ShardType::collectSound)
 			.ifPresent((sound) -> MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(sound, 1.0F, 0.8F)));
 
-		Toast toast = new ShardToast(shard);
+		Toast toast = new ShardCollectedToast(shard);
 		MinecraftClient.getInstance().getToastManager().add(toast);
 	}
 
 	public static void triggerShardModificationToast(Identifier shardId, boolean success) {
 		var toast = new SystemToast(
 			SystemToast.Type.PERIODIC_NOTIFICATION,
-			Text.translatable(SHARD_MODIFY_TOAST_KEY + ".title"),
-			Text.stringifiedTranslatable(SHARD_MODIFY_TOAST_KEY + "." + (success ? "success" : "fail"), shardId)
+			Text.translatable("toast.scattered_shards.shard_mod.title"),
+			Text.stringifiedTranslatable(success ? "toast.scattered_shards.shard_mod.success" : "toast.scattered_shards.shard_mod.success.fail", shardId)
 		);
 		MinecraftClient.getInstance().getToastManager().add(toast);
 	}

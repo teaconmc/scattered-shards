@@ -10,10 +10,6 @@ public class ShardCommand {
 		it -> Text.stringifiedTranslatable("error.scattered_shards.invalid_shard_id", it)
 	);
 
-	public static final DynamicCommandExceptionType NO_ROOM_FOR_ITEM = new DynamicCommandExceptionType(
-		it -> Text.translatable("error.scattered_shards.no_inventory_room", it)
-	);
-
 	public static final DynamicCommandExceptionType INVALID_SHARD_TYPE = new DynamicCommandExceptionType(
 		it -> Text.translatable("error.scattered_shards.invalid_shard_type", it)
 	);

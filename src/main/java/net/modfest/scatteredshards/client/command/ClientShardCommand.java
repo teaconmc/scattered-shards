@@ -27,14 +27,12 @@ import java.util.concurrent.CompletableFuture;
 
 public class ClientShardCommand {
 
-	private static DynamicCommandExceptionType createInvalidException(String item) {
-		return new DynamicCommandExceptionType(
-			obj -> Text.stringifiedTranslatable("error.scattered_shards.invalid_" + item, obj)
-		);
-	}
-
-	private static final DynamicCommandExceptionType INVALID_SET_ID = createInvalidException("set_id");
-	private static final DynamicCommandExceptionType INVALID_SHARD_ID = createInvalidException("shard_id");
+	private static final DynamicCommandExceptionType INVALID_SET_ID = new DynamicCommandExceptionType(
+		obj -> Text.stringifiedTranslatable("error.scattered_shards.invalid_set_id", obj)
+	);
+	private static final DynamicCommandExceptionType INVALID_SHARD_ID = new DynamicCommandExceptionType(
+		obj -> Text.stringifiedTranslatable("error.scattered_shards.invalid_shard_id", obj)
+	);
 
 	public static int view(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
 		Identifier id = context.getArgument("set_id", Identifier.class);

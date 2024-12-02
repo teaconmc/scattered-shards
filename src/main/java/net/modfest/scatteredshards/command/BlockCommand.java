@@ -13,7 +13,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
-import net.modfest.scatteredshards.ScatteredShardsContent;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.block.ShardBlock;
@@ -32,7 +31,7 @@ public class BlockCommand {
 
 		ItemStack stack = ShardBlock.createShardBlock(library, shardId, canInteract, glowSize, glowStrength);
 
-		if (!player.giveItemStack(stack)) throw ShardCommand.NO_ROOM_FOR_ITEM.create(ScatteredShardsContent.SHARD_BLOCK_ITEM.getName());
+		player.getInventory().offerOrDrop(stack);
 
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.block", shardId), false);
 		return Command.SINGLE_SUCCESS;

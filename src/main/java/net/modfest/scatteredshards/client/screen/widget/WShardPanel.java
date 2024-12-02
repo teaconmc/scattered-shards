@@ -112,9 +112,12 @@ public class WShardPanel extends WPlainPanel {
 	}
 
 	public WShardPanel setShard(Shard shard) {
+		if (this.shard == shard) {
+			return setShard(Shard.MISSING_SHARD);
+		}
 		shard.icon().ifRight(ModMetaUtil::touchIconTexture);
 		this.shard = shard;
-		this.isHidden = false;
+		this.isHidden = shard == Shard.MISSING_SHARD;
 
 		setType(shard.shardTypeId(), ScatteredShardsAPI.getClientLibrary().shardTypes().get(shard.shardTypeId()).orElse(ShardType.MISSING));
 		icon.setIcon(shard::icon);
@@ -212,10 +215,6 @@ public class WShardPanel extends WPlainPanel {
 				0xFF_000000 | displaySettings.viewerTopColor(), 0xFF_000000 | displaySettings.viewerBottomColor()
 			);
 		});
-	}
-
-	public WShardPanel(Shard shard) {
-		setShard(shard);
 	}
 
 	public Shard getShard() {

@@ -102,7 +102,6 @@ public class ShardBlock extends Block implements BlockEntityProvider {
 		if (tryCollect(world, player, be)) {
 			return ActionResult.SUCCESS;
 		}
-		player.sendMessage(Text.translatable("block.scattered_shards.shard_block.pickup_fail"), true);
 		return ActionResult.FAIL;
 	}
 

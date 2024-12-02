@@ -18,7 +18,6 @@ import java.util.function.Consumer;
 
 public class WShardSetPanel extends WPanelWithInsets {
 	private static final int MINI_SHARD_WIDTH = 12;
-	//private static final int MINI_SHARD_HALFWIDTH = MINI_SHARD_WIDTH / 2;
 	private static final int MINI_SHARD_HEIGHT = 16;
 
 	protected Consumer<Shard> shardConsumer = (it) -> {
@@ -97,20 +96,4 @@ public class WShardSetPanel extends WPanelWithInsets {
 
 		if (host != null) this.validate(host);
 	}
-	
-	/*
-	//TODO: Replace with json / ShardType field
-	private static int shardPriority(String path) {
-		return switch(path) {
-		case "scattered_shards_visitor" -> 0;
-		case "scattered_shards_challenge" -> 1;
-		case "scattered_shards_secret" -> 2;
-		default -> Integer.MAX_VALUE;
-		};
-	}
-	
-	private static int shardComparator(Identifier a, Identifier b) {
-		
-		return Integer.compare(shardPriority(a.getPath()), shardPriority(b.getPath()));
-	}*/
 }

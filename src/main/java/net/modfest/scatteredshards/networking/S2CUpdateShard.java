@@ -28,7 +28,7 @@ public record S2CUpdateShard(Identifier shardId, Mode mode) implements CustomPay
 		context.client().execute(() -> {
 			switch (payload.mode()) {
 				case COLLECT -> {
-					ScatteredShardsClient.triggerShardCollectAnimation(payload.shardId());
+					ScatteredShardsClient.onShardCollected(payload.shardId());
 					ScatteredShardsAPI.getClientCollection().add(payload.shardId());
 				}
 				case UNCOLLECT -> ScatteredShardsAPI.getClientCollection().remove(payload.shardId());

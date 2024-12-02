@@ -15,6 +15,7 @@ import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
+import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.modfest.scatteredshards.client.screen.widget.WLeftRightPanel;
 import net.modfest.scatteredshards.client.screen.widget.WShardPanel;
@@ -28,6 +29,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ShardTabletGuiDescription extends LightweightGuiDescription {
+	public static int INITIAL_SCROLL_POSITION = 0;
+	public static Identifier INITIAL_SHARD = ShardType.MISSING_ID;
+
 	protected final ShardCollection collection;
 	protected final ShardLibrary library;
 
@@ -39,8 +43,7 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 		this.collection = collection;
 		this.library = library;
 
-		shardPanel.setShard(Shard.MISSING_SHARD);
-		shardPanel.setHidden(true);
+		shardPanel.setShard(library.shards().get(INITIAL_SHARD).orElse(Shard.MISSING_SHARD));
 
 		List<Identifier> ids = new ArrayList<>(this.library.shardSets().keySet());
 		ids.sort(Comparator.comparing(Identifier::getNamespace));
@@ -84,6 +87,17 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 		this.setRootPanel(root);
 
 		root.validate(this);
+
+		if (shardPanel.getShard() == Shard.MISSING_SHARD && INITIAL_SCROLL_POSITION >= 0) { // Only reload scrolling without a selected shard
+			shardSelector.getScrollBar().setValue(INITIAL_SCROLL_POSITION);
+		} else if (shardPanel.getShard() != Shard.MISSING_SHARD) { // Try scroll to relevant shard set
+			for (int i = 0; i < ids.size(); i++) {
+				if (library.shardSets().get(ids.get(i)).contains(INITIAL_SHARD)) {
+					shardSelector.getScrollBar().setValue(i - 3); // 7 rows on screen, so center by -3
+					break;
+				}
+			}
+		}
 	}
 
 	private int getLayoutWidth(WPanelWithInsets panel) {
@@ -110,6 +124,15 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 	public static class Screen extends CottonClientScreen {
 		public Screen(ShardCollection collection, ShardLibrary library) {
 			super(new ShardTabletGuiDescription(collection, library));
+		}
+
+		@Override
+		public void close() {
+			if (description instanceof ShardTabletGuiDescription desc) { // Silly, but description has no onClose.
+				INITIAL_SCROLL_POSITION = desc.shardSelector.getScrollBar().getValue();
+				INITIAL_SHARD = desc.library.shards().get(desc.shardPanel.getShard()).orElse(ShardType.MISSING_ID);
+			}
+			super.close();
 		}
 	}
 }
