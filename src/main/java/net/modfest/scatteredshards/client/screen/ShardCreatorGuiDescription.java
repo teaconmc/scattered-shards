@@ -2,6 +2,7 @@ package net.modfest.scatteredshards.client.screen;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -161,7 +162,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 			ComponentType<T> componentType = (ComponentType<T>) ItemStringReader.Reader.readComponentType(reader);
 			reader.skipWhitespace();
 			if (!known.add(componentType))
-				throw ItemStringReader.REPEATED_COMPONENT_EXCEPTION.create(componentType);
+				throw new SimpleCommandExceptionType(Text.literal("Same component cannot appear twice")).create();
 
 			if (negation)
 				changesBuilder.remove(componentType);
@@ -178,7 +179,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 
 				changesBuilder.add(componentType, dataResult.getOrThrow(error -> {
 					reader.setCursor(index);
-					return ItemStringReader.MALFORMED_COMPONENT_EXCEPTION.createWithContext(reader, componentType.toString(), error);
+					return new SimpleCommandExceptionType(Text.literal("Component is malformed")).create();
 				}));
 
 				reader.skipWhitespace();
@@ -192,7 +193,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 			reader.skip();
 			reader.skipWhitespace();
 			if (!reader.canRead())
-				throw ItemStringReader.COMPONENT_EXPECTED_EXCEPTION.createWithContext(reader);
+				throw new SimpleCommandExceptionType(Text.literal("Expected component")).create();
 		}
 
 		// End of components list

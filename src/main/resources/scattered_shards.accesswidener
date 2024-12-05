@@ -1,6 +1,3 @@
 accessWidener v2 named
 
 accessible class net/minecraft/command/argument/ItemStringReader$Reader
-accessible field net/minecraft/command/argument/ItemStringReader REPEATED_COMPONENT_EXCEPTION Lcom/mojang/brigadier/exceptions/DynamicCommandExceptionType;
-accessible field net/minecraft/command/argument/ItemStringReader COMPONENT_EXPECTED_EXCEPTION Lcom/mojang/brigadier/exceptions/SimpleCommandExceptionType;
-accessible field net/minecraft/command/argument/ItemStringReader MALFORMED_COMPONENT_EXCEPTION Lcom/mojang/brigadier/exceptions/Dynamic2CommandExceptionType;
