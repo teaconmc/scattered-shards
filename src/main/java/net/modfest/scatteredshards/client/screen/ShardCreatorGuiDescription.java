@@ -1,8 +1,9 @@
 package net.modfest.scatteredshards.client.screen;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.client.CottonClientScreen;
@@ -14,11 +15,17 @@ import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -34,6 +41,7 @@ import net.modfest.scatteredshards.networking.C2SModifyShard;
 import net.modfest.scatteredshards.util.ModMetaUtil;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public static final Text TITLE_TEXT = Text.translatable("gui.scattered_shards.creator.title");
@@ -44,11 +52,9 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public static final Text ICON_TEXTURE_TEXT = Text.translatable("gui.scattered_shards.creator.icon.texture");
 	public static final Text ICON_ITEM_TEXT = Text.translatable("gui.scattered_shards.creator.icon.item");
 	public static final Text ITEM_TEXT = Text.translatable("gui.scattered_shards.creator.field.item.id");
-	public static final Text NBT_TEXT = Text.translatable("gui.scattered_shards.creator.field.item.nbt");
+	public static final Text COMPONENT_TEXT = Text.translatable("gui.scattered_shards.creator.field.item.component");
 	public static final Text USE_MOD_ICON_TEXT = Text.translatable("gui.scattered_shards.creator.toggle.mod_icon");
 	public static final Text SAVE_TEXT = Text.translatable("gui.scattered_shards.creator.button.save");
-
-	private static final Gson GSON = new Gson();
 
 	private Identifier shardId;
 	private Shard shard;
@@ -115,17 +121,14 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 			updateItemIcon();
 		});
 
-	public WProtectableField nbtField = new WProtectableField(NBT_TEXT)
+	public WProtectableField componentField = new WProtectableField(COMPONENT_TEXT)
 		.setChangedListener((it) -> {
 			try {
-				this.itemComponents = ComponentMap.EMPTY;
-				var json = GSON.fromJson(it, JsonElement.class);
-				this.itemComponents = ComponentMap.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
+				updateComponents(new StringReader(it));
 			} catch (Exception ignored) {
 			}
 			updateItemIcon();
 		});
-
 
 	public WButton saveButton = new WButton(SAVE_TEXT)
 		.setOnClick(() -> ClientPlayNetworking.send(new C2SModifyShard(shardId, shard)));
@@ -134,6 +137,74 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	private ComponentMap itemComponents = ComponentMap.EMPTY;
 	private Identifier iconPath = null;
 
+
+	private <T> void updateComponents(StringReader reader) throws CommandSyntaxException {
+		ComponentChanges.Builder changesBuilder = ComponentChanges.builder();
+		Set<ComponentType<?>> known = new ReferenceArraySet<>();
+
+		// Begin of component list
+		reader.expect('[');
+		reader.skipWhitespace();
+
+		// Body of component list
+		while (reader.canRead() && reader.peek() != ']') {
+			boolean negation = false;
+
+			if (reader.peek() == '!') {
+				// Negate incoming block
+				reader.skip();
+				negation = true;
+			}
+
+			// Component Type
+			@SuppressWarnings("unchecked") // We could avoid this with a separate method for getting the values but eh
+			ComponentType<T> componentType = (ComponentType<T>) ItemStringReader.Reader.readComponentType(reader);
+			reader.skipWhitespace();
+			if (!known.add(componentType))
+				throw ItemStringReader.REPEATED_COMPONENT_EXCEPTION.create(componentType);
+
+			if (negation)
+				changesBuilder.remove(componentType);
+			else {
+				reader.expect('=');
+				reader.skipWhitespace();
+
+				// Component Value
+
+				int index = reader.getCursor();
+
+				NbtElement nbtElement = new StringNbtReader(reader).parseElement();
+				DataResult<T> dataResult = componentType.getCodecOrThrow().parse(NbtOps.INSTANCE, nbtElement);
+
+				changesBuilder.add(componentType, dataResult.getOrThrow(error -> {
+					reader.setCursor(index);
+					return ItemStringReader.MALFORMED_COMPONENT_EXCEPTION.createWithContext(reader, componentType.toString(), error);
+				}));
+
+				reader.skipWhitespace();
+			}
+
+			// List separation
+
+			if (!reader.canRead() || reader.peek() != ',')
+				break;
+
+			reader.skip();
+			reader.skipWhitespace();
+			if (!reader.canRead())
+				throw ItemStringReader.COMPONENT_EXPECTED_EXCEPTION.createWithContext(reader);
+		}
+
+		// End of components list
+		reader.expect(']');
+
+		ComponentChanges componentChanges = changesBuilder.build();
+
+		ComponentMap.Builder mapBuilder = ComponentMap.builder();
+		mapBuilder.addAll(componentChanges.toAddedRemovedPair().added());
+
+		this.itemComponents = mapBuilder.build();
+	}
 
 	private void updateItemIcon() {
 		if (item == null) {
@@ -187,7 +258,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 			this.itemField.setText(Registries.ITEM.getId(a.getItem()).toString());
 			String nbt = componentJson.toString();
 			if ("{}".equals(nbt)) nbt = "";
-			this.nbtField.setText(nbt);
+			this.componentField.setText(nbt);
 		}));
 
 		shardPanel.setShard(shard);
@@ -223,7 +294,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		textureIconPanel.add(textureToggle);
 
 		itemIconPanel.add(itemField);
-		itemIconPanel.add(nbtField);
+		itemIconPanel.add(componentField);
 
 		editorPanel.add(saveButton);
 
