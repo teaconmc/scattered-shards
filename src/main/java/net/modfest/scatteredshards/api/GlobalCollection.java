@@ -31,7 +31,7 @@ public class GlobalCollection {
 	);
 
 	public int getCount(Identifier shard) {
-		var count = collectionTracker.get(shard);
+		Integer count = collectionTracker.get(shard);
 		return count != null ? count : 0;
 	}
 

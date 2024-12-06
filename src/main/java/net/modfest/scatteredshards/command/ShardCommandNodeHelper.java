@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.IdentifierArgumentType;
@@ -21,7 +22,7 @@ import net.modfest.scatteredshards.api.shard.ShardType;
 
 import java.util.concurrent.CompletableFuture;
 
-public class Node {
+public class ShardCommandNodeHelper {
 	public static LiteralArgumentBuilder<ServerCommandSource> literal(String name) {
 		return LiteralArgumentBuilder.literal(name);
 	}
@@ -94,7 +95,7 @@ public class Node {
 	public CommandNode<ServerCommandSource> getOrCreate(CommandNode<ServerCommandSource> root, String... path) {
 		CommandNode<ServerCommandSource> cur = root;
 		for (String pathElement : path) {
-			var maybeChild = cur.getChild(pathElement);
+			CommandNode<ServerCommandSource> maybeChild = cur.getChild(pathElement);
 			if (maybeChild == null) {
 				maybeChild = literal(pathElement).build();
 				cur.addChild(maybeChild);
@@ -106,7 +107,7 @@ public class Node {
 	}
 
 	public static CompletableFuture<Suggestions> suggestModIds(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
-		for (var mod : FabricLoader.getInstance().getAllMods()) {
+		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
 			builder.suggest(mod.getMetadata().getId());
 		}
 		return builder.buildFuture();

@@ -40,7 +40,7 @@ public record C2SModifyShard(Identifier shardId, Shard shard) implements CustomP
 			ShardLibraryPersistentState.get(server).markDirty();
 
 			//Update everyone's client libraries with the new shard
-			var syncShard = new S2CSyncShard(payload.shardId(), payload.shard());
+			S2CSyncShard syncShard = new S2CSyncShard(payload.shardId(), payload.shard());
 			for (ServerPlayerEntity otherPlayer : server.getPlayerManager().getPlayerList()) {
 				ServerPlayNetworking.send(otherPlayer, syncShard);
 			}
