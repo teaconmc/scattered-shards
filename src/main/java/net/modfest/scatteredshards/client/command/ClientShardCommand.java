@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards.client.command;
 
+import com.google.common.collect.SetMultimap;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -9,22 +10,31 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.brigadier.tree.CommandNode;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.modfest.scatteredshards.api.MiniRegistry;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
+import net.modfest.scatteredshards.api.ShardCollection;
+import net.modfest.scatteredshards.api.ShardLibrary;
+import net.modfest.scatteredshards.api.impl.ShardLibraryImpl;
 import net.modfest.scatteredshards.api.shard.Shard;
 import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.screen.ShardCreatorGuiDescription;
 import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.command.ShardCommand;
 
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("SameParameterValue")
 public class ClientShardCommand {
 
 	private static final DynamicCommandExceptionType INVALID_SET_ID = new DynamicCommandExceptionType(
@@ -36,10 +46,28 @@ public class ClientShardCommand {
 
 	public static int view(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
 		Identifier id = context.getArgument("set_id", Identifier.class);
-		var shards = ScatteredShardsAPI.getClientLibrary().shardSets().get(id);
-		if (shards.isEmpty()) {
+		ShardLibrary realLibrary = ScatteredShardsAPI.getClientLibrary();
+		Set<Identifier> shardPackSet = realLibrary.shardSets().get(id);
+		if (shardPackSet.isEmpty()) {
 			throw INVALID_SET_ID.create(id);
 		}
+		MinecraftClient client = context.getSource().getClient();
+		ShardCollection shardCollection = ScatteredShardsAPI.getClientCollection();
+		ShardLibrary fakeLibrary = new ShardLibraryImpl();
+		MiniRegistry<Shard> realShardRegistry = realLibrary.shards();
+		MiniRegistry<Shard> fakeShardRegistry = fakeLibrary.shards();
+		SetMultimap<Identifier, Identifier> fakeShardSets = fakeLibrary.shardSets();
+		MiniRegistry<ShardType> fakeShardTypes = fakeLibrary.shardTypes();
+		for (Identifier shardId : shardPackSet) {
+			Optional<Shard> optionalShard = realShardRegistry.get(shardId);
+			if (optionalShard.isEmpty()) continue;
+			Shard shard = optionalShard.get();
+			fakeShardRegistry.put(shardId, shard);
+			fakeShardSets.put(shard.sourceId(), shardId);
+		}
+		realLibrary.shardTypes().forEach((fakeShardTypes::put));
+		fakeLibrary.shardDisplaySettings().copyFrom(realLibrary.shardDisplaySettings());
+		client.send(() -> client.setScreen(new ShardTabletGuiDescription.Screen(shardCollection, fakeLibrary)));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -49,7 +77,7 @@ public class ClientShardCommand {
 		ShardType shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shardTypeId)
 			.orElseThrow(() -> ShardCommand.INVALID_SHARD_TYPE.create(shardTypeId));
 
-		var client = context.getSource().getClient();
+		MinecraftClient client = context.getSource().getClient();
 		client.send(() -> client.setScreen(ShardCreatorGuiDescription.Screen.newShard(modId, shardType)));
 		return Command.SINGLE_SUCCESS;
 	}
@@ -59,23 +87,21 @@ public class ClientShardCommand {
 		Shard shard = ScatteredShardsAPI.getClientLibrary().shards().get(shardId)
 			.orElseThrow(() -> INVALID_SHARD_ID.create(shardId));
 
-		var client = context.getSource().getClient();
+		MinecraftClient client = context.getSource().getClient();
 		client.send(() -> client.setScreen(ShardCreatorGuiDescription.Screen.editShard(shard)));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int shards(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		var client = context.getSource().getClient();
-		var library = ScatteredShardsAPI.getClientLibrary();
-		var collection = ScatteredShardsAPI.getClientCollection();
-
+		MinecraftClient client = context.getSource().getClient();
+		ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
+		ShardCollection collection = ScatteredShardsAPI.getClientCollection();
 		client.send(() -> client.setScreen(new ShardTabletGuiDescription.Screen(collection, library)));
-
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static CompletableFuture<Suggestions> suggestShardSets(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) {
-		for (var id : ScatteredShardsAPI.getClientLibrary().shardSets().keySet()) {
+		for (Identifier id : ScatteredShardsAPI.getClientLibrary().shardSets().keySet()) {
 			builder.suggest(id.toString());
 		}
 		return builder.buildFuture();
@@ -96,18 +122,14 @@ public class ClientShardCommand {
 	}
 
 	public static CompletableFuture<Suggestions> suggestModIds(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) {
-		for (var mod : FabricLoader.getInstance().getAllMods()) {
+		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
 			builder.suggest(mod.getMetadata().getId());
 		}
 		return builder.buildFuture();
 	}
 
-	private static LiteralCommandNode<FabricClientCommandSource> literal(String name) {
-		return LiteralArgumentBuilder.<FabricClientCommandSource>literal(name).build();
-	}
-
-	private static LiteralCommandNode<FabricClientCommandSource> literal(String name, Command<FabricClientCommandSource> command) {
-		return LiteralArgumentBuilder.<FabricClientCommandSource>literal(name).executes(command).build();
+	private static LiteralArgumentBuilder<FabricClientCommandSource> literal(String name) {
+		return LiteralArgumentBuilder.<FabricClientCommandSource>literal(name);
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Identifier> identifierArgument(String name) {
@@ -120,46 +142,45 @@ public class ClientShardCommand {
 
 	public static void register() {
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-
-			var shardcRoot = literal("shardc");
-			dispatcher.getRoot().addChild(shardcRoot);
+			CommandNode<FabricClientCommandSource> shardcNode = literal("shardc").build();
 
 			//Usage: /shardc view <set_id>
-			var view = literal("view");
-			var setId = identifierArgument("set_id")
+			CommandNode<FabricClientCommandSource> view = literal("view").build();
+			CommandNode<FabricClientCommandSource> setId = identifierArgument("set_id")
 				.suggests(ClientShardCommand::suggestShardSets)
-				.executes(ClientShardCommand::view);
-			view.addChild(setId.build());
-			shardcRoot.addChild(view);
+				.executes(ClientShardCommand::view).build();
 
 			//Usage: /shardc creator
 			//-> new <mod_id> <shard_type>
 			//-> edit <shard_id>
-			var creator = literal("creator");
-
-			var creatorNew = literal("new");
-			var modId = stringArgument("mod_id")
-				.suggests(ClientShardCommand::suggestModIds);
-			var modIdBuild = modId.build();
-			var shardType = identifierArgument("shard_type")
+			CommandNode<FabricClientCommandSource> creator = literal("creator").requires((source) -> source.hasPermissionLevel(2)).build();
+			CommandNode<FabricClientCommandSource> creatorNew = literal("new").build();
+			CommandNode<FabricClientCommandSource> modId = stringArgument("mod_id")
+				.suggests(ClientShardCommand::suggestModIds)
+				.build();
+			CommandNode<FabricClientCommandSource> shardType = identifierArgument("shard_type")
 				.suggests(ClientShardCommand::suggestShardTypes)
-				.executes(ClientShardCommand::creatorNew);
-			modIdBuild.addChild(shardType.build());
-			creatorNew.addChild(modIdBuild);
+				.executes(ClientShardCommand::creatorNew)
+				.build();
 
-			var creatorEdit = literal("edit");
-			var shardId = identifierArgument("shard_id")
+			CommandNode<FabricClientCommandSource> creatorEdit = literal("edit").build();
+			CommandNode<FabricClientCommandSource> shardId = identifierArgument("shard_id")
 				.suggests(ClientShardCommand::suggestShards)
-				.executes(ClientShardCommand::creatorEdit);
-			creatorEdit.addChild(shardId.build());
-
-			creator.addChild(creatorNew);
-			creator.addChild(creatorEdit);
-
-			shardcRoot.addChild(creator);
+				.executes(ClientShardCommand::creatorEdit).build();
 
 			//Usage: /shards
-			var shardsCommand = literal("shards", ClientShardCommand::shards);
+			CommandNode<FabricClientCommandSource> shardsCommand = literal("shards").executes(ClientShardCommand::shards).build();
+
+			dispatcher.getRoot().addChild(shardcNode);
+			shardcNode.addChild(view);
+			view.addChild(setId);
+			shardcNode.addChild(creator);
+			creator.addChild(creatorNew);
+			creatorNew.addChild(modId);
+			modId.addChild(shardType);
+			creator.addChild(creatorEdit);
+			creatorEdit.addChild(shardId);
+
 			dispatcher.getRoot().addChild(shardsCommand);
 		});
 	}
