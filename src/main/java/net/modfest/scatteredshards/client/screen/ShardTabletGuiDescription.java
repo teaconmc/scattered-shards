@@ -15,6 +15,7 @@ import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardCollection;
 import net.modfest.scatteredshards.api.ShardLibrary;
 import net.modfest.scatteredshards.api.shard.Shard;
+import net.modfest.scatteredshards.api.shard.ShardType;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.modfest.scatteredshards.client.screen.widget.WLeftRightPanel;
 import net.modfest.scatteredshards.client.screen.widget.WShardPanel;
@@ -28,6 +29,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ShardTabletGuiDescription extends LightweightGuiDescription {
+	public static int INITIAL_SCROLL_POSITION = 0;
+	public static Identifier INITIAL_SHARD = ShardType.MISSING_ID;
+
 	protected final ShardCollection collection;
 	protected final ShardLibrary library;
 
