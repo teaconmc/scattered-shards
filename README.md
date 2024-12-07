@@ -11,7 +11,9 @@ Requires <a href="https://modrinth.com/mod/connector">Connector</a> and <a href=
 
 **Scattered Shards** adds a system of collectible "shards" that can be created via a UI and placed in-world.
 
-Type `/shards` or use a *Shard Tablet* any time to view which shards you've collected, and which ones are left!
+The *Shard Collection* shows obtained and missing shards. It can be accessed from the pause menu, or via hotkey (J).
+
+Hold shift while viewing your shard collection to see overall completion, as well as shard rarity.
 
 **Features:**
 - Shards can have titles, descriptions, and face art in the form of item stacks or arbitrary textures
@@ -20,7 +22,6 @@ Type `/shards` or use a *Shard Tablet* any time to view which shards you've coll
   - Shard types can have custom names, textures, and collection sounds (resource-driven)
 - Shards are arranged into "sets" which can have one shard of each type
 	- Suggested as **installed mod IDs** by default, but can be completely arbitrary (locations, skillsets, etc)
-- Tracks global collection statistics, displayed to players when holding shift in the shards screen
 
 ![shards screen preview](https://cdn.modrinth.com/data/DB9GU3tx/images/ba00e12bef9b8d90d096a71bba11d71c14f6e01f.png)
 
