@@ -78,13 +78,12 @@ public class ScatteredShardsClient implements ClientModInitializer {
 	}
 
 	public static void openShardTablet() {
-		final MinecraftClient client = MinecraftClient.getInstance();
-		client.send(() -> {
+		MinecraftClient.getInstance().send(() -> {
 			final ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
 			final ShardCollection collection = ScatteredShardsAPI.getClientCollection();
 
-			client.setScreen(new ShardTabletGuiDescription.Screen(collection, library));
-			client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ITEM_BOOK_PAGE_TURN, 1.0f, 1.0f));
+			MinecraftClient.getInstance().setScreen(new ShardTabletGuiDescription.Screen(collection, library));
+			MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ITEM_BOOK_PAGE_TURN, 1.0f, 1.0f));
 		});
 	}
 

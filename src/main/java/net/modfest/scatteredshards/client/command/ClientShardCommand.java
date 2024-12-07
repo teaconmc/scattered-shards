@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -51,7 +50,6 @@ public class ClientShardCommand {
 		if (shardPackSet.isEmpty()) {
 			throw INVALID_SET_ID.create(id);
 		}
-		MinecraftClient client = context.getSource().getClient();
 		ShardCollection shardCollection = ScatteredShardsAPI.getClientCollection();
 		ShardLibrary fakeLibrary = new ShardLibraryImpl();
 		MiniRegistry<Shard> realShardRegistry = realLibrary.shards();
@@ -67,7 +65,7 @@ public class ClientShardCommand {
 		}
 		realLibrary.shardTypes().forEach((fakeShardTypes::put));
 		fakeLibrary.shardDisplaySettings().copyFrom(realLibrary.shardDisplaySettings());
-		client.send(() -> client.setScreen(new ShardTabletGuiDescription.Screen(shardCollection, fakeLibrary)));
+		context.getSource().getClient().send(() -> context.getSource().getClient().setScreen(new ShardTabletGuiDescription.Screen(shardCollection, fakeLibrary)));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -77,8 +75,7 @@ public class ClientShardCommand {
 		ShardType shardType = ScatteredShardsAPI.getClientLibrary().shardTypes().get(shardTypeId)
 			.orElseThrow(() -> ShardCommand.INVALID_SHARD_TYPE.create(shardTypeId));
 
-		MinecraftClient client = context.getSource().getClient();
-		client.send(() -> client.setScreen(ShardCreatorGuiDescription.Screen.newShard(modId, shardType)));
+		context.getSource().getClient().send(() -> context.getSource().getClient().setScreen(ShardCreatorGuiDescription.Screen.newShard(modId, shardType)));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -87,16 +84,14 @@ public class ClientShardCommand {
 		Shard shard = ScatteredShardsAPI.getClientLibrary().shards().get(shardId)
 			.orElseThrow(() -> INVALID_SHARD_ID.create(shardId));
 
-		MinecraftClient client = context.getSource().getClient();
-		client.send(() -> client.setScreen(ShardCreatorGuiDescription.Screen.editShard(shard)));
+		context.getSource().getClient().send(() -> context.getSource().getClient().setScreen(ShardCreatorGuiDescription.Screen.editShard(shard)));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int shards(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
-		MinecraftClient client = context.getSource().getClient();
 		ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
 		ShardCollection collection = ScatteredShardsAPI.getClientCollection();
-		client.send(() -> client.setScreen(new ShardTabletGuiDescription.Screen(collection, library)));
+		context.getSource().getClient().send(() -> context.getSource().getClient().setScreen(new ShardTabletGuiDescription.Screen(collection, library)));
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -129,7 +124,7 @@ public class ClientShardCommand {
 	}
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> literal(String name) {
-		return LiteralArgumentBuilder.<FabricClientCommandSource>literal(name);
+		return LiteralArgumentBuilder.literal(name);
 	}
 
 	private static RequiredArgumentBuilder<FabricClientCommandSource, Identifier> identifierArgument(String name) {
