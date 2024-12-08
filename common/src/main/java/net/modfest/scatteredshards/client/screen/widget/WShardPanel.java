@@ -1,11 +1,13 @@
 package net.modfest.scatteredshards.client.screen.widget;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Either;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import vendor.cn.zbx1425.scatteredshards.cotton.gui.client.ScreenDrawing;
 import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WPlainPanel;
 import vendor.cn.zbx1425.scatteredshards.cotton.gui.widget.WSprite;
@@ -98,7 +100,24 @@ public class WShardPanel extends WPlainPanel {
 	}
 
 	public WShardPanel setHint(Supplier<Text> text, IntSupplier color) {
-		this.hint.setText(() -> text.get().copy().fillStyle(HINT_STYLE));
+		String rawText = text.get().getString();
+		Random random = new Random(rawText.hashCode());
+		StringBuilder randomText = new StringBuilder();
+		for (int i = 0; i < rawText.length(); i++) {
+			char c = rawText.charAt(i);
+			if (c == ' ') {
+				randomText.append(' ');
+			} else if (c == '，') {
+				randomText.append(", ");
+			} else if (c == '。') {
+				randomText.append(". ");
+			} else if (c < 128) {
+				randomText.append(RandomStringUtils.random(1, 0, 0, true, false, null, random));
+			} else {
+				randomText.append(RandomStringUtils.random(2, 0, 0, true, false, null, random));
+			}
+		}
+		this.hint.setText(() -> Text.literal(randomText.toString()).fillStyle(HINT_STYLE));
 		this.hint.setColor(color);
 		this.hint.setHover(text);
 		return this;
