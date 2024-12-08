@@ -11,9 +11,7 @@ import java.util.function.Predicate;
 public class Permissions {
 
     public static @NotNull Predicate<ServerCommandSource> require(@NotNull String permission, int defaultRequiredLevel) {
-        Objects.requireNonNull(permission, "permission");
-        return player -> player.getServer().getPermissionLevel(player.getPlayer().getGameProfile())
-                >= defaultRequiredLevel;
+        return source -> source.hasPermissionLevel(defaultRequiredLevel);
     }
 
     public static boolean check(@NotNull CommandSource source, @NotNull String permission, int defaultRequiredLevel) {
