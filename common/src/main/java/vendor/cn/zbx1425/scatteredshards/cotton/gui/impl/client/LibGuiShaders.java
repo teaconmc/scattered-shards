@@ -17,7 +17,7 @@ public final class LibGuiShaders {
 			// Register our core shaders.
 			// The tiled rectangle shader is used for performant tiled texture rendering.
             try {
-                sink.registerShader(new ShaderProgram(provider, LibGuiCommon.id("tiled_rectangle").toString(), VertexFormats.POSITION), program -> tiledRectangle = program);
+                sink.registerShader(new ShaderProgram(provider, "tiled_rectangle", VertexFormats.POSITION), program -> tiledRectangle = program);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
