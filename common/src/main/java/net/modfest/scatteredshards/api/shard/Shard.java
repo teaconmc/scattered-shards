@@ -188,8 +188,9 @@ public class Shard {
 			return Text.translatable("shard_pack." + id.getNamespace() + "." + id.getPath() + ".name");
 		}
 		
-		return getSourceForModId(id.getNamespace())
-				.orElse(Text.translatable("shard_pack." + id.getNamespace() + ".name"));
+		return Text.translatableWithFallback("shard_pack." + id.getNamespace() + ".name",
+				getSourceForModId(id.getNamespace()).orElse(Text.literal(id.getNamespace())).getLiteralString()
+		);
 	}
 	
 	public static Identifier getSourceIdForNamespace(String namespace) {
