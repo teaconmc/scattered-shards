@@ -58,7 +58,6 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 		int panelHeight = selectorPanel.getHeight();
 
 		WScaledLabel progressVisited = new WScaledLabel(() -> {
-			if (!ScatteredShardsClient.hasShiftDown()) return Text.empty();
 			int visitedSets = 0;
 			for (Collection<Identifier> set : library.shardSets().asMap().values()) {
 				for (Identifier identifier : set) {
@@ -68,19 +67,19 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 					}
 				}
 			}
-			return Text.translatable("gui.scattered_shards.tablet.label.progress.started", "%.0f%%".formatted(100 * visitedSets / (float) library.shardSets().asMap().keySet().size()));
-		}, 1.0f).setColor(Colors.LIGHT_GRAY);
+			return Text.translatable("gui.scattered_shards.tablet.label.progress.sets", visitedSets, library.shardSets().asMap().keySet().size());
+		}, 1.0f).setColor(Colors.WHITE);
 		selectorPanel.add(progressVisited, 0, 0);
 		progressVisited.setSize(80, 10);
+		progressVisited.setShadow(true);
 		progressVisited.setLocation(13, panelHeight - 20);
 
-		WScaledLabel progressTotal = new WScaledLabel(() -> {
-			if (!ScatteredShardsClient.hasShiftDown()) return Text.empty();
-			return Text.translatable("gui.scattered_shards.tablet.label.progress.total", "%.0f%%".formatted(100 * collection.size() / (float) library.shards().size()));
-		}, 1.0f).setColor(Colors.LIGHT_GRAY);
+		WScaledLabel progressTotal = new WScaledLabel(() ->
+			Text.translatable("gui.scattered_shards.tablet.label.progress.cards", collection.size(), library.shards().size()), 1.0f).setColor(Colors.WHITE);
 		selectorPanel.add(progressTotal, 0, 0);
 		progressTotal.setSize(80, 10);
-		progressTotal.setLocation(selectorPanel.getWidth() - 72, panelHeight - 20);
+		progressTotal.setShadow(true);
+		progressTotal.setLocation(selectorPanel.getWidth() - 80, panelHeight - 20);
 
 		ClientPlayNetworking.send(C2SRequestGlobalCollection.INSTANCE);
 
