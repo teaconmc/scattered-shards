@@ -2,7 +2,6 @@ package net.modfest.scatteredshards.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.sound.PositionedSoundInstance;
@@ -24,11 +23,12 @@ import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 
 public class ScatteredShardsClient implements ClientModInitializer {
-	public static final KeyBinding VIEW_COLLECTION = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+	// Registration moved to ScatteredShardsNeoForgeClient
+	public static final KeyBinding VIEW_COLLECTION = new KeyBinding(
 		"key.scattered_shards.collection",
 		InputUtil.GLFW_KEY_J,
 		"key.categories.scattered_shards"
-	));
+	);
 
 	@Override
 	public void onInitializeClient() {

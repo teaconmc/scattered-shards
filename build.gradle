@@ -64,7 +64,6 @@ dependencies {
 	modImplementation include("org.sinytra.forgified-fabric-api:fabric-resource-loader-v0:${moduleVer['fabric-resource-loader-v0']}")
 	modImplementation include("org.sinytra.forgified-fabric-api:fabric-rendering-v1:${moduleVer['fabric-rendering-v1']}")
 	modImplementation include("org.sinytra.forgified-fabric-api:fabric-command-api-v2:${moduleVer['fabric-command-api-v2']}")
-	modImplementation include("org.sinytra.forgified-fabric-api:fabric-key-binding-api-v1:${moduleVer['fabric-key-binding-api-v1']}")
 
 	modImplementation include("org.sinytra:fabric-loader:${libs.versions.fl.get()}")
 }

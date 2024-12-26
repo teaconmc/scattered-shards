@@ -14,7 +14,9 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 public class ScatteredShardsNeoForge {
 
 	public ScatteredShardsNeoForge(IEventBus eventBus, ModContainer container) {
-		new ScatteredShards().onInitialize();
+		RegistriesWrapperImpl registries = new RegistriesWrapperImpl();
+		new ScatteredShards().onInitialize(registries);
+		registries.registerAllDeferred(eventBus);
 		NeoForge.EVENT_BUS.register(NeoForgeEventBusListener.class);
 		if (FMLEnvironment.dist.isClient()) {
 			new ScatteredShardsNeoForgeClient(eventBus, container);

@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards.api.shard;
 
+import cn.zbx1425.scatteredshards.RegistriesWrapper;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -96,9 +97,9 @@ public record ShardType(int textColor, int glowColor, Optional<ShardIconOffsets>
 		return CODEC.parse(JsonOps.INSTANCE, obj).result().orElseThrow();
 	}
 
-	public static void register() {
-		Registry.register(Registries.SOUND_EVENT, COLLECT_VISITOR_SOUND.getId(), COLLECT_VISITOR_SOUND);
-		Registry.register(Registries.SOUND_EVENT, COLLECT_CHALLENGE_SOUND.getId(), COLLECT_CHALLENGE_SOUND);
-		Registry.register(Registries.SOUND_EVENT, COLLECT_SECRET_SOUND.getId(), COLLECT_SECRET_SOUND);
+	public static void register(RegistriesWrapper registries) {
+		registries.registerSoundEvent("collect_visitor", COLLECT_VISITOR_SOUND);
+		registries.registerSoundEvent("collect_challenge", COLLECT_CHALLENGE_SOUND);
+		registries.registerSoundEvent("collect_secret", COLLECT_SECRET_SOUND);
 	}
 }

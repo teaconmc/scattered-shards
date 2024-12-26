@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards;
 
+import cn.zbx1425.scatteredshards.RegistriesWrapper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -12,7 +13,7 @@ import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScatteredShards implements ModInitializer {
+public class ScatteredShards {
 
 	public static final String ID = "scattered_shards";
 
@@ -28,13 +29,12 @@ public class ScatteredShards implements ModInitializer {
 		return ID + "." + path;
 	}
 
-	@Override
-	public void onInitialize() {
-		ShardType.register();
+	public void onInitialize(RegistriesWrapper registries) {
+		ShardType.register(registries);
 		ShardTypeLoader.register();
 		ShardCommand.register();
 		ScatteredShardsNetworking.register();
-		ScatteredShardsContent.register();
+		ScatteredShardsContent.register(registries);
 		ServerLifecycleEvents.SERVER_STOPPED.register(ScatteredShardsAPI::serverStopped);
 	}
 }
