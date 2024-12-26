@@ -96,15 +96,13 @@ public class WMiniShard extends WWidget {
 	@Override
 	public void addTooltip(TooltipBuilder tooltip) {
 
-		if (ScatteredShardsClient.hasShiftDown() && !shard.name().getString().isBlank()) {
+		if (!shard.name().getString().isBlank()) {
 			tooltip.add(shard.name());
 		}
 		tooltip.add(ShardType.getDescription(shard.shardTypeId()).copy().withColor(shardType.textColor()));
-		if (ScatteredShardsClient.hasShiftDown()) {
-			GlobalCollection globalCollection = ScatteredShardsAPI.getClientGlobalCollection();
-			if (globalCollection != null) {
-				tooltip.add(Text.translatable("gui.scattered_shards.tablet.tooltip.global_collection", "%.1f%%".formatted(100 * globalCollection.getCount(shardId) / (float) globalCollection.totalPlayers())).formatted(Formatting.GRAY));
-			}
+		GlobalCollection globalCollection = ScatteredShardsAPI.getClientGlobalCollection();
+		if (globalCollection != null) {
+			tooltip.add(Text.translatable("gui.scattered_shards.tablet.tooltip.global_collection", "%.1f%%".formatted(100 * globalCollection.getCount(shardId) / (float) globalCollection.totalPlayers())).formatted(Formatting.GRAY));
 		}
 
 		super.addTooltip(tooltip);
