@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
-import net.modfest.scatteredshards.api.impl.ShardCollectionPersistentState;
 import net.modfest.scatteredshards.api.impl.ShardLibraryPersistentState;
 
 public class ScatteredShardsNetworking {
@@ -38,7 +37,6 @@ public class ScatteredShardsNetworking {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ShardLibraryPersistentState.get(server); // Trigger the PersistentState load if it hasn't yet
 			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncLibrary(ScatteredShardsAPI.getServerLibrary()));
-			ShardCollectionPersistentState.get(server); // Trigger the PersistentState load if it hasn't yet
 			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncCollection(ScatteredShardsAPI.getServerCollection(handler.getPlayer())));
 			ScatteredShardsAPI.calculateShardProgress();
 			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncGlobalCollection(ScatteredShardsAPI.getServerGlobalCollection()));

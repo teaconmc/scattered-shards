@@ -10,7 +10,7 @@ public interface Synchronizer extends AutoCloseable {
 
 	void writeAllToShare(Map<UUID, ShardCollection> collections);
 
-	void readAllFromShare(Map<UUID, ShardCollection> collections);
+	void readAllFromShareInto(Map<UUID, ShardCollection> collections);
 
 	void notifyCollectionChange(UUID bearer, ShardCollection newEntry);
 
@@ -24,7 +24,7 @@ public interface Synchronizer extends AutoCloseable {
 		}
 
 		@Override
-		public void readAllFromShare(Map<UUID, ShardCollection> collections) {
+		public void readAllFromShareInto(Map<UUID, ShardCollection> collections) {
 		}
 
 		@Override

@@ -1,12 +1,11 @@
 package net.modfest.scatteredshards.command;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -14,8 +13,6 @@ import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardCollection;
-import net.modfest.scatteredshards.api.impl.ShardCollectionPersistentState;
-import net.modfest.scatteredshards.networking.S2CSyncCollection;
 
 public class UncollectCommand {
 	/**
@@ -51,10 +48,11 @@ public class UncollectCommand {
 		ServerPlayerEntity player = ctx.getSource().getPlayerOrThrow();
 		ShardCollection collection = ScatteredShardsAPI.getServerCollection(player);
 		int shardsToDelete = collection.size();
-		collection.clear();
-		ServerPlayNetworking.send(player, new S2CSyncCollection(collection));
-		MinecraftServer server = ctx.getSource().getServer();
-		ShardCollectionPersistentState.get(server).markDirty();
+
+		// This is for correct GlobalCollection handling
+		for (Identifier id : ImmutableList.copyOf(collection)) {
+			ScatteredShardsAPI.triggerShardUncollection(player, id);
+		}
 
 		ctx.getSource().sendFeedback(() -> Text.translatable("commands.scattered_shards.shard.uncollect.all", shardsToDelete), false);
 

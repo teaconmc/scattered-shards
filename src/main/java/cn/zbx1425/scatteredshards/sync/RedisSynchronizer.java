@@ -47,7 +47,7 @@ public class RedisSynchronizer implements Synchronizer {
     }
 
 	@Override
-	public void readAllFromShare(Map<UUID, ShardCollection> collections) {
+	public void readAllFromShareInto(Map<UUID, ShardCollection> collections) {
 		Map<String, String> data = redisConn.sync().hgetall(HMAP_ALL_KEY);
 		for (Map.Entry<String, String> entry : data.entrySet()) {
 			ShardCollection collection = new ShardCollectionImpl();
@@ -60,7 +60,6 @@ public class RedisSynchronizer implements Synchronizer {
 
 	@Override
     public void notifyCollectionChange(UUID bearer, ShardCollection newEntry) {
-		if (!SyncDispatcher.INSTANCE.isHost) return;
 		StringBuilder data = new StringBuilder();
 		for (Identifier shard : newEntry) data.append(shard.toString()).append('\n');
         redisConn.async().hset(HMAP_ALL_KEY, bearer.toString(), data.toString());
