@@ -24,7 +24,7 @@ public class ScatteredShardsContent {
 
 	public static final Item SHARD_TABLET = new ShardTablet(new Item.Settings());
 
-	public static final BlockEntityType<ShardBlockEntity> SHARD_BLOCKENTITY = BlockEntityType.Builder.create(ShardBlockEntity::new, SHARD_BLOCK).build();
+	public static final BlockEntityType<ShardBlockEntity> SHARD_BLOCKENTITY = BlockEntityType.Builder.create(ShardBlockEntity::new, SHARD_BLOCK).build(null);
 
 	public static void register() {
 		Registry.register(Registries.BLOCK, SHARD_BLOCK_ID, SHARD_BLOCK);
