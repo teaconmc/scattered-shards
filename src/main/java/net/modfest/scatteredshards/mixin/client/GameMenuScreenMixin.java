@@ -6,7 +6,9 @@ import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.GridWidget;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +19,8 @@ public class GameMenuScreenMixin {
 	@WrapOperation(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;", ordinal = 0))
 	private Widget replaceAdvancements(GridWidget.Adder instance, Widget widget, Operation<Widget> original) {
 		if (!ScatteredShards.CONFIG.replace_advancements.get()) return original.call(instance, widget);
-		return instance.add(ButtonWidget.builder(Text.translatable("menu.scattered_shards.collection"), b -> ScatteredShardsClient.openShardTablet()).width(98).build());
+		return instance.add(ButtonWidget.builder(
+			Text.translatable("menu.scattered_shards.collection").setStyle(Style.EMPTY.withColor(Formatting.GOLD)),
+			b -> ScatteredShardsClient.openShardTablet()).width(98).build());
 	}
 }

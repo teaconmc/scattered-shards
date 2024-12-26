@@ -116,6 +116,10 @@ jar {
 	}
 }
 
+remapJar {
+	atAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
