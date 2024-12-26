@@ -1,5 +1,6 @@
 package cn.zbx1425.scatteredshards.neoforge;
 
+import io.github.cottonmc.cotton.gui.impl.LibGuiCommon;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.load.ShardTypeLoader;
 import net.neoforged.bus.api.IEventBus;
@@ -15,6 +16,7 @@ public class ScatteredShardsNeoForge {
 
 	public ScatteredShardsNeoForge(IEventBus eventBus, ModContainer container) {
 		RegistriesWrapperImpl registries = new RegistriesWrapperImpl();
+		new LibGuiCommon().onInitialize();
 		new ScatteredShards().onInitialize(registries);
 		registries.registerAllDeferred(eventBus);
 		NeoForge.EVENT_BUS.register(NeoForgeEventBusListener.class);

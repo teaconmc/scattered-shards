@@ -1,5 +1,6 @@
 package cn.zbx1425.scatteredshards.neoforge;
 
+import io.github.cottonmc.cotton.gui.impl.client.LibGuiClient;
 import net.modfest.scatteredshards.ScatteredShardsConfig;
 import net.modfest.scatteredshards.client.ScatteredShardsClient;
 import net.neoforged.bus.api.IEventBus;
@@ -23,6 +24,7 @@ public class ScatteredShardsNeoForgeClient {
 
 		@SubscribeEvent
 		public static void onClientSetupEvent(FMLClientSetupEvent event) {
+			new LibGuiClient().onInitializeClient();
 			new ScatteredShardsClient().onInitializeClient();
 		}
 

@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards.api;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -29,7 +30,6 @@ public class ScatteredShardsAPI {
 	private static ShardCollection clientShardCollection = null;
 	private static GlobalCollection clientGlobalCollection = null;
 	private static Thread serverThread = null;
-	private static Thread clientThread = null;
 	private static GlobalCollection serverGlobalCollection = null;
 
 
@@ -43,7 +43,7 @@ public class ScatteredShardsAPI {
 
 	@Environment(EnvType.CLIENT)
 	public static ShardLibrary getClientLibrary() {
-		if (clientThread != null && !Thread.currentThread().equals(clientThread)) {
+		if (!RenderSystem.isOnRenderThread()) {
 			throw new IllegalStateException("getClientLibrary called from thread '" + Thread.currentThread().getName() + "'. This method can only be accessed from the client thread.");
 		}
 
@@ -93,7 +93,7 @@ public class ScatteredShardsAPI {
 
 	@Environment(EnvType.CLIENT)
 	public static ShardCollection getClientCollection() {
-		if (clientThread != null && !Thread.currentThread().equals(clientThread)) {
+		if (!RenderSystem.isOnRenderThread()) {
 			throw new IllegalStateException("getClientCollection called from thread '" + Thread.currentThread().getName() + "'. This method can only be accessed from the client thread.");
 		}
 
@@ -105,7 +105,7 @@ public class ScatteredShardsAPI {
 	}
 
 	public static GlobalCollection getClientGlobalCollection() {
-		if (clientThread != null && !Thread.currentThread().equals(clientThread)) {
+		if (!RenderSystem.isOnRenderThread()) {
 			throw new IllegalStateException("getClientGlobalCollection called from thread '" + Thread.currentThread().getName() + "'. This method can only be accessed from the client thread.");
 		}
 
@@ -162,7 +162,6 @@ public class ScatteredShardsAPI {
 	@ApiStatus.Internal
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		clientThread = Thread.currentThread();
 		clientShardLibrary = new ShardLibraryImpl();
 		clientShardCollection = new ShardCollectionImpl();
 	}
