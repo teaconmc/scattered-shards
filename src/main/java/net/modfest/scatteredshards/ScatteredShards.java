@@ -1,9 +1,7 @@
 package net.modfest.scatteredshards;
 
 import cn.zbx1425.scatteredshards.RegistriesWrapper;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.shard.ShardType;

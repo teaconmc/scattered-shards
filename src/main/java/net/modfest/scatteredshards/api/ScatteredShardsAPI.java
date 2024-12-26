@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards.api;
 
+import cn.zbx1425.scatteredshards.sync.SyncDispatcher;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -116,6 +117,7 @@ public class ScatteredShardsAPI {
 		clientGlobalCollection = collection;
 	}
 
+	// This overload is about a player in this server
 	public static boolean triggerShardCollection(ServerPlayerEntity player, Identifier shardId) {
 		ShardCollection collection = getServerCollection(player);
 		if (collection.add(shardId)) {
@@ -123,6 +125,29 @@ public class ScatteredShardsAPI {
 
 			serverGlobalCollection.update(shardId, 1, serverCollections.size());
 			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.COLLECT));
+
+			// Let our peers know this
+			SyncDispatcher.INSTANCE.peerChannel.notifyCollect(player.getUuid(), shardId);
+			SyncDispatcher.INSTANCE.peerChannel.notifyCollectionChange(player.getUuid(), collection);
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// This overload is about a player in another server, i.e. from peer channel
+	public static boolean triggerShardCollection(UUID uuid, Identifier shardId) {
+		ShardCollection collection = getServerCollection(uuid);
+		if (collection.add(shardId)) {
+			// TODO investigate what if (player.getServer() != null) actually does?
+			collectionPersistentState.markDirty();
+
+			serverGlobalCollection.update(shardId, 1, serverCollections.size());
+
+			// Amend the kv store, in case this instance is host
+			SyncDispatcher.INSTANCE.peerChannel.notifyCollectionChange(uuid, collection);
+
 			return true;
 		} else {
 			return false;
@@ -134,9 +159,30 @@ public class ScatteredShardsAPI {
 		if (collection.remove(shardId)) {
 			if (player.getServer() != null) collectionPersistentState.markDirty();
 
-
 			serverGlobalCollection.update(shardId, -1, serverCollections.size());
 			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.UNCOLLECT));
+
+			// Let our peers know this
+			SyncDispatcher.INSTANCE.peerChannel.notifyUncollect(player.getUuid(), shardId);
+			SyncDispatcher.INSTANCE.peerChannel.notifyCollectionChange(player.getUuid(), collection);
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean triggerShardUncollection(UUID uuid, Identifier shardId) {
+		ShardCollection collection = getServerCollection(uuid);
+		if (collection.remove(shardId)) {
+			// TODO investigate what if (player.getServer() != null) actually does?
+			collectionPersistentState.markDirty();
+
+			serverGlobalCollection.update(shardId, -1, serverCollections.size());
+
+			// Amend the kv store, in case this instance is host
+			SyncDispatcher.INSTANCE.peerChannel.notifyCollectionChange(uuid, collection);
+
 			return true;
 		} else {
 			return false;

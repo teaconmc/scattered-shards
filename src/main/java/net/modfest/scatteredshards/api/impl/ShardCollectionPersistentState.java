@@ -1,5 +1,6 @@
 package net.modfest.scatteredshards.api.impl;
 
+import cn.zbx1425.scatteredshards.sync.SyncDispatcher;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -19,7 +20,7 @@ public class ShardCollectionPersistentState extends PersistentState {
 
 	public static PersistentState.Type<ShardCollectionPersistentState> TYPE = new PersistentState.Type<>(
 		ShardCollectionPersistentState::new,
-		ShardCollectionPersistentState::createFromNbt,
+		ShardCollectionPersistentState::createFromNbtOrShare,
 		null
 	);
 
@@ -27,6 +28,22 @@ public class ShardCollectionPersistentState extends PersistentState {
 		ShardCollectionPersistentState result = server.getOverworld().getPersistentStateManager().getOrCreate(TYPE, ScatteredShards.ID + "_collections");
 		ScatteredShardsAPI.register(result);
 		return result;
+	}
+
+	public ShardCollectionPersistentState() {
+		if (!SyncDispatcher.INSTANCE.isHost) {
+			SyncDispatcher.INSTANCE.peerChannel.readAllFromShare(ScatteredShardsAPI.exportServerCollections());
+		}
+	}
+
+	public static ShardCollectionPersistentState createFromNbtOrShare(NbtCompound tag, RegistryWrapper.WrapperLookup lookup) {
+		if (SyncDispatcher.INSTANCE.isHost) {
+			ShardCollectionPersistentState persistentState = createFromNbt(tag, lookup);
+			SyncDispatcher.INSTANCE.peerChannel.writeAllToShare(ScatteredShardsAPI.exportServerCollections());
+			return persistentState;
+		} else {
+			return new ShardCollectionPersistentState();
+		}
 	}
 
 	public static ShardCollectionPersistentState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup lookup) {

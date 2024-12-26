@@ -1,6 +1,5 @@
 package net.modfest.scatteredshards.client;
 
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -22,7 +21,7 @@ import net.modfest.scatteredshards.client.command.ClientShardCommand;
 import net.modfest.scatteredshards.client.screen.ShardTabletGuiDescription;
 import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 
-public class ScatteredShardsClient implements ClientModInitializer {
+public class ScatteredShardsClient {
 	// Registration moved to ScatteredShardsNeoForgeClient
 	public static final KeyBinding VIEW_COLLECTION = new KeyBinding(
 		"key.scattered_shards.collection",
@@ -30,7 +29,6 @@ public class ScatteredShardsClient implements ClientModInitializer {
 		"key.categories.scattered_shards"
 	);
 
-	@Override
 	public void onInitializeClient() {
 		ClientShardCommand.register();
 		ScatteredShardsNetworking.registerClient();

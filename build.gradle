@@ -41,6 +41,9 @@ dependencies {
 	// include libs.libgui
 	// include libs.fpapi
 
+	implementation 'io.lettuce:lettuce-core:6.2.3.RELEASE'
+	include 'io.lettuce:lettuce-core:6.2.3.RELEASE'
+	forgeRuntimeLibrary 'io.lettuce:lettuce-core:6.2.3.RELEASE'
 
 	// Fetch the version of the fabric-api modules from the pom file
 	def moduleVer = [:]
