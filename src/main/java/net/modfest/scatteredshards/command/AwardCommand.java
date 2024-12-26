@@ -12,6 +12,9 @@ import net.minecraft.util.Identifier;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.ShardLibrary;
+import net.modfest.scatteredshards.api.shard.Shard;
+
+import java.util.List;
 
 public class AwardCommand {
 
@@ -20,20 +23,29 @@ public class AwardCommand {
 		Identifier shardId = ctx.getArgument("shard_id", Identifier.class);
 
 		ShardLibrary library = ScatteredShardsAPI.getServerLibrary();
-		library.shards().get(shardId).orElseThrow(() -> ShardCommand.INVALID_SHARD.create(shardId)); //Validate shardId
+		Shard shard = library.shards().get(shardId).orElseThrow(() -> ShardCommand.INVALID_SHARD.create(shardId)); // Validate shardId
+		List<ServerPlayerEntity> targets = target.getPlayers(ctx.getSource());
 
 		int i = 0;
-		for (ServerPlayerEntity player : target.getPlayers(ctx.getSource())) {
+		for (ServerPlayerEntity player : targets) {
 			if (ScatteredShardsAPI.triggerShardCollection(player, shardId)) {
 				i++;
 			}
 		}
 		final int collected = i;
 
+		Text shardName = shard.name().getString().isBlank() ? Text.of(shardId.toString()) : shard.name();
+
 		if (collected == 0) {
-			ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.award.none", shardId), false);
+			if (targets.size() != 1) {
+				ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.award.none", shardName), false);
+			} else {
+				ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.collect.already", shardName, targets.size()), false);
+			}
+		} else if (collected == 1) {
+			ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.collect", shardName), false);
 		} else {
-			ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.award", shardId, collected), false);
+			ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.award", shardName, collected), false);
 		}
 
 		return collected;

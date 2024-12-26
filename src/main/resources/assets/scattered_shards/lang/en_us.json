@@ -4,6 +4,7 @@
 	"item.scattered_shards.shard_tablet": "Shard Tablet",
 
 	"commands.scattered_shards.shard.collect": "Collected shard '%s'",
+	"commands.scattered_shards.shard.collect.already": "Already collected shard '%s'",
 	"commands.scattered_shards.shard.award": "Awarded shard '%s' to %s players",
 	"commands.scattered_shards.shard.award.none": "Tried to award shard '%s' but no players are eligible",
 	"commands.scattered_shards.shard.block": "Shard-block '%s' added to inventory",
