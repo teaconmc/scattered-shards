@@ -1,3 +1,5 @@
+import groovy.xml.XmlSlurper
+
 //file:noinspection GroovyAssignabilityCheck
 //file:noinspection GroovyAccessibility
 plugins {
@@ -14,6 +16,7 @@ repositories {
 	maven { url "https://server.bbkr.space/artifactory/libs-release" }
 	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 	maven { url "https://repo.sleeping.town/" }
+	maven { url "https://maven.su5ed.dev/releases" }
 }
 
 dependencies {
@@ -27,14 +30,41 @@ dependencies {
 	}
 	neoForge libs.nf
 
-	// modImplementation libs.fl
+	modImplementation libs.fl
 	// modImplementation libs.fapi
 
+	// It somehow doesn't remap correctly in arch loom?
 	// modImplementation libs.libgui
 	// modImplementation libs.fpapi
 
 	// include libs.libgui
 	// include libs.fpapi
+
+
+	// Fetch the version of the fabric-api modules from the pom file
+	def moduleVer = [:]
+	ArtifactResolutionQuery query = dependencies.createArtifactResolutionQuery()
+		.forModule("org.sinytra.forgified-fabric-api", "forgified-fabric-api", libs.versions.fapi.get())
+		.withArtifacts(MavenModule, MavenPomArtifact)
+	ArtifactResolutionResult result = query.execute()
+	for (component in result.resolvedComponents) {
+		Set<ArtifactResult> mavenPomArtifacts = component.getArtifacts(MavenPomArtifact)
+		for (artifact in mavenPomArtifacts) {
+			def pom = new XmlSlurper().parse(artifact.file)
+			for (dependency in pom.dependencies.dependency) {
+				moduleVer.put(dependency.artifactId.toString(), dependency.version.toString())
+			}
+		}
+	}
+
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-api-base:${moduleVer['fabric-api-base']}")
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-lifecycle-events-v1:${moduleVer['fabric-lifecycle-events-v1']}")
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-networking-api-v1:${moduleVer['fabric-networking-api-v1']}")
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-resource-loader-v0:${moduleVer['fabric-resource-loader-v0']}")
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-rendering-v1:${moduleVer['fabric-rendering-v1']}")
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-command-api-v2:${moduleVer['fabric-command-api-v2']}")
+	modImplementation include("org.sinytra.forgified-fabric-api:fabric-key-binding-api-v1:${moduleVer['fabric-key-binding-api-v1']}")
+
 }
 
 loom {
