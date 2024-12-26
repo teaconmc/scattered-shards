@@ -29,8 +29,10 @@ import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledLabel;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WScaledText;
 import net.modfest.scatteredshards.client.screen.widget.scalable.WShardIcon;
 import net.modfest.scatteredshards.util.ModMetaUtil;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
@@ -107,7 +109,25 @@ public class WShardPanel extends WPlainPanel {
 	}
 
 	public WShardPanel setHint(Supplier<Text> text, IntSupplier color) {
-		this.hint.setText(() -> text.get().copy().fillStyle(HINT_STYLE));
+		// Special handling for hints: Replace all non-ASCII characters with random ASCII characters.
+		String rawText = text.get().getString();
+		Random random = new Random(rawText.hashCode());
+		StringBuilder randomText = new StringBuilder();
+		for (int i = 0; i < rawText.length(); i++) {
+			char c = rawText.charAt(i);
+			if (c == ' ') {
+				randomText.append(' ');
+			} else if (c == '，') {
+				randomText.append(", ");
+			} else if (c == '。') {
+				randomText.append(". ");
+			} else if (c < 128) {
+				randomText.append(c);
+			} else {
+				randomText.append(RandomStringUtils.random(2, 0, 0, true, false, null, random));
+			}
+		}
+		this.hint.setText(() -> Text.literal(randomText.toString()).fillStyle(HINT_STYLE));
 		this.hint.setColor(color);
 		this.hint.setHover(text);
 		return this;
