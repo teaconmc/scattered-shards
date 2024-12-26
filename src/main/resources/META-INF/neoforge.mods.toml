@@ -12,16 +12,6 @@ authors = "${members}"
 displayURL = "${homepage}"
 logoFile = "assets/${modId}/icon.png"
 
-[properties]
-"connector:placeholder" = true
-
-[[dependencies.${ modId }]]
-modId = "connector"
-type = "required"
-versionRange = "*"
-ordering = "NONE"
-side = "BOTH"
-
 [[dependencies.${ modId }]]
 modId = "neoforge"
 type = "required"
@@ -33,12 +23,5 @@ side = "BOTH"
 modId = "minecraft"
 type = "required"
 versionRange = "[${mc},)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${ modId }]]
-modId = "fabric_api"
-type = "required"
-versionRange = "[${fapi},)"
 ordering = "NONE"
 side = "BOTH"

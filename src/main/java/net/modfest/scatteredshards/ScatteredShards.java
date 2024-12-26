@@ -18,7 +18,7 @@ public class ScatteredShards implements ModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
-	public static final ScatteredShardsConfig CONFIG = ScatteredShardsConfig.createToml(FabricLoader.getInstance().getConfigDir(), "", ID, ScatteredShardsConfig.class);
+	public static final ScatteredShardsConfig CONFIG = ScatteredShardsConfig.CONFIG;
 
 	public static Identifier id(String path) {
 		return Identifier.of(ID, path);

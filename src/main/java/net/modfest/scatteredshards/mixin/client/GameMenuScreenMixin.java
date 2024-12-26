@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class GameMenuScreenMixin {
 	@WrapOperation(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/GridWidget$Adder;add(Lnet/minecraft/client/gui/widget/Widget;)Lnet/minecraft/client/gui/widget/Widget;", ordinal = 0))
 	private Widget replaceAdvancements(GridWidget.Adder instance, Widget widget, Operation<Widget> original) {
-		if (!ScatteredShards.CONFIG.replace_advancements.value()) return original.call(instance, widget);
+		if (!ScatteredShards.CONFIG.replace_advancements.get()) return original.call(instance, widget);
 		return instance.add(ButtonWidget.builder(Text.translatable("menu.scattered_shards.collection"), b -> ScatteredShardsClient.openShardTablet()).width(98).build());
 	}
 }
