@@ -20,6 +20,7 @@ import net.modfest.scatteredshards.ScatteredShards;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 public class Shard {
@@ -31,7 +32,8 @@ public class Shard {
 		TextCodecs.CODEC.fieldOf("lore").forGetter(Shard::lore),
 		TextCodecs.CODEC.fieldOf("hint").forGetter(Shard::hint),
 		Identifier.CODEC.fieldOf("source_id").forGetter(Shard::sourceId),
-		ICON_CODEC.fieldOf("icon").forGetter(Shard::icon)
+		ICON_CODEC.fieldOf("icon").forGetter(Shard::icon),
+		Codec.intRange(0, Integer.MAX_VALUE).optionalFieldOf("list_order").forGetter(Shard::listOrder)
 	).apply(instance, Shard::new));
 
 	public static final PacketCodec<RegistryByteBuf, Shard> PACKET_CODEC = PacketCodecs.codec(CODEC).cast();
@@ -39,16 +41,17 @@ public class Shard {
 	public static final Identifier MISSING_ICON_ID = ScatteredShards.id("textures/gui/shards/missing_icon.png");
 	public static final Either<ItemStack, Identifier> MISSING_ICON = Either.right(MISSING_ICON_ID);
 	public static final Identifier MISSING_SHARD_SOURCE = ScatteredShards.id("missing");
-	public static final Shard MISSING_SHARD = new Shard(ShardType.MISSING_ID, Text.of("Missing"), Text.of(""), Text.of(""), MISSING_SHARD_SOURCE, MISSING_ICON);
+	public static final Shard MISSING_SHARD = new Shard(ShardType.MISSING_ID, Text.of("Missing"), Text.of(""), Text.of(""), MISSING_SHARD_SOURCE, MISSING_ICON, Optional.empty());
 
 	protected Identifier shardTypeId;
 	protected Text name;
 	protected Text lore;
 	protected Text hint;
+	protected Integer listOrder;
 	protected Identifier sourceId;
 	protected Either<ItemStack, Identifier> icon;
 
-	public Shard(Identifier shardTypeId, Text name, Text lore, Text hint, Identifier sourceId, Either<ItemStack, Identifier> icon) {
+	public Shard(Identifier shardTypeId, Text name, Text lore, Text hint, Identifier sourceId, Either<ItemStack, Identifier> icon, Optional<Integer> listOrder) {
 		Stream.of(name, lore, hint, icon).forEach(Objects::requireNonNull);
 		this.shardTypeId = shardTypeId;
 		this.name = name;
@@ -56,6 +59,7 @@ public class Shard {
 		this.hint = hint;
 		this.sourceId = sourceId;
 		this.icon = icon;
+		this.listOrder = listOrder.orElse(null);
 	}
 
 	public Identifier shardTypeId() {
@@ -72,6 +76,10 @@ public class Shard {
 
 	public Text hint() {
 		return hint;
+	}
+
+	public Optional<Integer> listOrder() {
+		return listOrder == null ? Optional.empty() : Optional.of(listOrder);
 	}
 
 	public Identifier sourceId() {
@@ -99,6 +107,11 @@ public class Shard {
 
 	public Shard setHint(Text value) {
 		this.hint = value;
+		return this;
+	}
+
+	public Shard setListOrder(Integer value) {
+		this.listOrder = value;
 		return this;
 	}
 
@@ -136,7 +149,7 @@ public class Shard {
 
 	public Shard copy() {
 		Either<ItemStack, Identifier> icon = icon().mapBoth(stack -> stack, id -> id);
-		return new Shard(shardTypeId, name.copy(), lore.copy(), hint.copy(), sourceId, icon);
+		return new Shard(shardTypeId, name.copy(), lore.copy(), hint.copy(), sourceId, icon, listOrder());
 	}
 
 	@Override

@@ -39,5 +39,6 @@
   "gui.scattered_shards.creator.field.item.component": "物品组件...",
   "gui.scattered_shards.tablet.tooltip.global_collection": "%s 的人有这张卡",
   "gui.scattered_shards.tablet.label.progress.sets": "已参观 %d/%d 个模组",
-  "gui.scattered_shards.tablet.label.progress.cards": "%d/%d 张卡片"
+  "gui.scattered_shards.tablet.label.progress.cards": "%d/%d 张卡片",
+  "gui.scattered_shards.creator.field.order": "序号 (递增排序, 留空取卡面默认)"
 }

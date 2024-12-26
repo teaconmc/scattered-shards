@@ -38,6 +38,7 @@
 	"gui.scattered_shards.creator.field.name": "Name...",
 	"gui.scattered_shards.creator.field.lore": "Lore...",
 	"gui.scattered_shards.creator.field.hint": "Hint...",
+	"gui.scattered_shards.creator.field.order": "Order (Ascending, Empty for Default)",
 	"gui.scattered_shards.creator.icon.texture": "Texture Icon",
 	"gui.scattered_shards.creator.icon.item": "Item Icon",
 	"gui.scattered_shards.creator.field.item.id": "Item ID...",

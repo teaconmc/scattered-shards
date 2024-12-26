@@ -56,15 +56,19 @@ public class WShardSetPanel extends WPanelWithInsets {
 		List<Identifier> shardSet = new ArrayList<>(library.shardSets().get(setId));
 		shardSet.sort((a, b) -> {
 			int aPriority = library.shards().get(a)
-				.map(Shard::shardTypeId)
-				.flatMap(library.shardTypes()::get)
-				.map(ShardType::listOrder)
+				.map(Shard::listOrder)
+				.orElseGet(() -> library.shards().get(a)
+					.map(Shard::shardTypeId)
+					.flatMap(library.shardTypes()::get)
+					.map(ShardType::listOrder))
 				.orElse(Integer.MAX_VALUE);
 
 			int bPriority = library.shards().get(b)
-				.map(Shard::shardTypeId)
-				.flatMap(library.shardTypes()::get)
-				.map(ShardType::listOrder)
+				.map(Shard::listOrder)
+				.orElseGet(() -> library.shards().get(b)
+					.map(Shard::shardTypeId)
+					.flatMap(library.shardTypes()::get)
+					.map(ShardType::listOrder))
 				.orElse(Integer.MAX_VALUE);
 
 			return Integer.compare(aPriority, bPriority);

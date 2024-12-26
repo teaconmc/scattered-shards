@@ -52,6 +52,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public static final Text NAME_TEXT = Text.translatable("gui.scattered_shards.creator.field.name");
 	public static final Text LORE_TEXT = Text.translatable("gui.scattered_shards.creator.field.lore");
 	public static final Text HINT_TEXT = Text.translatable("gui.scattered_shards.creator.field.hint");
+	public static final Text ORDER_TEXT = Text.translatable("gui.scattered_shards.creator.field.order");
 	public static final Text TEXTURE_TEXT = Text.translatable("gui.scattered_shards.creator.field.texture");
 	public static final Text ICON_TEXTURE_TEXT = Text.translatable("gui.scattered_shards.creator.icon.texture");
 	public static final Text ICON_ITEM_TEXT = Text.translatable("gui.scattered_shards.creator.icon.item");
@@ -83,6 +84,19 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 	public WProtectableField hintField = new WProtectableField(HINT_TEXT)
 		.setTextChangedListener(it -> shard.setHint(it))
 		.setMaxLength(70);
+
+	public WProtectableField listOrderField = new WProtectableField(ORDER_TEXT)
+		.setTextChangedListener(it -> {
+			if (it.getString().isEmpty()) {
+				shard.setListOrder(null);
+			} else {
+				try {
+					shard.setListOrder(Integer.parseInt(it.getString()));
+				} catch (NumberFormatException ignored) {
+					shard.setListOrder(null);
+				}
+			}
+		}).setMaxLength(8);
 
 	public WAlternativeToggle iconToggle = new WAlternativeToggle(ICON_TEXTURE_TEXT, ICON_ITEM_TEXT);
 	public WCardPanel cardPanel = new WCardPanel();
@@ -244,6 +258,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		this.nameField.setText(shard.name().getLiteralString());
 		this.loreField.setText(shard.lore().getLiteralString());
 		this.hintField.setText(shard.hint().getLiteralString());
+		this.listOrderField.setText(shard.listOrder().map(i -> Integer.toString(i)).orElse(""));
 		shard.icon().ifRight(a -> {
 			this.iconToggle.setLeft();
 			if (Objects.equals(a, modIcon)) {
@@ -279,7 +294,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		editorPanel.setSpacing(3);
 		editorPanel.setHorizontalAlignment(HorizontalAlignment.LEFT);
 
-		editorPanel.add(titleLabel);
+		// editorPanel.add(titleLabel);
 		editorPanel.add(nameField);
 		editorPanel.add(loreField);
 		editorPanel.add(hintField);
@@ -299,6 +314,8 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 
 		itemIconPanel.add(itemField);
 		itemIconPanel.add(componentField);
+
+		editorPanel.add(listOrderField);
 
 		editorPanel.add(saveButton);
 
