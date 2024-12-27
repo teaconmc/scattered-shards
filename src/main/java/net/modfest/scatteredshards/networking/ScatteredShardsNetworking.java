@@ -4,8 +4,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.impl.ShardLibraryPersistentState;
 
@@ -33,14 +34,14 @@ public class ScatteredShardsNetworking {
 
 		ServerPlayNetworking.registerGlobalReceiver(C2SModifyShard.PACKET_ID, C2SModifyShard::receive);
 		ServerPlayNetworking.registerGlobalReceiver(C2SRequestGlobalCollection.PACKET_ID, C2SRequestGlobalCollection::receive);
+	}
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			ShardLibraryPersistentState.get(server); // Trigger the PersistentState load if it hasn't yet
-			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncLibrary(ScatteredShardsAPI.getServerLibrary()));
-			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncCollection(ScatteredShardsAPI.getServerCollection(handler.getPlayer())));
-			ScatteredShardsAPI.calculateShardProgress();
-			ServerPlayNetworking.send(handler.getPlayer(), new S2CSyncGlobalCollection(ScatteredShardsAPI.getServerGlobalCollection()));
-		});
-
+	// Registration moved to ScatteredShardsNeoForge
+	public static void onPlayerJoinServer(MinecraftServer server, ServerPlayerEntity player) {
+		ShardLibraryPersistentState.get(server); // Trigger the PersistentState load if it hasn't yet
+		ServerPlayNetworking.send(player, new S2CSyncLibrary(ScatteredShardsAPI.getServerLibrary()));
+		ServerPlayNetworking.send(player, new S2CSyncCollection(ScatteredShardsAPI.getServerCollection(player)));
+		ScatteredShardsAPI.calculateShardProgress();
+		ServerPlayNetworking.send(player, new S2CSyncGlobalCollection(ScatteredShardsAPI.getServerGlobalCollection()));
 	}
 }

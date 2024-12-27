@@ -5,9 +5,11 @@ import cn.zbx1425.scatteredshards.sync.RedisSynchronizer;
 import cn.zbx1425.scatteredshards.sync.SyncPersistDispatcher;
 import cn.zbx1425.scatteredshards.sync.Synchronizer;
 import io.github.cottonmc.cotton.gui.impl.LibGuiCommon;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.load.ShardTypeLoader;
+import net.modfest.scatteredshards.networking.ScatteredShardsNetworking;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -15,6 +17,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
@@ -72,6 +75,13 @@ public class ScatteredShardsNeoForge {
 				}
 			} catch (Exception e) {
 				ScatteredShards.LOGGER.error("Failed to close sync dispatcher", e);
+			}
+		}
+
+		@SubscribeEvent
+		public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
+			if (event.getEntity() instanceof ServerPlayerEntity serverPlayer) {
+				ScatteredShardsNetworking.onPlayerJoinServer(serverPlayer.getServer(), serverPlayer);
 			}
 		}
 	}
