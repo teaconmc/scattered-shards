@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.modfest.scatteredshards.ScatteredShards;
 import net.modfest.scatteredshards.api.ScatteredShardsAPI;
 import net.modfest.scatteredshards.api.impl.ShardLibraryPersistentState;
 
@@ -43,5 +44,6 @@ public class ScatteredShardsNetworking {
 		ServerPlayNetworking.send(player, new S2CSyncCollection(ScatteredShardsAPI.getServerCollection(player)));
 		ScatteredShardsAPI.calculateShardProgress();
 		ServerPlayNetworking.send(player, new S2CSyncGlobalCollection(ScatteredShardsAPI.getServerGlobalCollection()));
+		ScatteredShards.LOGGER.info("S2C sync packets sent to {}", player.getPlayerListName().getString());
 	}
 }

@@ -53,7 +53,7 @@ public class ScatteredShardsNeoForge {
 				if (!SERVER_CONFIG.redisUrl.value.isEmpty()) {
 					peerChannel = new RedisSynchronizer(SERVER_CONFIG.redisUrl.value);
 				} else {
-					peerChannel = null;
+					peerChannel = Synchronizer.NOOP;
 				}
 				SyncPersistDispatcher.CURRENT = new SyncPersistDispatcher(
 					event.getServer(),

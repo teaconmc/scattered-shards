@@ -3,14 +3,17 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import dev.architectury.impl.NetworkAggregator;
 import dev.architectury.networking.NetworkManager;
-import dev.architectury.platform.Platform;
-import dev.architectury.utils.Env;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
+import net.neoforged.fml.loading.FMLEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public interface PayloadTypeRegistry<B extends PacketByteBuf> {
+
+	static Logger LOGGER = LoggerFactory.getLogger("PayloadTypeRegistry");
 
 	<T extends CustomPayload> CustomPayload.Type<? super B, T> register(CustomPayload.Id<T> id, PacketCodec<? super B, T> codec);
 
@@ -28,8 +31,9 @@ public interface PayloadTypeRegistry<B extends PacketByteBuf> {
 
 		@Override
 		public <T extends CustomPayload> CustomPayload.Type<? super RegistryByteBuf, T> register(CustomPayload.Id<T> id, PacketCodec<? super RegistryByteBuf, T> codec) {
-			if (Platform.getEnvironment() == Env.SERVER) {
+			if (FMLEnvironment.dist.isDedicatedServer()) {
 				NetworkManager.registerS2CPayloadType(id, codec);
+				LOGGER.info("Registered S2C payload type: {}", id);
 			} else {
 				NetworkAggregator.S2C_CODECS.put(id.id(), (PacketCodec)codec);
 			}
