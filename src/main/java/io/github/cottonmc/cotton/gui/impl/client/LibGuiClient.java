@@ -14,9 +14,9 @@ public class LibGuiClient {
 	public void onInitializeClient() {
 		config = loadConfig();
 
-		ClientPlayNetworking.registerGlobalReceiver(ScreenNetworkingImpl.ScreenMessage.ID, (payload, context) -> {
-			ScreenNetworkingImpl.handle(context.client(), context.player(), payload);
-		});
+//		ClientPlayNetworking.registerGlobalReceiver(ScreenNetworkingImpl.ScreenMessage.ID, (payload, context) -> {
+//			ScreenNetworkingImpl.handle(context.client(), context.player(), payload);
+//		});
 
 		LibGuiShaders.register();
 		Proxy.proxy = new ClientProxy();
