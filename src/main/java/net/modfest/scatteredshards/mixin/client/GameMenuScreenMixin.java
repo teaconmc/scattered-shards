@@ -20,7 +20,8 @@ public class GameMenuScreenMixin {
 	private Widget replaceAdvancements(GridWidget.Adder instance, Widget widget, Operation<Widget> original) {
 		if (!ScatteredShards.CONFIG.replace_advancements.get()) return original.call(instance, widget);
 		return instance.add(ButtonWidget.builder(
-			Text.translatable("menu.scattered_shards.collection").setStyle(Style.EMPTY.withColor(Formatting.GOLD)),
+			Text.translatable("menu.scattered_shards.collection")
+				.styled(style -> style.withFormatting(Formatting.GOLD, Formatting.BOLD)),
 			b -> ScatteredShardsClient.openShardTablet()).width(98).build());
 	}
 }
