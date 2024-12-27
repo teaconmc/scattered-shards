@@ -2,9 +2,9 @@ package net.modfest.scatteredshards.api;
 
 import cn.zbx1425.scatteredshards.sync.SyncPersistDispatcher;
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -119,7 +119,7 @@ public class ScatteredShardsAPI {
 		ShardCollection collection = getServerCollection(player);
 		if (collection.add(shardId)) {
 			serverGlobalCollection.update(shardId, 1, serverCollections.size());
-			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.COLLECT));
+			NetworkManager.sendToPlayer(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.COLLECT));
 
 			// Let our peers know this
 			SyncPersistDispatcher.CURRENT.notifyCollect(player.getUuid(), shardId);
@@ -151,7 +151,7 @@ public class ScatteredShardsAPI {
 		ShardCollection collection = getServerCollection(player);
 		if (collection.remove(shardId)) {
 			serverGlobalCollection.update(shardId, -1, serverCollections.size());
-			ServerPlayNetworking.send(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.UNCOLLECT));
+			NetworkManager.sendToPlayer(player, new S2CUpdateShard(shardId, S2CUpdateShard.Mode.UNCOLLECT));
 
 			// Let our peers know this
 			SyncPersistDispatcher.CURRENT.notifyUncollect(player.getUuid(), shardId);

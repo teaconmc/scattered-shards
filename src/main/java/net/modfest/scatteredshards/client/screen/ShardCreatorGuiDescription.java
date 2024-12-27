@@ -17,7 +17,7 @@ import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import io.github.cottonmc.cotton.gui.widget.data.HorizontalAlignment;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
 import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.argument.ItemStringReader;
 import net.minecraft.component.ComponentChanges;
@@ -149,7 +149,7 @@ public class ShardCreatorGuiDescription extends LightweightGuiDescription {
 		});
 
 	public WButton saveButton = new WButton(SAVE_TEXT)
-		.setOnClick(() -> ClientPlayNetworking.send(new C2SModifyShard(shardId, shard)));
+		.setOnClick(() -> NetworkManager.sendToServer(new C2SModifyShard(shardId, shard)));
 
 	private Item item = null;
 	private ComponentMap itemComponents = ComponentMap.EMPTY;

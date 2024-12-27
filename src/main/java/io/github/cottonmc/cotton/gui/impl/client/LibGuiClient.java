@@ -1,6 +1,6 @@
 package io.github.cottonmc.cotton.gui.impl.client;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
 
 import io.github.cottonmc.cotton.gui.impl.Proxy;
 import io.github.cottonmc.cotton.gui.impl.ScreenNetworkingImpl;

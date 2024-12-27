@@ -2,9 +2,6 @@ package io.github.cottonmc.cotton.gui;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.InventoryProvider;
@@ -566,16 +563,16 @@ public class SyncedGuiDescription extends ScreenHandler implements GuiDescriptio
 	 * @return the packet sender
 	 * @since 3.3.0
 	 */
-	public final PacketSender getPacketSender() {
-		if (getNetworkSide() == NetworkSide.SERVER) {
-			return ServerPlayNetworking.getSender((ServerPlayerEntity) playerInventory.player);
-		} else {
-			return getClientPacketSender();
-		}
-	}
-
-	@Environment(EnvType.CLIENT)
-	private PacketSender getClientPacketSender() {
-		return ClientPlayNetworking.getSender();
-	}
+//	public final PacketSender getPacketSender() {
+//		if (getNetworkSide() == NetworkSide.SERVER) {
+//			return ServerPlayNetworking.getSender((ServerPlayerEntity) playerInventory.player);
+//		} else {
+//			return getClientPacketSender();
+//		}
+//	}
+//
+//	@Environment(EnvType.CLIENT)
+//	private PacketSender getClientPacketSender() {
+//		return ClientPlayNetworking.getSender();
+//	}
 }

@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
+import dev.architectury.networking.NetworkManager;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -39,7 +39,7 @@ public class LibraryCommand {
 		ShardLibraryPersistentState.get(server).markDirty();
 		S2CUpdateShard deletePacket = new S2CUpdateShard(shardId, S2CUpdateShard.Mode.DELETE);
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-			ServerPlayNetworking.send(player, deletePacket);
+			NetworkManager.sendToPlayer(player, deletePacket);
 		}
 
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.delete", shardId), true);
@@ -56,7 +56,7 @@ public class LibraryCommand {
 		ShardLibraryPersistentState.get(server).markDirty();
 		S2CSyncLibrary syncLibrary = new S2CSyncLibrary(library);
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-			ServerPlayNetworking.send(player, syncLibrary);
+			NetworkManager.sendToPlayer(player, syncLibrary);
 		}
 
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.delete.all", toDelete), true);
@@ -85,8 +85,8 @@ public class LibraryCommand {
 		S2CUpdateShard deleteShard = new S2CUpdateShard(shardId, S2CUpdateShard.Mode.DELETE);
 		S2CSyncShard syncShard = new S2CSyncShard(newShardId, shard);
 		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-			ServerPlayNetworking.send(player, deleteShard);
-			ServerPlayNetworking.send(player, syncShard);
+			NetworkManager.sendToPlayer(player, deleteShard);
+			NetworkManager.sendToPlayer(player, syncShard);
 		}
 
 		ctx.getSource().sendFeedback(() -> Text.stringifiedTranslatable("commands.scattered_shards.shard.library.migrate", shardId, newShardId), true);

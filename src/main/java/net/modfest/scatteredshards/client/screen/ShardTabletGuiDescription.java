@@ -7,7 +7,7 @@ import io.github.cottonmc.cotton.gui.widget.WListPanel;
 import io.github.cottonmc.cotton.gui.widget.WPanelWithInsets;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Insets;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -81,7 +81,7 @@ public class ShardTabletGuiDescription extends LightweightGuiDescription {
 		progressTotal.setShadow(true);
 		progressTotal.setLocation(selectorPanel.getWidth() - 80, panelHeight - 20);
 
-		ClientPlayNetworking.send(C2SRequestGlobalCollection.INSTANCE);
+		NetworkManager.sendToServer(C2SRequestGlobalCollection.INSTANCE);
 
 		this.setRootPanel(root);
 

@@ -3,8 +3,8 @@ package net.modfest.scatteredshards.load;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.JsonDataLoader;
@@ -81,7 +81,7 @@ public class ShardTypeLoader extends JsonDataLoader implements IdentifiableResou
 			if (server != null) {
 				S2CSyncLibrary syncLibrary = new S2CSyncLibrary(ScatteredShardsAPI.getServerLibrary());
 				for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-					ServerPlayNetworking.send(player, syncLibrary);
+					NetworkManager.sendToPlayer(player, syncLibrary);
 				}
 			}
 		});

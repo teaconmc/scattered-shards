@@ -2,7 +2,8 @@ package net.modfest.scatteredshards.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -19,10 +20,10 @@ public record S2CSyncLibrary(ShardLibrary library) implements CustomPayload {
 	public static final PacketCodec<RegistryByteBuf, S2CSyncLibrary> PACKET_CODEC = ShardLibrary.PACKET_CODEC.xmap(S2CSyncLibrary::new, S2CSyncLibrary::library).cast();
 
 	@Environment(EnvType.CLIENT)
-	public static void receive(S2CSyncLibrary payload, ClientPlayNetworking.Context context) {
+	public static void receive(S2CSyncLibrary payload, NetworkManager.PacketContext context) {
 		ScatteredShards.LOGGER.info("Syncing ShardLibrary...");
 
-		context.client().execute(() -> {
+		MinecraftClient.getInstance().execute(() -> {
 			ScatteredShardsAPI.updateClientShardLibrary(payload.library());
 			ShardLibrary library = ScatteredShardsAPI.getClientLibrary();
 

@@ -2,7 +2,8 @@ package net.modfest.scatteredshards.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -24,8 +25,8 @@ public record S2CUpdateShard(Identifier shardId, Mode mode) implements CustomPay
 	public static final PacketCodec<RegistryByteBuf, S2CUpdateShard> PACKET_CODEC = PacketCodec.tuple(Identifier.PACKET_CODEC, S2CUpdateShard::shardId, Mode.PACKET_CODEC, S2CUpdateShard::mode, S2CUpdateShard::new);
 
 	@Environment(EnvType.CLIENT)
-	public static void receive(S2CUpdateShard payload, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> {
+	public static void receive(S2CUpdateShard payload, NetworkManager.PacketContext context) {
+		MinecraftClient.getInstance().execute(() -> {
 			switch (payload.mode()) {
 				case COLLECT -> {
 					ScatteredShardsClient.onShardCollected(payload.shardId());

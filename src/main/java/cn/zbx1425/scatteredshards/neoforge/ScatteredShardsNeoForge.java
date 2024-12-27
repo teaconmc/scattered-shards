@@ -77,12 +77,5 @@ public class ScatteredShardsNeoForge {
 				ScatteredShards.LOGGER.error("Failed to close sync dispatcher", e);
 			}
 		}
-
-		@SubscribeEvent
-		public static void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-			if (event.getEntity() instanceof ServerPlayerEntity serverPlayer) {
-				ScatteredShardsNetworking.onPlayerJoinServer(serverPlayer.getServer(), serverPlayer);
-			}
-		}
 	}
 }

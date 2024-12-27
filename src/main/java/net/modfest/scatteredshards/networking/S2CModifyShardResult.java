@@ -2,7 +2,8 @@ package net.modfest.scatteredshards.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -19,10 +20,10 @@ public record S2CModifyShardResult(Identifier shardId, boolean success) implemen
 	public static final PacketCodec<RegistryByteBuf, S2CModifyShardResult> PACKET_CODEC = PacketCodec.tuple(Identifier.PACKET_CODEC, S2CModifyShardResult::shardId, PacketCodecs.BOOL, S2CModifyShardResult::success, S2CModifyShardResult::new);
 
 	@Environment(EnvType.CLIENT)
-	public static void receive(S2CModifyShardResult payload, ClientPlayNetworking.Context context) {
-		context.client().execute(() -> {
+	public static void receive(S2CModifyShardResult payload, NetworkManager.PacketContext context) {
+		MinecraftClient.getInstance().execute(() -> {
 			ScatteredShardsClient.triggerShardModificationToast(payload.shardId(), payload.success());
-			context.client().setScreen(null);
+			MinecraftClient.getInstance().setScreen(null);
 		});
 	}
 

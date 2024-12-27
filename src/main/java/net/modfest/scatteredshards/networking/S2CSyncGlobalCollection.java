@@ -2,7 +2,8 @@ package net.modfest.scatteredshards.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import dev.architectury.networking.NetworkManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -15,10 +16,10 @@ public record S2CSyncGlobalCollection(GlobalCollection globalCollection) impleme
 	public static final PacketCodec<RegistryByteBuf, S2CSyncGlobalCollection> PACKET_CODEC = GlobalCollection.PACKET_CODEC.xmap(S2CSyncGlobalCollection::new, S2CSyncGlobalCollection::globalCollection).cast();
 
 	@Environment(EnvType.CLIENT)
-	public static void receive(S2CSyncGlobalCollection payload, ClientPlayNetworking.Context context) {
+	public static void receive(S2CSyncGlobalCollection payload, NetworkManager.PacketContext context) {
 		ScatteredShards.LOGGER.info("Syncing GlobalShardCollection...");
 
-		context.client().execute(() -> {
+		MinecraftClient.getInstance().execute(() -> {
 			ScatteredShardsAPI.updateClientGlobalCollection(payload.globalCollection());
 			ScatteredShards.LOGGER.info("Sync complete. Received data for {} players.", payload.globalCollection.totalPlayers());
 		});
