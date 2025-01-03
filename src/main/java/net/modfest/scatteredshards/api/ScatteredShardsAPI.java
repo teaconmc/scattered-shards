@@ -133,6 +133,7 @@ public class ScatteredShardsAPI {
 
 	// This overload is about a player in another server, i.e. from peer channel
 	public static boolean triggerShardCollection(UUID uuid, Identifier shardId) {
+		calculateShardProgress(); // It's possible for this to be called before any player joins
 		ShardCollection collection = getServerCollection(uuid);
 		if (collection.add(shardId)) {
 			serverGlobalCollection.update(shardId, 1, serverCollections.size());
@@ -165,6 +166,7 @@ public class ScatteredShardsAPI {
 
 	// This overload is about a player in another server, i.e. from peer channel
 	public static boolean triggerShardUncollection(UUID uuid, Identifier shardId) {
+		calculateShardProgress(); // It's possible for this to be called before any player joins
 		ShardCollection collection = getServerCollection(uuid);
 		if (collection.remove(shardId)) {
 			serverGlobalCollection.update(shardId, -1, serverCollections.size());
